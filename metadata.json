@@ -1,0 +1,6 @@
+{
+  "name": "El's Delight Treats - Premium Nigerian Cake & Treats Store",
+  "description": "Handcrafted celebration cakes, bento cakes, wedding cakes, and sweet treats in Lagos, Nigeria. Freshly baked with love in Amuwo-Odofin.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

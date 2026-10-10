@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <title>El's Delight Treats - Premium Nigerian Cake & Treats Store</title>
+    <meta name="description" content="Handcrafted celebration cakes, bento cakes, wedding cakes, and sweet treats in Lagos, Nigeria. Freshly baked with love in Amuwo-Odofin." />
+    <meta name="keywords" content="Cakes in Lagos, Birthday cakes Lagos, Wedding cakes Lagos, Cake delivery Lagos, Cakes Amuwo-Odofin, Bento cakes Lagos, Custom cakes Lagos, Affordable cakes Lagos, Premium cakes Lagos, Stanbic IBTC bank transfer cake order" />
+    
+    <!-- Preconnect & DNS Prefetch for Fast Sub-3s Loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="dns-prefetch" href="https://ucrzlqsohnnyjptlgzle.supabase.co" />
+
+    <!-- Open Graph / Social Sharing Card -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="El's Delight Treats" />
+    <meta property="og:title" content="El's Delight Treats – Handcrafted Custom Cakes & Treats Lagos" />
+    <meta property="og:description" content="Order luxury handcrafted celebration cakes, bento cakes, wedding tiers & sweet treats in Lagos, Nigeria. Fast delivery & custom cake consultations." />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80" />
+    <meta property="og:locale" content="en_NG" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="El's Delight Treats – Handcrafted Custom Cakes & Treats Lagos" />
+    <meta name="twitter:description" content="Order luxury handcrafted celebration cakes, bento cakes, wedding tiers & sweet treats in Lagos, Nigeria. Fast delivery & custom cake consultations." />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80" />
+
+    <!-- Fonts: Poppins with font-display: swap for instant text rendering -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+
+    <!-- LocalBusiness Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Bakery",
+      "name": "El's Delight Treats",
+      "image": "/logo.svg",
+      "telephone": "+2349138761465",
+      "email": "elsdelight20@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Lakeview Phase 1",
+        "addressLocality": "Amuwo-Odofin",
+        "addressRegion": "Lagos State",
+        "addressCountry": "NG"
+      },
+      "priceRange": "₦1,000 - ₦200,000",
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "08:00",
+        "closes": "19:00"
+      },
+      "currenciesAccepted": "NGN",
+      "paymentAccepted": "Bank Transfer"
+    }
+    </script>
+
+    <!-- Synchronous Theme Script to prevent flash & ensure dark mode initialization -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('els_theme');
+          var isDark = saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch(e) {}
+      })();
+    </script>
+  </head>
+  <body class="font-sans antialiased text-stone-900 bg-[#FAF7F5] dark:bg-[#120F11] dark:text-stone-100 transition-colors duration-200">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-pink-600 focus:text-white focus:rounded-xl focus:shadow-xl focus:font-bold focus:text-xs">
+      Skip to main content
+    </a>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
