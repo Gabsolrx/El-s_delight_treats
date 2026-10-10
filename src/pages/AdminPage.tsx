@@ -237,6 +237,7 @@ export const AdminPage: React.FC = () => {
     syncSettingsToSupabase,
     purgeSupabaseDeletedData,
     saveAllDataToSupabase,
+    loadAllDataFromSupabase,
     getTableLiveCounts,
     showToast,
   } = useApp();
@@ -252,6 +253,7 @@ export const AdminPage: React.FC = () => {
   const [isSavingReviewsSupabase, setIsSavingReviewsSupabase] = useState(false);
   const [isSavingSettingsSupabase, setIsSavingSettingsSupabase] = useState(false);
   const [isPurgingSupabase, setIsPurgingSupabase] = useState(false);
+  const [isLoadingSupabaseData, setIsLoadingSupabaseData] = useState(false);
   const [showSqlSchemaModal, setShowSqlSchemaModal] = useState(false);
   const [sqlCopied, setSqlCopied] = useState(false);
 
@@ -609,8 +611,8 @@ export const AdminPage: React.FC = () => {
     };
 
     return (
-      <div className="min-h-screen bg-[#FAF7F5] dark:bg-[#120F11] flex flex-col justify-center items-center px-4 py-12">
-        <div className="w-full max-w-md bg-white dark:bg-[#181316] rounded-3xl p-8 sm:p-10 border border-rose-100 dark:border-rose-950/60 shadow-xl space-y-6 text-center">
+      <div className="min-h-screen bg-[#FAFAFA] dark:bg-[#0F0F12] flex flex-col justify-center items-center px-4 py-12">
+        <div className="w-full max-w-md bg-white dark:bg-[#18181C] rounded-3xl p-8 sm:p-10 border border-rose-100 dark:border-rose-950/60 shadow-xl space-y-6 text-center">
           <div className="flex justify-center">
             <ElsDelightLogo className="w-20 h-20 drop-shadow-sm" />
           </div>
@@ -1232,7 +1234,7 @@ export const AdminPage: React.FC = () => {
       {/* ========================================================= */}
       {/* TOP ADMIN BAR                                             */}
       {/* ========================================================= */}
-      <header className="bg-white dark:bg-[#161214] border-b border-rose-100 dark:border-stone-800 sticky top-0 z-30 shadow-xs">
+      <header className="bg-white dark:bg-[#16161A] border-b border-rose-100 dark:border-stone-800 sticky top-0 z-30 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
           <div className="flex items-center gap-1.5 sm:gap-2">
             <ElsDelightLogo className="w-10 h-10 sm:w-12 sm:h-12 shrink-0" />
@@ -1321,7 +1323,7 @@ export const AdminPage: React.FC = () => {
           <div className="space-y-8">
             {/* Top Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
                 <div>
                   <span className="text-xs uppercase tracking-wider font-semibold text-stone-500">
                     Total Order Value
@@ -1338,7 +1340,7 @@ export const AdminPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
                 <div>
                   <span className="text-xs uppercase tracking-wider font-semibold text-stone-500">
                     Customer Orders
@@ -1355,7 +1357,7 @@ export const AdminPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
                 <div>
                   <span className="text-xs uppercase tracking-wider font-semibold text-stone-500">
                     Live Products
@@ -1372,7 +1374,7 @@ export const AdminPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
                 <div>
                   <span className="text-xs uppercase tracking-wider font-semibold text-stone-500">
                     Custom Requests
@@ -1449,7 +1451,7 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {/* Quick Actions Bar */}
-            <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
+            <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
               <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
                 Quick Store Actions
               </h4>
@@ -1502,7 +1504,7 @@ export const AdminPage: React.FC = () => {
             {/* Overview Quick Controls: Featured Cake & Categories Spotlight */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Widget 1: Featured Today Cake Controls */}
-              <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col justify-between">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between gap-3 mb-3">
                     <div className="flex items-center gap-2">
@@ -1625,7 +1627,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* Widget 2: Website Categories Spotlight */}
-              <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col justify-between">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between gap-3 mb-3">
                     <div className="flex items-center gap-2">
@@ -1699,7 +1701,7 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {/* Recent Orders Overview */}
-            <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
+            <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
@@ -1813,7 +1815,7 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {/* Filter & Search Bar */}
-            <div className="bg-white dark:bg-[#161214] p-4 rounded-2xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col sm:flex-row gap-3">
+            <div className="bg-white dark:bg-[#16161A] p-4 rounded-2xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
                 <input
@@ -1842,7 +1844,7 @@ export const AdminPage: React.FC = () => {
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}
-                  className="bg-white dark:bg-[#161214] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs overflow-hidden flex flex-col justify-between group hover:shadow-md transition-shadow"
+                  className="bg-white dark:bg-[#16161A] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs overflow-hidden flex flex-col justify-between group hover:shadow-md transition-shadow"
                 >
                   <div>
                     {/* Image Banner */}
@@ -2027,7 +2029,7 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {/* Filter & Search Bar */}
-            <div className="bg-white dark:bg-[#161214] p-4 rounded-2xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">
+            <div className="bg-white dark:bg-[#16161A] p-4 rounded-2xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">
               <div className="relative flex-1 w-full">
                 <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
                 <input
@@ -2049,7 +2051,7 @@ export const AdminPage: React.FC = () => {
               cat.name.toLowerCase().includes(categorySearch.toLowerCase()) ||
               (cat.label && cat.label.toLowerCase().includes(categorySearch.toLowerCase()))
             ).length === 0 ? (
-              <div className="bg-white dark:bg-[#161214] rounded-3xl border border-rose-100 dark:border-stone-800 p-12 text-center">
+              <div className="bg-white dark:bg-[#16161A] rounded-3xl border border-rose-100 dark:border-stone-800 p-12 text-center">
                 <div className="w-16 h-16 rounded-2xl bg-rose-50 dark:bg-rose-950/60 text-pink-600 flex items-center justify-center mx-auto mb-4">
                   <Layers className="w-8 h-8" />
                 </div>
@@ -2094,7 +2096,7 @@ export const AdminPage: React.FC = () => {
                     return (
                       <div
                         key={cat.name}
-                        className="bg-white dark:bg-[#161214] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs overflow-hidden flex flex-col justify-between group hover:shadow-md transition-all"
+                        className="bg-white dark:bg-[#16161A] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs overflow-hidden flex flex-col justify-between group hover:shadow-md transition-all"
                       >
                         {/* Category Visual Banner with overlay badges & actions */}
                         <div className="relative aspect-4/3 overflow-hidden bg-stone-100 dark:bg-stone-900">
@@ -2308,7 +2310,7 @@ export const AdminPage: React.FC = () => {
             {/* Orders List */}
             <div className="space-y-4">
               {filteredOrders.length === 0 ? (
-                <div className="p-12 text-center bg-white dark:bg-[#161214] rounded-3xl border border-rose-100 dark:border-stone-800">
+                <div className="p-12 text-center bg-white dark:bg-[#16161A] rounded-3xl border border-rose-100 dark:border-stone-800">
                   <ShoppingBag className="w-10 h-10 text-stone-300 mx-auto mb-2" />
                   <p className="text-sm font-semibold text-stone-700 dark:text-stone-300">No orders matching this filter.</p>
                 </div>
@@ -2320,7 +2322,7 @@ export const AdminPage: React.FC = () => {
                   return (
                     <div
                       key={order.orderId}
-                      className="bg-white dark:bg-[#161214] p-5 sm:p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4"
+                      className="bg-white dark:bg-[#16161A] p-5 sm:p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-rose-50 dark:border-stone-800/80 pb-4">
                         <div>
@@ -2498,7 +2500,7 @@ export const AdminPage: React.FC = () => {
                 return (
                   <div
                     key={inq.id}
-                    className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4"
+                    className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-rose-50 dark:border-stone-800 pb-3">
                       <div>
@@ -2671,7 +2673,7 @@ export const AdminPage: React.FC = () => {
 
             {/* SUBTAB 1: HERO BANNER */}
             {contentSubTab === 'hero' && (
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
                   <div>
                     <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
@@ -3414,7 +3416,7 @@ export const AdminPage: React.FC = () => {
 
             {/* SUBTAB: OCCASIONS SECTION ("Find a Cake for Every Occasion") */}
             {contentSubTab === 'occasions' && (
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-4 gap-3">
                   <div>
                     <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
@@ -3580,7 +3582,7 @@ export const AdminPage: React.FC = () => {
 
             {/* SUBTAB: SWEET MOMENTS SECTION ("Sweet Moments at El's") */}
             {contentSubTab === 'moments' && (
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-4 gap-3">
                   <div>
                     <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
@@ -3766,7 +3768,7 @@ export const AdminPage: React.FC = () => {
               </div>
             )}
             {contentSubTab === 'announcements' && (
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="border-b border-rose-100 dark:border-stone-800 pb-3">
                   <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
                     Top Announcement Bar Messages
@@ -3958,7 +3960,7 @@ export const AdminPage: React.FC = () => {
 
             {/* SUBTAB 3: ABOUT US & STORY */}
             {contentSubTab === 'about' && (
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
                   <div>
                     <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
@@ -4307,7 +4309,7 @@ export const AdminPage: React.FC = () => {
 
             {/* SUBTAB 4: BRAND PROMISES */}
             {contentSubTab === 'promises' && (
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
                   <div>
                     <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
@@ -4399,7 +4401,7 @@ export const AdminPage: React.FC = () => {
 
             {/* SUBTAB 5: FAQS KNOWLEDGEBASE */}
             {contentSubTab === 'faqs' && (
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-rose-100 dark:border-stone-800 pb-3">
                   <div>
                     <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
@@ -4548,7 +4550,7 @@ export const AdminPage: React.FC = () => {
 
             {/* SUBTAB 6: CORPORATE SOLUTIONS */}
             {contentSubTab === 'corporate' && (
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
                   <div>
                     <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
@@ -4717,7 +4719,7 @@ export const AdminPage: React.FC = () => {
               {/* ========================================================= */}
               {/* BRAND LOGO & VISUAL IDENTITY CONTROL CENTER               */}
               {/* ========================================================= */}
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-rose-100 dark:border-stone-800 pb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-950/60 text-pink-600 flex items-center justify-center shrink-0">
@@ -5189,7 +5191,7 @@ export const AdminPage: React.FC = () => {
                     </div>
 
                     {/* 2. Header Dark Mode Preview */}
-                    <div className="p-4 rounded-2xl bg-[#161214] border border-rose-950/80 shadow-xs flex flex-col justify-between gap-3">
+                    <div className="p-4 rounded-2xl bg-[#16161A] border border-rose-950/80 shadow-xs flex flex-col justify-between gap-3">
                       <div className="flex items-center justify-between border-b border-rose-950/60 pb-2">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-rose-200 flex items-center gap-1">
                           <Moon className="w-3 h-3 text-indigo-400" />
@@ -5270,7 +5272,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* Bank Account Details Card */}
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
                 <div className="flex items-center gap-2 border-b border-rose-100 dark:border-stone-800 pb-3">
                   <CreditCard className="w-5 h-5 text-pink-600" />
                   <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
@@ -5341,7 +5343,7 @@ export const AdminPage: React.FC = () => {
               {/* ========================================================= */}
               {/* CAKE DELIVERY METHODS & PAY-ON-DELIVERY POLICY MANAGER      */}
               {/* ========================================================= */}
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-rose-100 dark:border-stone-800 pb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-950/60 text-pink-600 flex items-center justify-center shrink-0">
@@ -5654,7 +5656,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* General Store Information */}
-              <div className="bg-white dark:bg-[#161214] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
                 <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100 border-b border-rose-100 dark:border-stone-800 pb-3">
                   Store Contact & Bakery Studio
                 </h4>
@@ -5894,7 +5896,7 @@ export const AdminPage: React.FC = () => {
               {reviews.map((rev) => (
                 <div
                   key={rev.id}
-                  className="bg-white dark:bg-[#161214] p-5 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col justify-between space-y-4"
+                  className="bg-white dark:bg-[#16161A] p-5 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col justify-between space-y-4"
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
@@ -5955,7 +5957,7 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {/* Supabase Cloud Backend Integration Card */}
-            <div className="bg-white dark:bg-[#161214] p-6 sm:p-7 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-5">
+            <div className="bg-white dark:bg-[#16161A] p-6 sm:p-7 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${
@@ -6817,6 +6819,21 @@ export const AdminPage: React.FC = () => {
 
                 <button
                   type="button"
+                  disabled={isLoadingSupabaseData || isSavingProductsSupabase}
+                  onClick={async () => {
+                    setIsLoadingSupabaseData(true);
+                    await loadAllDataFromSupabase({ silent: false });
+                    setIsLoadingSupabaseData(false);
+                    refreshLiveCounts();
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-xs"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-white ${isLoadingSupabaseData ? 'animate-spin' : ''}`} />
+                  <span>{isLoadingSupabaseData ? 'Loading from Cloud...' : 'Pull / Load Fresh Data & Images from Supabase'}</span>
+                </button>
+
+                <button
+                  type="button"
                   disabled={isSavingProductsSupabase || isSavingOrdersSupabase || isSavingSettingsSupabase}
                   onClick={async () => {
                     setIsSavingProductsSupabase(true);
@@ -6856,7 +6873,7 @@ export const AdminPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Passcode Security Card */}
-              <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
                 <div className="flex items-center gap-2">
                   <Lock className="w-5 h-5 text-pink-600" />
                   <h4 className="font-serif text-lg font-bold">Admin Password</h4>
@@ -6894,7 +6911,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* Export Data Card */}
-              <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
                 <div className="flex items-center gap-2">
                   <Download className="w-5 h-5 text-emerald-600" />
                   <h4 className="font-serif text-lg font-bold">Export Store Backup</h4>
@@ -6923,7 +6940,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* Import Data Card */}
-              <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
                 <div className="flex items-center gap-2">
                   <Upload className="w-5 h-5 text-blue-600" />
                   <h4 className="font-serif text-lg font-bold">Import Backup</h4>
@@ -6957,7 +6974,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* Factory Reset Card */}
-              <div className="bg-white dark:bg-[#161214] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-4">
                 <div className="flex items-center gap-2">
                   <RotateCcw className="w-5 h-5 text-rose-600" />
                   <h4 className="font-serif text-lg font-bold text-rose-600">Factory Reset</h4>
@@ -6987,7 +7004,7 @@ export const AdminPage: React.FC = () => {
       {/* ========================================================= */}
       {isProductModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-[#181316] w-full max-w-2xl rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 sm:p-8 space-y-6 my-8 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-[#18181C] w-full max-w-2xl rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 sm:p-8 space-y-6 my-8 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
               <h3 className="font-serif text-xl font-bold text-stone-900 dark:text-stone-100">
                 {editingProduct ? `Edit Cake: ${editingProduct.name}` : 'Add New Cake to Store'}
@@ -7579,7 +7596,7 @@ export const AdminPage: React.FC = () => {
       {/* ========================================================= */}
       {isReviewModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#181316] w-full max-w-md rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 space-y-4">
+          <div className="bg-white dark:bg-[#18181C] w-full max-w-md rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
               <h4 className="font-serif text-lg font-bold">Add Customer Testimonial</h4>
               <button onClick={() => setIsReviewModalOpen(false)}>
@@ -7667,7 +7684,7 @@ export const AdminPage: React.FC = () => {
       {/* ------------------------------------------------------------- */}
       {showSqlSchemaModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs overflow-y-auto">
-          <div className="bg-white dark:bg-[#161214] rounded-3xl p-6 sm:p-7 max-w-2xl w-full border border-rose-100 dark:border-stone-800 shadow-xl space-y-4 my-8">
+          <div className="bg-white dark:bg-[#16161A] rounded-3xl p-6 sm:p-7 max-w-2xl w-full border border-rose-100 dark:border-stone-800 shadow-xl space-y-4 my-8">
             <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
               <div className="flex items-center gap-2">
                 <Terminal className="w-5 h-5 text-pink-600" />
@@ -7737,7 +7754,7 @@ export const AdminPage: React.FC = () => {
       {/* ========================================================= */}
       {isCategoryModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-[#181316] w-full max-w-xl rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 sm:p-7 space-y-5 my-8 max-h-[92vh] overflow-y-auto">
+          <div className="bg-white dark:bg-[#18181C] w-full max-w-xl rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 sm:p-7 space-y-5 my-8 max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-pink-100 dark:bg-pink-950/60 text-pink-600 flex items-center justify-center">
@@ -7972,7 +7989,7 @@ export const AdminPage: React.FC = () => {
       {/* ========================================================= */}
       {isDeleteCategoryModalOpen && categoryToDelete && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#181316] w-full max-w-md rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 space-y-4">
+          <div className="bg-white dark:bg-[#18181C] w-full max-w-md rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
               <div className="flex items-center gap-2 text-red-600">
                 <Trash2 className="w-5 h-5" />
@@ -8062,7 +8079,7 @@ export const AdminPage: React.FC = () => {
       {/* ========================================================= */}
       {isDeleteProductModalOpen && productToDelete && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#181316] w-full max-w-md rounded-3xl border border-rose-200 dark:border-rose-950/60 shadow-2xl p-6 sm:p-7 space-y-4 animate-in fade-in zoom-in-95">
+          <div className="bg-white dark:bg-[#18181C] w-full max-w-md rounded-3xl border border-rose-200 dark:border-rose-950/60 shadow-2xl p-6 sm:p-7 space-y-4 animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
               <div className="flex items-center gap-2 text-rose-600">
                 <AlertTriangle className="w-5 h-5 text-rose-600" />
@@ -8149,7 +8166,7 @@ export const AdminPage: React.FC = () => {
       {/* ========================================================= */}
       {genericDeleteModal.isOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#181316] w-full max-w-md rounded-3xl border border-rose-200 dark:border-rose-950/60 shadow-2xl p-6 sm:p-7 space-y-4 animate-in fade-in zoom-in-95">
+          <div className="bg-white dark:bg-[#18181C] w-full max-w-md rounded-3xl border border-rose-200 dark:border-rose-950/60 shadow-2xl p-6 sm:p-7 space-y-4 animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
               <div className="flex items-center gap-2 text-rose-600">
                 <AlertTriangle className="w-5 h-5 text-rose-600" />
@@ -8205,7 +8222,7 @@ export const AdminPage: React.FC = () => {
       {/* ========================================================= */}
       {isOccasionModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-[#181316] w-full max-w-lg rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 sm:p-7 space-y-4 my-8">
+          <div className="bg-white dark:bg-[#18181C] w-full max-w-lg rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 sm:p-7 space-y-4 my-8">
             <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
               <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
                 {editingOccasionIndex !== null ? 'Edit Occasion Card' : 'Add New Occasion Card'}
@@ -8414,7 +8431,7 @@ export const AdminPage: React.FC = () => {
       {/* ========================================================= */}
       {isMomentModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-[#181316] w-full max-w-lg rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 sm:p-7 space-y-4 my-8">
+          <div className="bg-white dark:bg-[#18181C] w-full max-w-lg rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 sm:p-7 space-y-4 my-8">
             <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
               <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
                 {editingMomentIndex !== null ? 'Edit Sweet Moment' : 'Add Sweet Moment'}

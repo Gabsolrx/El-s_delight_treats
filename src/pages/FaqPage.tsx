@@ -15,7 +15,7 @@ export const FaqPage: React.FC = () => {
   };
 
   return (
-    <div className="py-12 bg-[#FAF7F5] dark:bg-[#120F11] min-h-screen">
+    <div className="py-12 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Header */}
@@ -33,7 +33,7 @@ export const FaqPage: React.FC = () => {
         </div>
 
         {/* FAQs Accordion */}
-        <div className="bg-white dark:bg-[#181316] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm divide-y divide-rose-50 dark:divide-stone-800/80 p-6 sm:p-8">
+        <div className="bg-white dark:bg-[#18181C] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm divide-y divide-rose-50 dark:divide-stone-800/80 p-6 sm:p-8">
           {faqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
@@ -92,7 +92,7 @@ export const FaqPage: React.FC = () => {
         </div>
 
         {/* Bank Account Verification Reminder Card */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#181316] border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-6 rounded-3xl bg-white dark:bg-[#18181C] border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="space-y-1 text-center sm:text-left">
             <span className="text-[10px] uppercase font-bold tracking-wider text-pink-600 dark:text-pink-400 flex items-center justify-center sm:justify-start gap-1">
               <ShieldCheck className="w-4 h-4 text-emerald-600" /> {businessInfo.payment.bank} Payment Account

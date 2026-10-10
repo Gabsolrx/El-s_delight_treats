@@ -125,6 +125,7 @@ interface AppContextType {
   syncSettingsToSupabase: () => Promise<void>;
   purgeSupabaseDeletedData: (options?: { silent?: boolean }) => Promise<void>;
   saveAllDataToSupabase: (options?: { silent?: boolean }) => Promise<void>;
+  loadAllDataFromSupabase: (options?: { silent?: boolean }) => Promise<{ success: boolean; message?: string; error?: string }>;
   getTableLiveCounts: () => Promise<any>;
 
   // Cart
@@ -1123,18 +1124,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const ready = supabaseService.isAvailable();
       setIsSupabaseReady(ready);
       if (ready) {
-        saveAllDataToSupabase({ silent: true }).catch(() => {});
+        loadAllDataFromSupabase({ silent: false }).catch(() => {});
       }
     };
     window.addEventListener('els_supabase_credentials_updated', handleCredsChange);
     return () => {
       window.removeEventListener('els_supabase_credentials_updated', handleCredsChange);
     };
-  }, [products, orders, customInquiries, categories, reviews, businessInfo, siteContent, adminPin]);
+  }, []);
 
   useEffect(() => {
     if (supabaseService.isAvailable()) {
-      saveAllDataToSupabase({ silent: true }).catch(() => {});
+      loadAllDataFromSupabase({ silent: true }).catch((err) => {
+        console.warn('Initial load from Supabase:', err);
+      });
     }
   }, []);
 
@@ -1709,8 +1712,155 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   // -------------------------------------------------------------
-  // 12B. SUPABASE CLOUD SYNC & PURGE
+  // 12B. SUPABASE CLOUD SYNC & HYDRATION
   // -------------------------------------------------------------
+  const loadAllDataFromSupabase = async (options?: { silent?: boolean }) => {
+    if (!supabaseService.isAvailable()) {
+      if (!options?.silent) {
+        showToast(
+          'Supabase Not Connected',
+          'Add your Supabase URL & Key to connect to cloud database.',
+          'info'
+        );
+      }
+      return { success: false, message: 'Supabase not configured' };
+    }
+
+    try {
+      const [
+        prodsRes,
+        catsRes,
+        contentRes,
+        bizRes,
+        revsRes,
+        ordersRes,
+        inqRes,
+      ] = await Promise.all([
+        supabaseService.getProducts(),
+        supabaseService.getCategories(),
+        supabaseService.getSiteContent(),
+        supabaseService.getBusinessSettings(),
+        supabaseService.getReviews(),
+        supabaseService.getOrders(),
+        supabaseService.getInquiries(),
+      ]);
+
+      // 1. PRODUCTS
+      if (prodsRes.products && prodsRes.products.length > 0) {
+        const deletedRaw = safeGetItem('els_deleted_product_ids');
+        const deletedIds = new Set<string>(deletedRaw ? JSON.parse(deletedRaw) : []);
+        const validProds = prodsRes.products.filter((p) => !deletedIds.has(p.id));
+        if (validProds.length > 0) {
+          setProducts(validProds);
+          safeSetItem('els_products', JSON.stringify(validProds));
+          idbSet('els_products_full', validProds).catch(() => {});
+        }
+      }
+
+      // 2. CATEGORIES
+      if (catsRes && catsRes.length > 0) {
+        setCategories(catsRes);
+        safeSetItem('els_categories', JSON.stringify(catsRes));
+      }
+
+      // 3. SITE CONTENT (Including custom hero image, sweet moments gallery photos, about, faqs)
+      if (contentRes) {
+        setSiteContent((prev) => {
+          const merged: SiteContent = {
+            ...prev,
+            ...contentRes,
+            hero: contentRes.hero ? { ...prev.hero, ...contentRes.hero } : prev.hero,
+            about: contentRes.about ? { ...prev.about, ...contentRes.about } : prev.about,
+            occasionsSection: contentRes.occasionsSection
+              ? { ...prev.occasionsSection, ...contentRes.occasionsSection }
+              : prev.occasionsSection,
+            sweetMoments: contentRes.sweetMoments
+              ? { ...prev.sweetMoments, ...contentRes.sweetMoments }
+              : prev.sweetMoments,
+          };
+          safeSetItem('els_site_content', JSON.stringify(merged));
+          idbSet('els_site_content_full', merged).catch(() => {});
+          return merged;
+        });
+      }
+
+      // 4. BUSINESS SETTINGS (Including custom logo and payment account)
+      const bizInfo = bizRes.info;
+      if (bizInfo && Object.keys(bizInfo).length > 0) {
+        setBusinessInfo((prev) => {
+          const merged: BusinessInfo = {
+            ...prev,
+            ...bizInfo,
+            payment: {
+              ...prev.payment,
+              ...(bizInfo.payment || {}),
+            },
+            logo: bizInfo.logo ? { ...prev.logo, ...bizInfo.logo } : prev.logo,
+          };
+          safeSetItem('els_business_info', JSON.stringify(merged));
+          return merged;
+        });
+        if (bizRes.adminPin) {
+          setAdminPin(bizRes.adminPin);
+          safeSetItem('els_admin_pin', bizRes.adminPin);
+        }
+      }
+
+      // 5. REVIEWS
+      if (revsRes && revsRes.length > 0) {
+        setReviews(revsRes);
+        safeSetItem('els_reviews', JSON.stringify(revsRes));
+      }
+
+      // 6. ORDERS
+      if (ordersRes.orders && ordersRes.orders.length > 0) {
+        const deletedOrderIds = getDeletedOrderIds();
+        const validOrders = ordersRes.orders.filter((o) => !deletedOrderIds.has(o.orderId));
+        if (validOrders.length > 0) {
+          setOrders((prev) => {
+            const existingMap = new Map(prev.map((o) => [o.orderId, o]));
+            validOrders.forEach((o) => existingMap.set(o.orderId, o));
+            const merged = Array.from(existingMap.values());
+            safeSetItem('els_orders', JSON.stringify(merged));
+            idbSet('els_orders', merged).catch(() => {});
+            return merged;
+          });
+        }
+      }
+
+      // 7. INQUIRIES
+      if (inqRes.inquiries && inqRes.inquiries.length > 0) {
+        const deletedInquiryIds = getDeletedInquiryIds();
+        const validInquiries = inqRes.inquiries.filter((i) => !deletedInquiryIds.has(i.id));
+        if (validInquiries.length > 0) {
+          setCustomInquiries((prev) => {
+            const existingMap = new Map(prev.map((i) => [i.id, i]));
+            validInquiries.forEach((i) => existingMap.set(i.id, i));
+            const merged = Array.from(existingMap.values());
+            safeSetItem('els_custom_inquiries', JSON.stringify(merged));
+            idbSet('els_custom_inquiries', merged).catch(() => {});
+            return merged;
+          });
+        }
+      }
+
+      if (!options?.silent) {
+        showToast(
+          'Supabase Connected & Synced! ☁️',
+          'Loaded latest products, custom images, reviews, and settings from Supabase database.',
+          'success'
+        );
+      }
+      return { success: true };
+    } catch (err: any) {
+      console.warn('Supabase hydration error:', err);
+      if (!options?.silent) {
+        showToast('Supabase Load Error', err?.message || 'Could not load data from Supabase.', 'error');
+      }
+      return { success: false, error: err?.message };
+    }
+  };
+
   const syncWithSupabase = async () => {
     if (!supabaseService.isAvailable()) {
       showToast(
@@ -1722,71 +1872,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     try {
-      const [ordersRes, inqRes] = await Promise.all([
-        supabaseService.getOrders(),
-        supabaseService.getInquiries(),
-      ]);
-
-      const deletedOrderIds = getDeletedOrderIds();
-      const deletedInquiryIds = getDeletedInquiryIds();
-
-      // Proactively purge any deleted orders sitting in Supabase
-      const zombieOrderIds = ordersRes.orders
-        .map((o) => o.orderId)
-        .filter((id) => deletedOrderIds.has(id));
-      if (zombieOrderIds.length > 0) {
-        supabaseService.deleteOrders(zombieOrderIds).catch(console.warn);
-      }
-
-      let importedOrders = 0;
-      if (ordersRes.orders && ordersRes.orders.length > 0) {
-        setOrders((prev) => {
-          const existingIds = new Set(prev.map((o) => o.orderId));
-          const newOrders = ordersRes.orders.filter(
-            (o) => !existingIds.has(o.orderId) && !deletedOrderIds.has(o.orderId)
-          );
-          importedOrders = newOrders.length;
-          const merged = [...newOrders, ...prev];
-          safeSetItem('els_orders', JSON.stringify(merged));
-          idbSet('els_orders', merged);
-          return merged;
-        });
-      }
-
-      // Proactively purge any deleted inquiries sitting in Supabase
-      const zombieInquiryIds = inqRes.inquiries
-        .map((i) => i.id)
-        .filter((id) => deletedInquiryIds.has(id));
-      if (zombieInquiryIds.length > 0) {
-        zombieInquiryIds.forEach((id) => supabaseService.deleteInquiry(id).catch(console.warn));
-      }
-
-      let importedInquiries = 0;
-      if (inqRes.inquiries && inqRes.inquiries.length > 0) {
-        setCustomInquiries((prev) => {
-          const existingIds = new Set(prev.map((i) => i.id));
-          const newInquiries = inqRes.inquiries.filter(
-            (i) => !existingIds.has(i.id) && !deletedInquiryIds.has(i.id)
-          );
-          importedInquiries = newInquiries.length;
-          const merged = [...newInquiries, ...prev];
-          safeSetItem('els_custom_inquiries', JSON.stringify(merged));
-          idbSet('els_custom_inquiries', merged);
-          return merged;
-        });
-      }
+      await loadAllDataFromSupabase({ silent: true });
 
       // Also ensure all existing dashboard orders and inquiries are backed up to Supabase
       if (orders.length > 0) {
-        supabaseService.saveAllOrders(orders).catch(console.warn);
+        await supabaseService.saveAllOrders(orders).catch(console.warn);
       }
       if (customInquiries.length > 0) {
-        supabaseService.saveAllInquiries(customInquiries).catch(console.warn);
+        await supabaseService.saveAllInquiries(customInquiries).catch(console.warn);
       }
 
       showToast(
-        'Supabase Synced! ☁️',
-        `Successfully synced ${importedOrders} new orders and ${importedInquiries} new custom inquiries.`
+        'Supabase Synchronized! ☁️',
+        'Products, custom images, categories, orders, and inquiries are fully synced with Supabase.'
       );
     } catch (e: any) {
       showToast('Sync Failed', e?.message || 'Could not connect to Supabase database.', 'error');
@@ -2099,8 +2197,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     try {
       const savedTheme = safeGetItem('els_theme');
-      if (savedTheme) return savedTheme === 'dark';
-      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      return savedTheme === 'dark';
     } catch {
       return false;
     }
@@ -2112,11 +2209,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const body = document.body;
       if (isDarkMode) {
         root.classList.add('dark');
-        if (body) body.classList.add('dark');
+        root.setAttribute('data-theme', 'dark');
+        if (body) {
+          body.classList.add('dark');
+          body.setAttribute('data-theme', 'dark');
+        }
         safeSetItem('els_theme', 'dark');
       } else {
         root.classList.remove('dark');
-        if (body) body.classList.remove('dark');
+        root.setAttribute('data-theme', 'light');
+        if (body) {
+          body.classList.remove('dark');
+          body.setAttribute('data-theme', 'light');
+        }
         safeSetItem('els_theme', 'light');
       }
     } catch {}
@@ -2411,6 +2516,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         syncSettingsToSupabase,
         purgeSupabaseDeletedData,
         saveAllDataToSupabase,
+        loadAllDataFromSupabase,
         getTableLiveCounts: () => supabaseService.getTableLiveCounts(),
 
         // Cart

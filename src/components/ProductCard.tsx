@@ -41,7 +41,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
   };
 
   return (
-    <div className="group relative bg-white dark:bg-[#1A1418] rounded-2xl border border-rose-100 dark:border-rose-950/60 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between overflow-hidden">
+    <div className="group relative bg-white dark:bg-[#1A1A1F] rounded-2xl border border-rose-100 dark:border-rose-950/60 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between overflow-hidden">
       {/* Top Image Showcase */}
       <div className="relative aspect-4/5 sm:aspect-[4/4.8] w-full overflow-hidden bg-rose-50/40 dark:bg-stone-900 p-1 flex items-center justify-center">
         <Link to={`/product/${product.slug}`} className="block w-full h-full">

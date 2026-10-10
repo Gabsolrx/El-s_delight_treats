@@ -14,7 +14,7 @@ export const BrandPromise: React.FC = () => {
   const promises = siteContent.brandPromises || [];
 
   return (
-    <section className="relative py-20 sm:py-24 bg-gradient-to-b from-[#FAF7F5] via-white to-[#FAF7F5] dark:from-[#120E11] dark:via-[#161214] dark:to-[#120E11] border-b border-rose-100/70 dark:border-stone-800/80 overflow-hidden">
+    <section className="relative py-20 sm:py-24 bg-gradient-to-b from-[#FAFAFA] via-white to-[#FAFAFA] dark:from-[#0F0F12] dark:via-[#16161A] dark:to-[#0F0F12] border-b border-rose-100/70 dark:border-stone-800/80 overflow-hidden">
       {/* Subtle ambient luxury light orbs */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-rose-200/20 dark:bg-rose-950/15 rounded-full blur-3xl pointer-events-none -z-10" />
 
@@ -46,7 +46,7 @@ export const BrandPromise: React.FC = () => {
             return (
               <div
                 key={p.id || idx}
-                className="group relative p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#181316] border border-rose-100 dark:border-rose-950/60 shadow-xs hover:shadow-xl hover:-translate-y-1.5 hover:border-pink-300 dark:hover:border-pink-900/60 transition-all duration-300 flex flex-col justify-between overflow-hidden"
+                className="group relative p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#18181C] border border-rose-100 dark:border-rose-950/60 shadow-xs hover:shadow-xl hover:-translate-y-1.5 hover:border-pink-300 dark:hover:border-pink-900/60 transition-all duration-300 flex flex-col justify-between overflow-hidden"
               >
                 {/* Large Background Watermark Numeral */}
                 <span className="font-serif text-6xl sm:text-7xl font-bold tracking-tighter text-rose-100/70 dark:text-rose-950/40 select-none absolute top-2 right-4 group-hover:text-pink-200/80 dark:group-hover:text-rose-900/50 transition-colors pointer-events-none">

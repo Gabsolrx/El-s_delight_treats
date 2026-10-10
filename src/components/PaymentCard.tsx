@@ -47,7 +47,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ order }) => {
       </div>
 
       {/* Primary Payment Details Card */}
-      <div className="bg-white dark:bg-[#181316] rounded-3xl border-2 border-rose-200 dark:border-rose-900/60 shadow-xl overflow-hidden">
+      <div className="bg-white dark:bg-[#18181C] rounded-3xl border-2 border-rose-200 dark:border-rose-900/60 shadow-xl overflow-hidden">
         {/* Card Header */}
         <div className="p-6 bg-gradient-to-r from-rose-900 to-pink-900 text-white flex items-center justify-between">
           <div>

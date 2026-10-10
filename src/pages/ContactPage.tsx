@@ -33,7 +33,7 @@ export const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="py-12 bg-[#FAF7F5] dark:bg-[#120F11] min-h-screen">
+    <div className="py-12 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Header */}
@@ -52,7 +52,7 @@ export const ContactPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Contact Details Card */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white dark:bg-[#181316] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-6">
+            <div className="bg-white dark:bg-[#18181C] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-6">
               <h2 className="font-serif text-xl font-bold text-stone-900 dark:text-stone-100">
                 Bakery Studio Details
               </h2>
@@ -181,7 +181,7 @@ export const ContactPage: React.FC = () => {
           </div>
 
           {/* Quick Message Form */}
-          <div className="lg:col-span-7 bg-white dark:bg-[#181316] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-5">
+          <div className="lg:col-span-7 bg-white dark:bg-[#18181C] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-5">
             <div className="border-b border-rose-100 dark:border-stone-800 pb-3">
               <h2 className="font-serif text-xl sm:text-2xl font-bold text-stone-900 dark:text-stone-100">
                 Send a Direct Message

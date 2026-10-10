@@ -10,7 +10,7 @@ export const WishlistPage: React.FC = () => {
   const savedProducts = products.filter((p) => wishlist.includes(p.id));
 
   return (
-    <div className="py-12 bg-[#FAF7F5] dark:bg-[#120F11] min-h-screen">
+    <div className="py-12 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center max-w-xl mx-auto space-y-2">
           <div className="w-12 h-12 rounded-full bg-pink-50 dark:bg-rose-950 flex items-center justify-center text-pink-600 mx-auto">
@@ -25,7 +25,7 @@ export const WishlistPage: React.FC = () => {
         </div>
 
         {savedProducts.length === 0 ? (
-          <div className="py-16 text-center bg-white dark:bg-[#181316] rounded-3xl border border-rose-100 dark:border-stone-800 p-8 max-w-md mx-auto">
+          <div className="py-16 text-center bg-white dark:bg-[#18181C] rounded-3xl border border-rose-100 dark:border-stone-800 p-8 max-w-md mx-auto">
             <p className="text-stone-700 dark:text-stone-300 font-semibold text-sm">
               Your wishlist is empty
             </p>

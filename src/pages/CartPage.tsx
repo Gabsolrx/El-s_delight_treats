@@ -12,8 +12,8 @@ export const CartPage: React.FC = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="py-24 bg-[#FAF7F5] dark:bg-[#120F11] min-h-[70vh] flex items-center justify-center">
-        <div className="text-center p-8 bg-white dark:bg-[#181316] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm max-w-md w-full mx-4">
+      <div className="py-24 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-[70vh] flex items-center justify-center">
+        <div className="text-center p-8 bg-white dark:bg-[#18181C] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm max-w-md w-full mx-4">
           <div className="w-16 h-16 rounded-full bg-pink-50 dark:bg-rose-950 flex items-center justify-center text-3xl mx-auto mb-4">
             🍰
           </div>
@@ -38,7 +38,7 @@ export const CartPage: React.FC = () => {
   }
 
   return (
-    <div className="py-12 bg-[#FAF7F5] dark:bg-[#120F11] min-h-screen">
+    <div className="py-12 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex items-center justify-between">
           <div>
@@ -59,7 +59,7 @@ export const CartPage: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Cart Items Table */}
-          <div className="lg:col-span-8 bg-white dark:bg-[#181316] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs divide-y divide-rose-50 dark:divide-stone-800/80 p-6">
+          <div className="lg:col-span-8 bg-white dark:bg-[#18181C] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs divide-y divide-rose-50 dark:divide-stone-800/80 p-6">
             {cart.map((item) => (
               <div key={item.id} className="py-5 first:pt-0 last:pb-0 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                 <div className="flex gap-4 items-center">
@@ -127,7 +127,7 @@ export const CartPage: React.FC = () => {
           </div>
 
           {/* Right Summary */}
-          <div className="lg:col-span-4 bg-white dark:bg-[#181316] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-md space-y-5">
+          <div className="lg:col-span-4 bg-white dark:bg-[#18181C] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-md space-y-5">
             <h2 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
               Order Summary
             </h2>
@@ -178,7 +178,7 @@ export const CartPage: React.FC = () => {
       {/* Delete Item Confirmation Prompt */}
       {itemToDelete && (
         <div className="fixed inset-0 z-60 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#181316] w-full max-w-sm rounded-3xl border border-rose-200 dark:border-rose-950/60 shadow-2xl p-5 space-y-4 animate-in fade-in zoom-in-95">
+          <div className="bg-white dark:bg-[#18181C] w-full max-w-sm rounded-3xl border border-rose-200 dark:border-rose-950/60 shadow-2xl p-5 space-y-4 animate-in fade-in zoom-in-95">
             <div className="flex items-center gap-2 text-rose-600">
               <AlertTriangle className="w-5 h-5 text-rose-600" />
               <h4 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100">

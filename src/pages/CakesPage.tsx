@@ -16,7 +16,7 @@ export const CakesPage: React.FC = () => {
   );
 
   return (
-    <div className="py-12 bg-[#FAF7F5] dark:bg-[#120F11] min-h-screen">
+    <div className="py-12 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-xs uppercase tracking-wider font-semibold text-pink-600 dark:text-pink-400">

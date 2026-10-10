@@ -32,7 +32,7 @@ export const SafeImage: React.FC<SafeImageProps> = ({
   if (hasError || !src) {
     return (
       <div
-        className={`relative flex flex-col items-center justify-center p-4 bg-gradient-to-br from-rose-50 via-pink-100 to-amber-50 dark:from-[#2A1420] dark:via-[#1D0F18] dark:to-[#120F11] text-rose-900 dark:text-rose-200 overflow-hidden select-none ${className}`}
+        className={`relative flex flex-col items-center justify-center p-4 bg-gradient-to-br from-rose-50 via-pink-100 to-amber-50 dark:from-[#2A1420] dark:via-[#1D0F18] dark:to-[#0F0F12] text-rose-900 dark:text-rose-200 overflow-hidden select-none ${className}`}
       >
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#E85382_1px,transparent_1px)] [background-size:16px_16px]" />
         <div className="w-10 h-10 rounded-full bg-rose-200/60 dark:bg-rose-950/60 flex items-center justify-center mb-2 shadow-inner text-rose-700 dark:text-rose-300 font-serif font-bold text-sm tracking-tight">

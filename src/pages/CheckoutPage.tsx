@@ -136,11 +136,11 @@ export const CheckoutPage: React.FC = () => {
   };
 
   return (
-    <div className="py-12 bg-[#FAF7F5] dark:bg-[#120F11] min-h-screen">
+    <div className="py-12 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Progress Stepper */}
-        <div className="bg-white dark:bg-[#181316] p-4 rounded-2xl border border-rose-100 dark:border-stone-800 shadow-xs">
+        <div className="bg-white dark:bg-[#18181C] p-4 rounded-2xl border border-rose-100 dark:border-stone-800 shadow-xs">
           <div className="flex items-center justify-between text-xs sm:text-sm font-semibold text-stone-500 overflow-x-auto pb-1 no-scrollbar">
             <span className="flex items-center gap-1.5 text-pink-600 font-bold shrink-0">
               <span className="w-5 h-5 rounded-full bg-pink-600 text-white text-[10px] flex items-center justify-center">1</span>
@@ -171,7 +171,7 @@ export const CheckoutPage: React.FC = () => {
 
         {/* STEP 1: CUSTOMER DETAILS */}
         {step === 'details' && (
-          <form onSubmit={handleDetailsSubmit} className="bg-white dark:bg-[#181316] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-6">
+          <form onSubmit={handleDetailsSubmit} className="bg-white dark:bg-[#18181C] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-6">
             <div className="border-b border-rose-100 dark:border-stone-800 pb-3">
               <h2 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
                 1. Customer Details
@@ -246,7 +246,7 @@ export const CheckoutPage: React.FC = () => {
 
         {/* STEP 2: DELIVERY / PICKUP */}
         {step === 'delivery' && (
-          <form onSubmit={handleDeliverySubmit} className="bg-white dark:bg-[#181316] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-6">
+          <form onSubmit={handleDeliverySubmit} className="bg-white dark:bg-[#18181C] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-6">
             <div className="border-b border-rose-100 dark:border-stone-800 pb-3">
               <h2 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
                 2. Delivery & Fulfillment in Nigeria
@@ -454,7 +454,7 @@ export const CheckoutPage: React.FC = () => {
 
         {/* STEP 3: ORDER REVIEW */}
         {step === 'review' && (
-          <div className="bg-white dark:bg-[#181316] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-6">
+          <div className="bg-white dark:bg-[#18181C] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-6">
             <div className="border-b border-rose-100 dark:border-stone-800 pb-3">
               <h2 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
                 3. Review Your Order

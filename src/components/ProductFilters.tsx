@@ -90,7 +90,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
   return (
     <div className="space-y-4">
       {/* Top Search & Sort Control Bar */}
-      <div className="bg-white dark:bg-[#181316] p-4 rounded-2xl border border-rose-100 dark:border-rose-950/60 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-white dark:bg-[#18181C] p-4 rounded-2xl border border-rose-100 dark:border-rose-950/60 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Search */}
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -140,7 +140,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
 
       {/* Desktop Filter Row / Ribbon */}
       <div className={`space-y-3 ${mobileFilterOpen ? 'block' : 'hidden lg:block'}`}>
-        <div className="bg-white dark:bg-[#181316] p-4 sm:p-5 rounded-2xl border border-rose-100 dark:border-rose-950/60 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-[#18181C] p-4 sm:p-5 rounded-2xl border border-rose-100 dark:border-rose-950/60 shadow-xs space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
             {/* Category Filter */}

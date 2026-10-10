@@ -9,7 +9,7 @@ export const CategoryCarousel: React.FC = () => {
   if (!categories || categories.length === 0) return null;
 
   return (
-    <section className="py-10 bg-white dark:bg-[#161214] border-b border-rose-100 dark:border-stone-800 overflow-hidden">
+    <section className="py-10 bg-white dark:bg-[#16161A] border-b border-rose-100 dark:border-stone-800 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>

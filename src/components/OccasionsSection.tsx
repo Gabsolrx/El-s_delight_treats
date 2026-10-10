@@ -53,7 +53,7 @@ export const OccasionsSection: React.FC = () => {
     : OCCASIONS_LIST;
 
   return (
-    <section className="py-16 sm:py-20 bg-white dark:bg-[#161214] border-b border-rose-100 dark:border-stone-800">
+    <section className="py-16 sm:py-20 bg-white dark:bg-[#16161A] border-b border-rose-100 dark:border-stone-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10">
           <div>
@@ -78,7 +78,7 @@ export const OccasionsSection: React.FC = () => {
             <Link
               key={occ.id}
               to={getOccasionCategoryLink(occ)}
-              className="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-white dark:bg-[#1A1418] flex flex-col border border-rose-100 dark:border-rose-950/60 hover:-translate-y-1"
+              className="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-white dark:bg-[#1A1A1F] flex flex-col border border-rose-100 dark:border-rose-950/60 hover:-translate-y-1"
             >
               {/* Expansive Full Cake Showcase Frame (Accommodates any height, length, or aspect ratio) */}
               <div className="relative w-full h-[360px] xs:h-[400px] sm:h-[440px] lg:h-[480px] overflow-hidden bg-rose-50/40 dark:bg-stone-900/60 p-2 sm:p-3 flex items-center justify-center">
@@ -100,7 +100,7 @@ export const OccasionsSection: React.FC = () => {
               </div>
 
               {/* Dedicated Content Footer (Never covers or dims the cake!) */}
-              <div className="p-5 sm:p-6 bg-white dark:bg-[#1A1418] flex flex-col justify-between flex-1 border-t border-rose-100/60 dark:border-stone-800/80">
+              <div className="p-5 sm:p-6 bg-white dark:bg-[#1A1A1F] flex flex-col justify-between flex-1 border-t border-rose-100/60 dark:border-stone-800/80">
                 <div>
                   <h3 className="font-serif text-xl sm:text-2xl font-bold text-stone-900 dark:text-stone-100 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                     {occ.title}

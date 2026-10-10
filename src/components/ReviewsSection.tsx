@@ -6,7 +6,7 @@ export const ReviewsSection: React.FC = () => {
   const { reviews } = useApp();
 
   return (
-    <section className="py-16 sm:py-20 bg-[#FAF7F5] dark:bg-[#120F11]">
+    <section className="py-16 sm:py-20 bg-[#FAFAFA] dark:bg-[#0F0F12]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-xl mx-auto mb-12">
           <span className="text-xs uppercase tracking-wider font-semibold text-pink-600 dark:text-pink-400">
@@ -26,7 +26,7 @@ export const ReviewsSection: React.FC = () => {
             return (
               <div
                 key={review.id}
-                className="bg-white dark:bg-[#181316] rounded-2xl p-6 border border-rose-100 dark:border-rose-950/60 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
+                className="bg-white dark:bg-[#18181C] rounded-2xl p-6 border border-rose-100 dark:border-rose-950/60 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
               >
                 <div>
                   {/* Star rating */}

@@ -14,8 +14,8 @@ export const OrderConfirmationPage: React.FC = () => {
     : `https://wa.me/${businessInfo.whatsappUrlNumber}?text=${encodeURIComponent(`Hello ${businessInfo.name}, I have made payment for my order.`)}`;
 
   return (
-    <div className="py-16 bg-[#FAF7F5] dark:bg-[#120F11] min-h-[80vh] flex items-center justify-center">
-      <div className="max-w-2xl w-full mx-4 bg-white dark:bg-[#181316] rounded-3xl border border-rose-100 dark:border-stone-800 p-8 sm:p-12 text-center shadow-xl space-y-6">
+    <div className="py-16 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-[80vh] flex items-center justify-center">
+      <div className="max-w-2xl w-full mx-4 bg-white dark:bg-[#18181C] rounded-3xl border border-rose-100 dark:border-stone-800 p-8 sm:p-12 text-center shadow-xl space-y-6">
         
         {/* El's Delight Brand Logo */}
         <div className="flex justify-center">

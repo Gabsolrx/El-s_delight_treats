@@ -46,8 +46,8 @@ export const Navbar: React.FC = () => {
       <header
         className={`sticky top-0 z-30 transition-all duration-200 border-b ${
           isScrolled
-            ? 'bg-white/95 dark:bg-[#161214]/95 backdrop-blur-md border-rose-100 dark:border-rose-950/60 shadow-sm'
-            : 'bg-white/80 dark:bg-[#120F11]/90 backdrop-blur-sm border-rose-100/60 dark:border-rose-950/40'
+            ? 'bg-white/95 dark:bg-[#16161A]/95 backdrop-blur-md border-rose-100 dark:border-rose-950/60 shadow-sm'
+            : 'bg-white/80 dark:bg-[#0F0F12]/90 backdrop-blur-sm border-rose-100/60 dark:border-rose-950/40'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 xs:px-5 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-2 sm:gap-4 w-full">
@@ -210,7 +210,7 @@ export const Navbar: React.FC = () => {
           />
 
           {/* Drawer Content */}
-          <div className="fixed inset-y-0 right-0 max-w-xs w-full bg-white dark:bg-[#161214] text-stone-900 dark:text-stone-100 shadow-2xl p-6 flex flex-col justify-between overflow-y-auto z-10">
+          <div className="fixed inset-y-0 right-0 max-w-xs w-full bg-white dark:bg-[#16161A] text-stone-900 dark:text-stone-100 shadow-2xl p-6 flex flex-col justify-between overflow-y-auto z-10">
             <div>
               <div className="flex items-center justify-between pb-5 border-b border-rose-100 dark:border-stone-800">
                 <div className="flex items-center gap-1.5">

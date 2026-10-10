@@ -90,7 +90,7 @@ export const QuickViewModal: React.FC = () => {
       />
 
       {/* Modal Dialog Box */}
-      <div className="relative w-full max-w-3xl bg-white dark:bg-[#181316] rounded-2xl shadow-2xl border border-rose-100 dark:border-rose-900/40 overflow-hidden z-10 max-h-[90vh] flex flex-col md:flex-row">
+      <div className="relative w-full max-w-3xl bg-white dark:bg-[#18181C] rounded-2xl shadow-2xl border border-rose-100 dark:border-rose-900/40 overflow-hidden z-10 max-h-[90vh] flex flex-col md:flex-row">
         {/* Close Button */}
         <button
           onClick={closeQuickView}

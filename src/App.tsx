@@ -36,7 +36,7 @@ export default function App() {
     <AppProvider>
       <BrowserRouter>
         <ScrollToTop />
-        <div className="min-h-screen flex flex-col bg-[#FAF7F5] dark:bg-[#120F11] text-stone-900 dark:text-stone-100 transition-colors duration-200">
+        <div className="min-h-screen flex flex-col bg-[#FAFAFA] dark:bg-[#0F0F12] text-stone-900 dark:text-stone-100 transition-colors duration-200">
           {/* Top Announcement Bar */}
           <AnnouncementBar />
 

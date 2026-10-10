@@ -155,7 +155,7 @@ export const Shop: React.FC = () => {
   }, [filters, products]);
 
   return (
-    <div className="py-10 bg-[#FAF7F5] dark:bg-[#120F11] min-h-screen">
+    <div className="py-10 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto space-y-2">
@@ -192,7 +192,7 @@ export const Shop: React.FC = () => {
 
         {/* Product Grid */}
         {filteredProducts.length === 0 ? (
-          <div className="py-16 text-center bg-white dark:bg-[#181316] rounded-3xl border border-rose-100 dark:border-stone-800 p-8">
+          <div className="py-16 text-center bg-white dark:bg-[#18181C] rounded-3xl border border-rose-100 dark:border-stone-800 p-8">
             <div className="w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-950/40 flex items-center justify-center mx-auto text-rose-400 dark:text-rose-500 mb-3">
               <Search className="w-6 h-6" />
             </div>

@@ -19,7 +19,7 @@ export const AboutPage: React.FC = () => {
   const values = about.values && about.values.length > 0 ? about.values : defaultValues;
 
   return (
-    <div className="py-12 bg-[#FAF7F5] dark:bg-[#120F11] min-h-screen">
+    <div className="py-12 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         
         {/* Hero Banner */}
@@ -70,7 +70,7 @@ export const AboutPage: React.FC = () => {
         </div>
 
         {/* Core Values */}
-        <div className="bg-white dark:bg-[#181316] p-8 sm:p-10 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-8">
+        <div className="bg-white dark:bg-[#18181C] p-8 sm:p-10 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm space-y-8">
           <div className="text-center max-w-xl mx-auto">
             <h3 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
               The El's Delight Standard

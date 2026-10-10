@@ -13,7 +13,7 @@ export const Hero: React.FC = () => {
     Boolean(hero.featuredCakeImage && hero.featuredCakeImage !== 'none');
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-rose-50/70 via-[#FAF7F5] to-[#FAF7F5] dark:from-[#1D1318] dark:via-[#140F12] dark:to-[#120F11] pt-8 pb-16 lg:py-20 border-b border-rose-100/60 dark:border-rose-950/40">
+    <section className="relative overflow-hidden bg-gradient-to-b from-rose-50/70 via-[#FAFAFA] to-[#FAFAFA] dark:from-[#1D1318] dark:via-[#140F12] dark:to-[#0F0F12] pt-8 pb-16 lg:py-20 border-b border-rose-100/60 dark:border-rose-950/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           className={`grid grid-cols-1 ${

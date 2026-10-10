@@ -26,7 +26,7 @@ export const CartDrawer: React.FC = () => {
       />
 
       <div className="fixed inset-y-0 right-0 max-w-md w-full flex">
-        <div className="w-full bg-white dark:bg-[#161214] text-stone-900 dark:text-stone-100 shadow-2xl flex flex-col justify-between border-l border-rose-100 dark:border-stone-800">
+        <div className="w-full bg-white dark:bg-[#16161A] text-stone-900 dark:text-stone-100 shadow-2xl flex flex-col justify-between border-l border-rose-100 dark:border-stone-800">
           {/* Header */}
           <div className="px-5 py-4 border-b border-rose-100 dark:border-stone-800 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -196,7 +196,7 @@ export const CartDrawer: React.FC = () => {
       {/* Delete Item Confirmation Prompt */}
       {itemToDelete && (
         <div className="fixed inset-0 z-60 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#181316] w-full max-w-sm rounded-3xl border border-rose-200 dark:border-rose-950/60 shadow-2xl p-5 space-y-4 animate-in fade-in zoom-in-95">
+          <div className="bg-white dark:bg-[#18181C] w-full max-w-sm rounded-3xl border border-rose-200 dark:border-rose-950/60 shadow-2xl p-5 space-y-4 animate-in fade-in zoom-in-95">
             <div className="flex items-center gap-2 text-rose-600">
               <AlertTriangle className="w-5 h-5 text-rose-600" />
               <h4 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100">

@@ -62,22 +62,25 @@
     }
     </script>
 
-    <!-- Synchronous Theme Script to prevent flash & ensure dark mode initialization -->
+    <!-- Synchronous Theme Script to ensure clean light mode by default and dark mode on choice -->
     <script>
       (function() {
         try {
           var saved = localStorage.getItem('els_theme');
-          var isDark = saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var isDark = saved === 'dark';
+          var doc = document.documentElement;
           if (isDark) {
-            document.documentElement.classList.add('dark');
+            doc.classList.add('dark');
+            doc.setAttribute('data-theme', 'dark');
           } else {
-            document.documentElement.classList.remove('dark');
+            doc.classList.remove('dark');
+            doc.setAttribute('data-theme', 'light');
           }
         } catch(e) {}
       })();
     </script>
   </head>
-  <body class="font-sans antialiased text-stone-900 bg-[#FAF7F5] dark:bg-[#120F11] dark:text-stone-100 transition-colors duration-200">
+  <body class="font-sans antialiased text-stone-900 bg-[#FAFAFA] dark:bg-[#0F0F12] dark:text-stone-100 transition-colors duration-200">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-pink-600 focus:text-white focus:rounded-xl focus:shadow-xl focus:font-bold focus:text-xs">
       Skip to main content
     </a>

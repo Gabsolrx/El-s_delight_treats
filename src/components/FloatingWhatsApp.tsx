@@ -60,7 +60,7 @@ export const FloatingWhatsApp: React.FC = () => {
                 : 'opacity-0 scale-95 translate-y-2 pointer-events-none'
             }`}
           >
-            <div className="relative group bg-white/95 dark:bg-[#1C151A]/95 text-stone-900 dark:text-stone-100 rounded-2xl p-3.5 shadow-2xl border border-emerald-500/25 dark:border-emerald-500/35 backdrop-blur-md hover:-translate-y-1 hover:shadow-emerald-500/15 transition-all duration-200">
+            <div className="relative group bg-white/95 dark:bg-[#1C1C22]/95 text-stone-900 dark:text-stone-100 rounded-2xl p-3.5 shadow-2xl border border-emerald-500/25 dark:border-emerald-500/35 backdrop-blur-md hover:-translate-y-1 hover:shadow-emerald-500/15 transition-all duration-200">
               {/* Dismiss button */}
               <button
                 type="button"
@@ -102,7 +102,7 @@ export const FloatingWhatsApp: React.FC = () => {
               </a>
 
               {/* Triangle pointer arrow pointing toward the button */}
-              <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-white dark:bg-[#1C151A] border-r border-b border-emerald-500/25 dark:border-emerald-500/35 rotate-45 transform" />
+              <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-white dark:bg-[#1C1C22] border-r border-b border-emerald-500/25 dark:border-emerald-500/35 rotate-45 transform" />
             </div>
           </div>
         )}

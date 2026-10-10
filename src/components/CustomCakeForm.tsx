@@ -151,7 +151,7 @@ export const CustomCakeForm: React.FC = () => {
   const whatsappUrl = generateCustomCakeWhatsAppUrl(formData, businessInfo.whatsappUrlNumber);
 
   return (
-    <div className="bg-white dark:bg-[#181316] rounded-3xl border border-rose-100 dark:border-rose-950/60 shadow-xl p-6 sm:p-10">
+    <div className="bg-white dark:bg-[#18181C] rounded-3xl border border-rose-100 dark:border-rose-950/60 shadow-xl p-6 sm:p-10">
       {!submitted ? (
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="border-b border-rose-100 dark:border-stone-800 pb-4">

@@ -177,7 +177,7 @@ export const PaymentPage: React.FC = () => {
   };
 
   return (
-    <div className="py-12 bg-[#FAF7F5] dark:bg-[#120F11] min-h-screen">
+    <div className="py-12 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Top Back navigation */}
@@ -208,7 +208,7 @@ export const PaymentPage: React.FC = () => {
         </div>
 
         {/* SINGLE UNIFIED PAYMENT BOX - ALL DETAILS & INSTRUCTIONS IN ONE PLACE */}
-        <div className="bg-white dark:bg-[#181316] rounded-3xl border-2 border-rose-200 dark:border-rose-900/60 shadow-xl overflow-hidden">
+        <div className="bg-white dark:bg-[#18181C] rounded-3xl border-2 border-rose-200 dark:border-rose-900/60 shadow-xl overflow-hidden">
           
           {/* Card Banner Header */}
           <div className="p-6 bg-gradient-to-r from-rose-900 to-pink-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -580,7 +580,7 @@ export const PaymentPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-white dark:bg-[#181316] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm divide-y divide-rose-50 dark:divide-stone-800/80 p-6 sm:p-8">
+          <div className="bg-white dark:bg-[#18181C] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm divide-y divide-rose-50 dark:divide-stone-800/80 p-6 sm:p-8">
             {displayedFaqs.map((faq, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
@@ -609,7 +609,7 @@ export const PaymentPage: React.FC = () => {
         </div>
 
         {/* Security & Bank Credentials Trust Footnote */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#181316] border border-rose-100 dark:border-stone-800 text-xs text-stone-500 space-y-2">
+        <div className="p-6 rounded-3xl bg-white dark:bg-[#18181C] border border-rose-100 dark:border-stone-800 text-xs text-stone-500 space-y-2">
           <p className="flex items-center gap-1.5 font-bold text-stone-700 dark:text-stone-300">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
             Why We Use Direct {businessInfo.payment.bank} Bank Transfer & Pay-on-Delivery

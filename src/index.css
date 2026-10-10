@@ -6,19 +6,32 @@
   --font-mono: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
+@variant dark (&:where(.dark, :where(.dark *)));
+@custom-variant dark (&:where(.dark, :where(.dark *)));
 
 @layer base {
   :root {
     --font-poppins: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     color-scheme: light;
+    background-color: #FAFAFA;
   }
 
   html.dark,
-  body.dark {
+  body.dark,
+  [data-theme='dark'],
+  [data-theme='dark'] * {
     color-scheme: dark;
   }
   
+  html {
+    background-color: #FAFAFA;
+  }
+
+  html.dark,
+  [data-theme='dark'] {
+    background-color: #0F0F12;
+  }
+
   html,
   body {
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
@@ -37,14 +50,15 @@
   }
 
   body {
-    background-color: #FAF7F5;
+    background-color: #FAFAFA;
     color: #1c1917;
     transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   body.dark,
-  .dark body {
-    background-color: #120F11;
+  .dark body,
+  [data-theme='dark'] body {
+    background-color: #0F0F12;
     color: #f5f5f4;
   }
 

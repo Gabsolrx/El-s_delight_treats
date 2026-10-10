@@ -187,7 +187,7 @@ export const ProductDetailPage: React.FC = () => {
   ).slice(0, 4);
 
   return (
-    <div className="py-8 bg-[#FAF7F5] dark:bg-[#120F11] min-h-screen">
+    <div className="py-8 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Breadcrumb Navigation */}
@@ -268,7 +268,7 @@ export const ProductDetailPage: React.FC = () => {
           </div>
 
           {/* Right Column: Contiguous Purchase Module */}
-          <div className="lg:col-span-6 bg-white dark:bg-[#181316] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-rose-950/60 shadow-md space-y-6">
+          <div className="lg:col-span-6 bg-white dark:bg-[#18181C] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-rose-950/60 shadow-md space-y-6">
             
             {/* Header info */}
             <div>
@@ -523,7 +523,7 @@ export const ProductDetailPage: React.FC = () => {
         {/* Direct Bank Transfer Payment Modal (Following FAQ Instructions) */}
         {isDirectPaymentOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-            <div className="bg-white dark:bg-[#181316] rounded-3xl border border-rose-200 dark:border-stone-800 shadow-2xl max-w-xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-7 space-y-5 animate-in fade-in zoom-in-95 duration-200 my-auto">
+            <div className="bg-white dark:bg-[#18181C] rounded-3xl border border-rose-200 dark:border-stone-800 shadow-2xl max-w-xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-7 space-y-5 animate-in fade-in zoom-in-95 duration-200 my-auto">
               
               <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
                 <div className="flex items-center gap-2">

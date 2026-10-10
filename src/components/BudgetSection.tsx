@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 
 export const BudgetSection: React.FC = () => {
   return (
-    <section className="py-14 sm:py-18 bg-[#FAF7F5] dark:bg-[#120F11]">
+    <section className="py-14 sm:py-18 bg-[#FAFAFA] dark:bg-[#0F0F12]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <span className="text-xs uppercase tracking-wider font-semibold text-pink-600 dark:text-pink-400">
@@ -20,7 +20,7 @@ export const BudgetSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {/* Tier 1: Petite Celebrations */}
-          <div className="bg-white dark:bg-[#181316] rounded-2xl p-6 sm:p-8 border border-rose-100 dark:border-rose-950/60 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden group">
+          <div className="bg-white dark:bg-[#18181C] rounded-2xl p-6 sm:p-8 border border-rose-100 dark:border-rose-950/60 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-pink-100/40 dark:bg-rose-950/20 rounded-bl-full pointer-events-none" />
             <div>
               <span className="text-xs font-semibold text-pink-600 dark:text-pink-400 uppercase tracking-wider">
@@ -60,7 +60,7 @@ export const BudgetSection: React.FC = () => {
           </div>
 
           {/* Tier 2: Celebration (Featured/Most Popular) */}
-          <div className="bg-gradient-to-b from-rose-50/50 via-white to-white dark:from-[#20141A] dark:via-[#1A1418] dark:to-[#1A1418] rounded-2xl p-6 sm:p-8 border-2 border-pink-400 dark:border-pink-800 shadow-md hover:shadow-lg transition-all duration-200 flex flex-col justify-between relative overflow-hidden group">
+          <div className="bg-gradient-to-b from-rose-50/50 via-white to-white dark:from-[#20141A] dark:via-[#1A1A1F] dark:to-[#1A1A1F] rounded-2xl p-6 sm:p-8 border-2 border-pink-400 dark:border-pink-800 shadow-md hover:shadow-lg transition-all duration-200 flex flex-col justify-between relative overflow-hidden group">
             <div className="absolute top-4 right-4">
               <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full bg-pink-600 text-white shadow-xs">
                 Most Popular
@@ -104,7 +104,7 @@ export const BudgetSection: React.FC = () => {
           </div>
 
           {/* Tier 3: Luxury */}
-          <div className="bg-white dark:bg-[#181316] rounded-2xl p-6 sm:p-8 border border-rose-100 dark:border-rose-950/60 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden group">
+          <div className="bg-white dark:bg-[#18181C] rounded-2xl p-6 sm:p-8 border border-rose-100 dark:border-rose-950/60 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-100/30 dark:bg-amber-950/20 rounded-bl-full pointer-events-none" />
             <div>
               <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
