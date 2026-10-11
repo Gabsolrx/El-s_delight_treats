@@ -1,26 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import {
-  ArrowLeft,
-  ShieldCheck,
-  Building,
-  User,
-  Hash,
-  ShoppingBag,
-  Check,
-  ChevronDown,
-  ArrowRight,
-  Truck,
-  Store,
-  Bike,
-  Car,
-  Package,
-  AlertCircle,
-  MapPin,
-  Calendar,
-  Clock,
-} from 'lucide-react';
 import { CopyAccountButton } from '../components/CopyAccountButton';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { formatNaira, generateWhatsAppOrderUrl } from '../utils/format';
@@ -100,24 +80,6 @@ export const PaymentPage: React.FC = () => {
 
   const displayedFaqs = paymentFaqs.length > 0 ? paymentFaqs : fallbackPaymentFaqs;
 
-  const getMethodIcon = (iconType?: string) => {
-    switch (iconType) {
-      case 'pickup':
-        return <Store className="w-5 h-5 text-emerald-600 shrink-0" />;
-      case 'bolt':
-        return <Car className="w-5 h-5 text-emerald-500 shrink-0" />;
-      case 'dispatch':
-        return <Bike className="w-5 h-5 text-amber-600 shrink-0" />;
-      case 'driver':
-        return <Car className="w-5 h-5 text-indigo-600 shrink-0" />;
-      case 'interstate':
-        return <Package className="w-5 h-5 text-purple-600 shrink-0" />;
-      case 'uber':
-      default:
-        return <Truck className="w-5 h-5 text-pink-600 shrink-0" />;
-    }
-  };
-
   const handlePaymentMade = () => {
     const finalName = customerName.trim() || currentOrder?.customer?.fullName || 'Customer';
     const finalPhone = customerPhone.trim() || currentOrder?.customer?.phone || '';
@@ -186,7 +148,7 @@ export const PaymentPage: React.FC = () => {
             to="/shop"
             className="inline-flex items-center gap-1 text-xs font-semibold text-stone-600 dark:text-stone-400 hover:text-pink-600 transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5" /> Continue Shopping
+            ← Continue Shopping
           </Link>
           <span className="text-xs font-medium text-stone-400">
             {currentOrder ? `Order Reference #${currentOrder.orderId}` : 'Official Payment Portal'}
@@ -196,7 +158,6 @@ export const PaymentPage: React.FC = () => {
         {/* Header */}
         <div className="text-center max-w-xl mx-auto space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-100 dark:bg-rose-950/60 text-pink-700 dark:text-pink-300 text-xs font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             <span>Official Bakery Payment Section</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-stone-900 dark:text-stone-100">
@@ -213,8 +174,8 @@ export const PaymentPage: React.FC = () => {
           {/* Card Banner Header */}
           <div className="p-6 bg-gradient-to-r from-rose-900 to-pink-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-pink-300 flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Verified Payment Gateway
+              <span className="text-[10px] font-bold uppercase tracking-widest text-pink-300 block">
+                Verified Payment Gateway
               </span>
               <h2 className="font-serif text-xl sm:text-2xl font-bold mt-0.5">
                 {businessInfo.payment.bank} Bank Transfer
@@ -236,8 +197,8 @@ export const PaymentPage: React.FC = () => {
             {(currentOrder?.items?.length || hasCart) && (
               <div className="p-4 rounded-2xl bg-rose-50/60 dark:bg-stone-900/60 border border-rose-100 dark:border-stone-800 space-y-2">
                 <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-2">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1">
-                    <ShoppingBag className="w-3.5 h-3.5 text-pink-600" /> Order Summary
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
+                    Order Summary
                   </span>
                   <span className="text-[11px] text-stone-400">
                     {(currentOrder?.items || cart).length} item{(currentOrder?.items || cart).length > 1 ? 's' : ''}
@@ -316,8 +277,7 @@ export const PaymentPage: React.FC = () => {
             <div className="space-y-4 pt-3 border-t border-rose-100 dark:border-stone-800">
               
               {/* Prominent Form Instruction Notice */}
-              <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-200 dark:border-amber-900/60 text-amber-950 dark:text-amber-200 text-xs flex items-start gap-3 shadow-xs">
-                <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-200 dark:border-amber-900/60 text-amber-950 dark:text-amber-200 text-xs shadow-xs">
                 <div className="space-y-1">
                   <p className="font-bold uppercase tracking-wider text-[11px] text-amber-800 dark:text-amber-300">
                     Important Delivery Fee Policy (Pay on Delivery)
@@ -343,35 +303,34 @@ export const PaymentPage: React.FC = () => {
                         key={method.id}
                         type="button"
                         onClick={() => setSelectedDeliveryId(method.id)}
-                        className={`p-3.5 rounded-2xl border text-left transition-all relative flex items-start gap-3 ${
+                        className={`p-3.5 rounded-2xl border text-left transition-all relative flex flex-col justify-between ${
                           isSelected
                             ? 'border-pink-600 bg-pink-50/70 dark:bg-rose-950/40 ring-2 ring-pink-500/20'
                             : 'border-stone-200 dark:border-stone-800 hover:border-pink-300 bg-stone-50/60 dark:bg-stone-900/60'
                         }`}
                       >
-                        <div className="mt-0.5">{getMethodIcon(method.iconType)}</div>
-                        <div className="flex-1 min-w-0">
+                        <div className="w-full">
                           <div className="flex items-center justify-between gap-1">
                             <span className="font-bold text-xs text-stone-900 dark:text-stone-100">
                               {method.name}
                             </span>
                             {isSelected && (
-                              <span className="w-4 h-4 rounded-full bg-pink-600 text-white flex items-center justify-center shrink-0">
-                                <Check className="w-2.5 h-2.5" />
+                              <span className="text-[10px] font-bold text-pink-600 dark:text-pink-400 uppercase tracking-wider">
+                                Selected
                               </span>
                             )}
                           </div>
                           <p className="text-[11px] text-stone-500 mt-0.5 line-clamp-2">
                             {method.description}
                           </p>
-                          <span className={`inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-md ${
-                            method.isPickup
-                              ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
-                              : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
-                          }`}>
-                            {method.pricingNote}
-                          </span>
                         </div>
+                        <span className={`inline-block mt-2 text-[10px] font-semibold px-2 py-0.5 rounded-md self-start ${
+                          method.isPickup
+                            ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
+                            : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
+                        }`}>
+                          {method.pricingNote}
+                        </span>
                       </button>
                     );
                   })}
@@ -381,8 +340,7 @@ export const PaymentPage: React.FC = () => {
               {/* Delivery Address Fields (If not self-pickup) */}
               {!isPickup ? (
                 <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900/60 border border-stone-200 dark:border-stone-800 space-y-3">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-stone-700 dark:text-stone-300">
-                    <MapPin className="w-4 h-4 text-pink-600" />
+                  <div className="text-xs font-bold text-stone-700 dark:text-stone-300">
                     <span>Delivery Address & Location Coordinates</span>
                   </div>
 
@@ -442,8 +400,7 @@ export const PaymentPage: React.FC = () => {
               ) : (
                 /* Studio Pickup Details */
                 <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300">
-                    <Store className="w-4 h-4 text-emerald-600" />
+                  <div className="text-xs font-bold text-emerald-800 dark:text-emerald-300">
                     <span>Free Bakery Studio Pickup</span>
                   </div>
                   <p className="text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed">
@@ -473,8 +430,8 @@ export const PaymentPage: React.FC = () => {
             <div className="space-y-3 pt-2 border-t border-rose-100 dark:border-stone-800">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-stone-900/80 border border-stone-200/80 dark:border-stone-800">
-                  <span className="text-[10px] uppercase font-bold text-stone-400 flex items-center gap-1">
-                    <Building className="w-3.5 h-3.5" /> Bank Name
+                  <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                    Bank Name
                   </span>
                   <p className="text-base font-bold text-stone-900 dark:text-stone-100 mt-0.5">
                     {businessInfo.payment.bank}
@@ -482,8 +439,8 @@ export const PaymentPage: React.FC = () => {
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-stone-900/80 border border-stone-200/80 dark:border-stone-800 sm:col-span-2">
-                  <span className="text-[10px] uppercase font-bold text-stone-400 flex items-center gap-1">
-                    <User className="w-3.5 h-3.5" /> Account Name
+                  <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                    Account Name
                   </span>
                   <p className="text-base font-bold text-stone-900 dark:text-stone-100 mt-0.5 truncate">
                     {businessInfo.payment.accountName}
@@ -494,8 +451,8 @@ export const PaymentPage: React.FC = () => {
               {/* Account Number with Prominent Copy Button */}
               <div className="p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-rose-700 dark:text-rose-300 flex items-center gap-1">
-                    <Hash className="w-3.5 h-3.5" /> {businessInfo.payment.bank} Account Number
+                  <span className="text-[10px] uppercase font-bold text-rose-700 dark:text-rose-300 block">
+                    {businessInfo.payment.bank} Account Number
                   </span>
                   <p className="text-2xl sm:text-3xl font-mono font-bold text-stone-900 dark:text-stone-100 tracking-wider mt-0.5">
                     {businessInfo.payment.accountNumber}
@@ -558,7 +515,6 @@ export const PaymentPage: React.FC = () => {
               >
                 <WhatsAppIcon className="w-5 h-5 text-white" />
                 <span>PAYMENT MADE (Open WhatsApp Confirmation)</span>
-                <ArrowRight className="w-4 h-4 ml-1" />
               </button>
 
               <p className="text-[11px] text-stone-500 dark:text-stone-400 text-center">
@@ -591,11 +547,7 @@ export const PaymentPage: React.FC = () => {
                     className="w-full flex items-center justify-between text-left gap-4 font-semibold text-sm sm:text-base text-stone-900 dark:text-stone-100 hover:text-pink-600 transition-colors"
                   >
                     <span>{faq.q}</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-stone-400 shrink-0 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-pink-600' : ''
-                      }`}
-                    />
+                    <span className="text-stone-400 text-sm font-bold shrink-0">{isOpen ? '−' : '+'}</span>
                   </button>
                   {isOpen && (
                     <p className="mt-3 text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed whitespace-pre-line animate-in fade-in duration-200">
@@ -610,8 +562,7 @@ export const PaymentPage: React.FC = () => {
 
         {/* Security & Bank Credentials Trust Footnote */}
         <div className="p-6 rounded-3xl bg-white dark:bg-[#18181C] border border-rose-100 dark:border-stone-800 text-xs text-stone-500 space-y-2">
-          <p className="flex items-center gap-1.5 font-bold text-stone-700 dark:text-stone-300">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+          <p className="font-bold text-stone-700 dark:text-stone-300">
             Why We Use Direct {businessInfo.payment.bank} Bank Transfer & Pay-on-Delivery
           </p>
           <p className="leading-relaxed">

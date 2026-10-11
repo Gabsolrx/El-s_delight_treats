@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Star, ShoppingBag, Heart, ArrowLeft, Check, ShieldCheck, Truck, Clock, Share2, CreditCard, ChevronDown, Copy, X, Plus, Trash2, Building, User, Hash, AlertTriangle } from 'lucide-react';
+import { ShoppingBag, Heart, ArrowLeft, Check, ShieldCheck, Truck, Clock, Share2, CreditCard, ChevronDown, Copy, X, Plus, Trash2, Building, User, Hash, AlertTriangle } from 'lucide-react';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { Product, ProductSize, CakeFlavour, StoredOrder, DeliveryMethodOption } from '../types';
 import { useApp } from '../context/AppContext';
@@ -272,17 +272,10 @@ export const ProductDetailPage: React.FC = () => {
             
             {/* Header info */}
             <div>
-              <div className="flex items-center justify-between">
+              <div>
                 <span className="text-xs uppercase font-bold tracking-wider text-pink-600 dark:text-pink-400">
                   {product.category}
                 </span>
-                <div className="flex items-center text-amber-500 text-xs font-semibold">
-                  <Star className="w-4 h-4 fill-current" />
-                  <span className="ml-1 text-stone-900 dark:text-stone-100 font-bold tabular-nums">
-                    {product.rating.toFixed(1)}
-                  </span>
-                  <span className="ml-1 text-stone-400">({product.reviewCount} customer reviews)</span>
-                </div>
               </div>
 
               <h1 className="font-serif text-2xl sm:text-4xl font-bold text-stone-900 dark:text-stone-100 mt-1 leading-tight">

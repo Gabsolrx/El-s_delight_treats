@@ -99,6 +99,8 @@ import {
   SiteGalleryItem,
   SiteGalleryContent,
   DeliveryMethodOption,
+  SiteBudgetSectionContent,
+  SiteBudgetTierItem,
 } from '../types';
 import { formatNaira } from '../utils/format';
 import { ElsDelightLogo, ElsDelightVectorLogo } from '../components/ElsDelightLogo';
@@ -107,6 +109,7 @@ import { SafeImage } from '../components/SafeImage';
 import {
   DEFAULT_LOGO_SETTINGS,
   DEFAULT_SITE_CONTENT,
+  DEFAULT_BUDGET_SECTION,
   DEFAULT_DELIVERY_METHODS,
   DEFAULT_DELIVERY_POLICY_NOTICE,
 } from '../data/defaultSiteContent';
@@ -373,8 +376,11 @@ export const AdminPage: React.FC = () => {
 
   // Site Content Form State
   const [contentSubTab, setContentSubTab] = useState<
-    'hero' | 'occasions' | 'moments' | 'announcements' | 'about' | 'promises' | 'faqs' | 'corporate'
+    'hero' | 'budget' | 'occasions' | 'moments' | 'announcements' | 'about' | 'promises' | 'faqs' | 'corporate'
   >('hero');
+  const [budgetForm, setBudgetForm] = useState<SiteBudgetSectionContent>(
+    siteContent.budgetSection || DEFAULT_BUDGET_SECTION
+  );
   const [heroForm, setHeroForm] = useState(siteContent.hero);
   const [aboutForm, setAboutForm] = useState(siteContent.about);
   const [brandPromisesForm, setBrandPromisesForm] = useState<BrandPromiseItem[]>(
@@ -512,6 +518,12 @@ export const AdminPage: React.FC = () => {
   }, [siteContent.hero]);
 
   useEffect(() => {
+    if (siteContent.budgetSection) {
+      setBudgetForm(siteContent.budgetSection);
+    }
+  }, [siteContent.budgetSection]);
+
+  useEffect(() => {
     if (siteContent.occasionsSection) {
       setOccasionsForm(siteContent.occasionsSection);
     }
@@ -625,7 +637,7 @@ export const AdminPage: React.FC = () => {
               {businessInfo?.logo?.wordmarkText || businessInfo.name || "El's Delight"} Manager
             </h1>
             <p className="text-stone-500 text-xs sm:text-sm mt-1.5 leading-relaxed">
-              Enter your password (<code className="font-mono font-bold text-pink-600 dark:text-pink-400">chinazor</code>) to access the store management dashboard.
+              Enter your password to access the store management dashboard.
             </p>
           </div>
 
@@ -641,7 +653,7 @@ export const AdminPage: React.FC = () => {
                   autoFocus
                   value={pinInput}
                   onChange={(e) => setPinInput(e.target.value)}
-                  placeholder="Enter password (chinazor)..."
+                  placeholder="Enter password..."
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 font-mono"
                 />
                 <button
@@ -660,16 +672,6 @@ export const AdminPage: React.FC = () => {
             >
               <Lock className="w-4 h-4" />
               <span>Unlock Store Manager</span>
-            </button>
-
-            {/* Quick Unlock Button with chinazor */}
-            <button
-              type="button"
-              onClick={() => loginAdmin('chinazor')}
-              className="w-full py-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-pink-700 dark:text-pink-300 border border-rose-200 dark:border-rose-900 text-xs font-semibold transition-colors hover:bg-rose-100 flex items-center justify-center gap-1.5"
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>1-Click Quick Unlock (chinazor)</span>
             </button>
           </form>
 
@@ -967,6 +969,20 @@ export const AdminPage: React.FC = () => {
   };
 
   // -------------------------------------------------------------
+  // BUDGET & CELEBRATION TIERS HANDLERS
+  // -------------------------------------------------------------
+  const handleSaveBudgetSection = () => {
+    updateSiteContent({ budgetSection: budgetForm });
+    showToast('Budget Tiers Saved! ✨', 'Homepage budget & celebration tiers updated live.');
+  };
+
+  const handleResetBudgetDefault = () => {
+    setBudgetForm(DEFAULT_BUDGET_SECTION);
+    updateSiteContent({ budgetSection: DEFAULT_BUDGET_SECTION });
+    showToast('Budget Tiers Reset', 'Restored default celebration tiers.');
+  };
+
+  // -------------------------------------------------------------
   // SWEET MOMENTS (INSTAGRAM GALLERY) HANDLERS
   // -------------------------------------------------------------
   const handleOpenAddMoment = () => {
@@ -1254,16 +1270,6 @@ export const AdminPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              to="/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-800 text-xs font-semibold text-stone-700 dark:text-stone-300 transition-colors"
-            >
-              <span>View Live Store</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
-
             <button
               onClick={logoutAdmin}
               className="px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-stone-700 text-xs font-semibold text-stone-600 dark:text-stone-300 transition-colors"
@@ -2643,6 +2649,7 @@ export const AdminPage: React.FC = () => {
             <div className="flex flex-wrap gap-2 border-b border-rose-100 dark:border-stone-800 pb-3">
               {[
                 { id: 'hero', label: 'Hero Banner', icon: Cake },
+                { id: 'budget', label: 'Budget & Celebration Tiers', icon: Sparkles },
                 { id: 'occasions', label: `Occasions (${(occasionsForm.items || []).length})`, icon: Calendar },
                 { id: 'moments', label: `Sweet Moments (${(sweetMomentsForm.items || []).length})`, icon: Instagram },
                 { id: 'announcements', label: `Announcements (${siteContent.announcements.length})` },
@@ -3410,6 +3417,479 @@ export const AdminPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* SUBTAB: BUDGET & CELEBRATION TIERS */}
+            {contentSubTab === 'budget' && (
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-4 gap-3">
+                  <div>
+                    <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-pink-600" />
+                      <span>Homepage Budget & Celebration Tiers</span>
+                    </h4>
+                    <p className="text-xs text-stone-500 mt-0.5">
+                      Edit prices, writeups, bullet points, and buttons for Petite Celebrations, Celebration, and Luxury & Weddings tiers.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleResetBudgetDefault}
+                      className="px-3.5 py-2 rounded-xl border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 font-semibold text-xs flex items-center gap-1.5 transition-colors"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Reset Defaults</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSaveBudgetSection}
+                      className="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs flex items-center gap-1.5 transition-all"
+                    >
+                      <Save className="w-3.5 h-3.5" />
+                      <span>Save Budget Tiers</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Section Header Settings */}
+                <div className="p-4 rounded-2xl bg-stone-50/70 dark:bg-stone-900/40 border border-rose-100/60 dark:border-stone-800 space-y-3">
+                  <h5 className="text-xs font-bold uppercase tracking-wider text-stone-700 dark:text-stone-300">
+                    Section Headline & Introduction
+                  </h5>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                        Eyebrow / Badge Text
+                      </label>
+                      <input
+                        type="text"
+                        value={budgetForm.badge || ''}
+                        onChange={(e) => setBudgetForm({ ...budgetForm, badge: e.target.value })}
+                        placeholder="e.g. Affordable Luxury"
+                        className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                        Main Section Headline
+                      </label>
+                      <input
+                        type="text"
+                        value={budgetForm.headline || ''}
+                        onChange={(e) => setBudgetForm({ ...budgetForm, headline: e.target.value })}
+                        placeholder="e.g. Something Sweet for Every Budget"
+                        className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500"
+                      />
+                    </div>
+                    <div className="sm:col-span-3">
+                      <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                        Supporting Subtitle / Paragraph
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={budgetForm.subtitle || ''}
+                        onChange={(e) => setBudgetForm({ ...budgetForm, subtitle: e.target.value })}
+                        placeholder="Whether it's an impromptu solo indulgence..."
+                        className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3 Tier Editor Cards Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* TIER 1: Pocket-Friendly & Quick / Petite Celebrations */}
+                  <div className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-rose-200 dark:border-stone-800 space-y-4 shadow-xs">
+                    <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-pink-600 dark:text-pink-400">
+                        Tier 1: Pocket-Friendly
+                      </span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-pink-50 dark:bg-pink-950 text-pink-700 dark:text-pink-300">
+                        Petite
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                          Eyebrow Writeup
+                        </label>
+                        <input
+                          type="text"
+                          value={budgetForm.tier1?.eyebrow || ''}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier1: { ...budgetForm.tier1, eyebrow: e.target.value },
+                            })
+                          }
+                          placeholder="e.g. Pocket-Friendly & Quick"
+                          className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                          Tier Title
+                        </label>
+                        <input
+                          type="text"
+                          value={budgetForm.tier1?.title || ''}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier1: { ...budgetForm.tier1, title: e.target.value },
+                            })
+                          }
+                          placeholder="e.g. Petite Celebrations"
+                          className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-rose-700 dark:text-rose-400 mb-1">
+                          Price Display (Editable)
+                        </label>
+                        <input
+                          type="text"
+                          value={budgetForm.tier1?.price || ''}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier1: { ...budgetForm.tier1, price: e.target.value },
+                            })
+                          }
+                          placeholder="e.g. ₦20,000 – ₦30,000"
+                          className="w-full px-3 py-2 rounded-xl border border-pink-200 dark:border-pink-900/60 bg-pink-50/50 dark:bg-stone-950 font-bold text-xs text-rose-900 dark:text-rose-200 focus:ring-2 focus:ring-pink-500 font-mono"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                          Included Features (1 per line)
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={(budgetForm.tier1?.features || []).join('\n')}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier1: {
+                                ...budgetForm.tier1,
+                                features: e.target.value.split('\n').filter((l) => l.trim().length > 0),
+                              },
+                            })
+                          }
+                          placeholder="Single-tier 6-inch layer cakes&#10;Feeds 6–8 family and friends&#10;Free customized piped inscription&#10;Same-day express pickup & dispatch"
+                          className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500 leading-relaxed font-sans"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 pt-1">
+                        <div>
+                          <label className="block text-[10px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                            Button Text
+                          </label>
+                          <input
+                            type="text"
+                            value={budgetForm.tier1?.buttonText || ''}
+                            onChange={(e) =>
+                              setBudgetForm({
+                                ...budgetForm,
+                                tier1: { ...budgetForm.tier1, buttonText: e.target.value },
+                              })
+                            }
+                            placeholder="Shop Petite Cakes"
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                            Button Link
+                          </label>
+                          <input
+                            type="text"
+                            value={budgetForm.tier1?.buttonLink || ''}
+                            onChange={(e) =>
+                              setBudgetForm({
+                                ...budgetForm,
+                                tier1: { ...budgetForm.tier1, buttonLink: e.target.value },
+                              })
+                            }
+                            placeholder="/shop?price=20k-40k"
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs font-mono"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* TIER 2: Unforgettable Memories / Celebration */}
+                  <div className="p-5 rounded-2xl bg-white dark:bg-stone-900 border-2 border-pink-400 dark:border-pink-800 space-y-4 shadow-sm relative">
+                    <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-pink-600 dark:text-pink-400">
+                        Tier 2: Celebration
+                      </span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-pink-600 text-white">
+                        Most Popular
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                          Eyebrow Writeup
+                        </label>
+                        <input
+                          type="text"
+                          value={budgetForm.tier2?.eyebrow || ''}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier2: { ...budgetForm.tier2, eyebrow: e.target.value },
+                            })
+                          }
+                          placeholder="e.g. Unforgettable Memories"
+                          className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                          Tier Title
+                        </label>
+                        <input
+                          type="text"
+                          value={budgetForm.tier2?.title || ''}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier2: { ...budgetForm.tier2, title: e.target.value },
+                            })
+                          }
+                          placeholder="e.g. Celebration"
+                          className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-rose-700 dark:text-rose-400 mb-1">
+                          Price Display (Editable)
+                        </label>
+                        <input
+                          type="text"
+                          value={budgetForm.tier2?.price || ''}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier2: { ...budgetForm.tier2, price: e.target.value },
+                            })
+                          }
+                          placeholder="e.g. ₦10,000 – ₦40,000"
+                          className="w-full px-3 py-2 rounded-xl border border-pink-200 dark:border-pink-900/60 bg-pink-50/50 dark:bg-stone-950 font-bold text-xs text-rose-900 dark:text-rose-200 focus:ring-2 focus:ring-pink-500 font-mono"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                          Included Features (1 per line)
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={(budgetForm.tier2?.features || []).join('\n')}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier2: {
+                                ...budgetForm.tier2,
+                                features: e.target.value.split('\n').filter((l) => l.trim().length > 0),
+                              },
+                            })
+                          }
+                          placeholder="Signature chocolate, red velvet & vanilla&#10;6, 8, and 10-inch birthday cakes&#10;Free customized piped inscription&#10;Anniversaries, graduations & family cakes"
+                          className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500 leading-relaxed font-sans"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 pt-1">
+                        <div>
+                          <label className="block text-[10px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                            Button Text
+                          </label>
+                          <input
+                            type="text"
+                            value={budgetForm.tier2?.buttonText || ''}
+                            onChange={(e) =>
+                              setBudgetForm({
+                                ...budgetForm,
+                                tier2: { ...budgetForm.tier2, buttonText: e.target.value },
+                              })
+                            }
+                            placeholder="Shop Celebration"
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                            Button Link
+                          </label>
+                          <input
+                            type="text"
+                            value={budgetForm.tier2?.buttonLink || ''}
+                            onChange={(e) =>
+                              setBudgetForm({
+                                ...budgetForm,
+                                tier2: { ...budgetForm.tier2, buttonLink: e.target.value },
+                              })
+                            }
+                            placeholder="/shop?price=10k-40k"
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs font-mono"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* TIER 3: Grand Occasions / Luxury & Weddings */}
+                  <div className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-amber-200 dark:border-amber-900/60 space-y-4 shadow-xs">
+                    <div className="flex items-center justify-between border-b border-amber-100 dark:border-stone-800 pb-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                        Tier 3: Grand Occasions
+                      </span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">
+                        Luxury & Weddings
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                          Eyebrow Writeup
+                        </label>
+                        <input
+                          type="text"
+                          value={budgetForm.tier3?.eyebrow || ''}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier3: { ...budgetForm.tier3, eyebrow: e.target.value },
+                            })
+                          }
+                          placeholder="e.g. Grand Occasions"
+                          className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                          Tier Title
+                        </label>
+                        <input
+                          type="text"
+                          value={budgetForm.tier3?.title || ''}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier3: { ...budgetForm.tier3, title: e.target.value },
+                            })
+                          }
+                          placeholder="e.g. Luxury & Weddings"
+                          className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-amber-700 dark:text-amber-400 mb-1">
+                          Price Display (Editable)
+                        </label>
+                        <input
+                          type="text"
+                          value={budgetForm.tier3?.price || ''}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier3: { ...budgetForm.tier3, price: e.target.value },
+                            })
+                          }
+                          placeholder="e.g. ₦80,000+"
+                          className="w-full px-3 py-2 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-stone-950 font-bold text-xs text-amber-900 dark:text-amber-200 focus:ring-2 focus:ring-pink-500 font-mono"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                          Included Features (1 per line)
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={(budgetForm.tier3?.features || []).join('\n')}
+                          onChange={(e) =>
+                            setBudgetForm({
+                              ...budgetForm,
+                              tier3: {
+                                ...budgetForm.tier3,
+                                features: e.target.value.split('\n').filter((l) => l.trim().length > 0),
+                              },
+                            })
+                          }
+                          placeholder="2-Tier & 3-Tier luxury wedding cakes&#10;Hand-crafted sugar flora & 24k gold leaf&#10;Large corporate event sheet cakes&#10;White-glove setup & dedicated delivery"
+                          className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-pink-500 leading-relaxed font-sans"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 pt-1">
+                        <div>
+                          <label className="block text-[10px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                            Button Text
+                          </label>
+                          <input
+                            type="text"
+                            value={budgetForm.tier3?.buttonText || ''}
+                            onChange={(e) =>
+                              setBudgetForm({
+                                ...budgetForm,
+                                tier3: { ...budgetForm.tier3, buttonText: e.target.value },
+                              })
+                            }
+                            placeholder="Shop Luxury"
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                            Button Link
+                          </label>
+                          <input
+                            type="text"
+                            value={budgetForm.tier3?.buttonLink || ''}
+                            onChange={(e) =>
+                              setBudgetForm({
+                                ...budgetForm,
+                                tier3: { ...budgetForm.tier3, buttonLink: e.target.value },
+                              })
+                            }
+                            placeholder="/shop?price=80k-plus"
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs font-mono"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Save Bar */}
+                <div className="pt-4 border-t border-rose-100 dark:border-stone-800 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleSaveBudgetSection}
+                    className="px-6 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-sm hover:shadow flex items-center gap-2 transition-all"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>Save & Publish Budget Tiers</span>
+                  </button>
                 </div>
               </div>
             )}
@@ -7017,7 +7497,7 @@ export const AdminPage: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSaveProduct} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveProduct} noValidate className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">
                   <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
@@ -7065,11 +7545,23 @@ export const AdminPage: React.FC = () => {
                     Base Price (₦ NGN) *
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     required
-                    value={productForm.price}
-                    onChange={(e) => setProductForm({ ...productForm, price: Number(e.target.value) })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 text-sm font-bold font-mono"
+                    value={productForm.price === 0 ? '' : productForm.price}
+                    onChange={(e) => {
+                      const rawVal = e.target.value.replace(/[^0-9]/g, '');
+                      const newPrice = rawVal === '' ? 0 : Number(rawVal);
+                      const updatedSizes = (productForm.sizes || []).map((s, idx) => {
+                        if (s.isBase || idx === 0) {
+                          return { ...s, price: newPrice };
+                        }
+                        return s;
+                      });
+                      setProductForm({ ...productForm, price: newPrice, sizes: updatedSizes });
+                    }}
+                    placeholder="e.g. 25000"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 text-sm font-bold font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
@@ -7078,11 +7570,15 @@ export const AdminPage: React.FC = () => {
                     Old Price (Strikeout discount, optional)
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     value={productForm.oldPrice || ''}
-                    onChange={(e) => setProductForm({ ...productForm, oldPrice: e.target.value ? Number(e.target.value) : undefined })}
+                    onChange={(e) => {
+                      const rawVal = e.target.value.replace(/[^0-9]/g, '');
+                      setProductForm({ ...productForm, oldPrice: rawVal ? Number(rawVal) : undefined });
+                    }}
                     placeholder="e.g. 35000"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 text-sm font-mono"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
@@ -7205,12 +7701,12 @@ export const AdminPage: React.FC = () => {
                                 ₦
                               </span>
                               <input
-                                type="number"
-                                min={1000}
-                                step={500}
-                                value={size.price !== undefined ? size.price : Math.round((productForm.price || 25000) * (size.priceModifier || 1))}
+                                type="text"
+                                inputMode="numeric"
+                                value={size.price !== undefined ? (size.price === 0 ? '' : size.price) : (Math.round((productForm.price || 25000) * (size.priceModifier || 1)) || '')}
                                 onChange={(e) => {
-                                  const newPrice = Number(e.target.value);
+                                  const rawVal = e.target.value.replace(/[^0-9]/g, '');
+                                  const newPrice = rawVal === '' ? 0 : Number(rawVal);
                                   const updated = [...(productForm.sizes || [])];
                                   updated[sIdx] = {
                                     ...updated[sIdx],
@@ -7223,7 +7719,8 @@ export const AdminPage: React.FC = () => {
                                     sizes: updated,
                                   });
                                 }}
-                                className="w-full pl-7 pr-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs font-bold font-mono text-stone-900 dark:text-stone-100"
+                                placeholder="Enter price..."
+                                className="w-full pl-7 pr-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-xs font-bold font-mono text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                               />
                             </div>
                           </div>

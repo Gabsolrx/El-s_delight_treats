@@ -32,7 +32,7 @@ export const SafeImage: React.FC<SafeImageProps> = ({
   if (hasError || !src) {
     return (
       <div
-        className={`relative flex flex-col items-center justify-center p-4 bg-gradient-to-br from-rose-50 via-pink-100 to-amber-50 dark:from-[#2A1420] dark:via-[#1D0F18] dark:to-[#0F0F12] text-rose-900 dark:text-rose-200 overflow-hidden select-none ${className}`}
+        className={`relative flex flex-col items-center justify-center p-4 bg-rose-50/50 dark:bg-[#151518] border border-rose-100/60 dark:border-zinc-800 text-rose-900 dark:text-rose-200 overflow-hidden select-none ${className}`}
       >
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#E85382_1px,transparent_1px)] [background-size:16px_16px]" />
         <div className="w-10 h-10 rounded-full bg-rose-200/60 dark:bg-rose-950/60 flex items-center justify-center mb-2 shadow-inner text-rose-700 dark:text-rose-300 font-serif font-bold text-sm tracking-tight">
@@ -41,7 +41,7 @@ export const SafeImage: React.FC<SafeImageProps> = ({
         <p className="text-xs font-semibold tracking-wide uppercase text-rose-800 dark:text-rose-300 text-center line-clamp-1">
           {category || "El's Delight Treats"}
         </p>
-        <span className="text-[11px] text-stone-600 dark:text-stone-400 text-center line-clamp-1 mt-0.5">
+        <span className="text-[11px] text-zinc-600 dark:text-zinc-400 text-center line-clamp-1 mt-0.5">
           {fallbackTitle || 'Freshly Baked'}
         </span>
       </div>
@@ -51,9 +51,9 @@ export const SafeImage: React.FC<SafeImageProps> = ({
   // Cover mode: standard fill-and-crop
   if (fitMode === 'cover') {
     return (
-      <div className={`relative overflow-hidden bg-rose-50/40 dark:bg-stone-900 ${className}`}>
+      <div className={`relative overflow-hidden bg-rose-50/30 dark:bg-zinc-900 ${className}`}>
         {!isLoaded && !isDataOrBlob && (
-          <div className="absolute inset-0 bg-gradient-to-r from-rose-100/50 via-pink-50/70 to-rose-100/50 dark:from-stone-900 dark:via-stone-800 dark:to-stone-900 animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-r from-rose-100/50 via-pink-50/70 to-rose-100/50 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900 animate-pulse" />
         )}
         <img
           src={src}
@@ -77,9 +77,9 @@ export const SafeImage: React.FC<SafeImageProps> = ({
 
   // Auto / Contain mode: Ambient backdrop + full foreground display to accommodate any height/length without cropping
   return (
-    <div className={`relative overflow-hidden bg-stone-100/60 dark:bg-stone-900/90 flex items-center justify-center ${className}`}>
+    <div className={`relative overflow-hidden bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center ${className}`}>
       {!isLoaded && !isDataOrBlob && (
-        <div className="absolute inset-0 bg-gradient-to-r from-rose-100/50 via-pink-50/70 to-rose-100/50 dark:from-stone-900 dark:via-stone-800 dark:to-stone-900 animate-pulse z-0" />
+        <div className="absolute inset-0 bg-gradient-to-r from-rose-100/50 via-pink-50/70 to-rose-100/50 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900 animate-pulse z-0" />
       )}
       
       {/* Ambient background blur that softly matches image colors */}

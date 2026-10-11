@@ -1,6 +1,5 @@
 import React from 'react';
 import { CustomCakeForm } from '../components/CustomCakeForm';
-import { Check, Clock, HeartHandshake } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export const CustomCakesPage: React.FC = () => {
@@ -22,34 +21,19 @@ export const CustomCakesPage: React.FC = () => {
 
         {/* Benefits ribbon */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#18181C] border border-rose-100 dark:border-stone-800 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-pink-50 dark:bg-rose-950 flex items-center justify-center text-pink-600 shrink-0">
-              <Check className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="font-bold text-stone-900 dark:text-stone-100">Zero Compromise</p>
-              <p className="text-stone-500">Tailored flavours & colour matching</p>
-            </div>
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#18181C] border border-rose-100 dark:border-stone-800">
+            <p className="font-bold text-stone-900 dark:text-stone-100">Zero Compromise</p>
+            <p className="text-stone-500 mt-0.5">Tailored flavours & colour matching</p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#18181C] border border-rose-100 dark:border-stone-800 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-pink-50 dark:bg-rose-950 flex items-center justify-center text-pink-600 shrink-0">
-              <Clock className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="font-bold text-stone-900 dark:text-stone-100">Fast Turnaround</p>
-              <p className="text-stone-500">24h to 72h lead time in Lagos</p>
-            </div>
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#18181C] border border-rose-100 dark:border-stone-800">
+            <p className="font-bold text-stone-900 dark:text-stone-100">Fast Turnaround</p>
+            <p className="text-stone-500 mt-0.5">24h to 72h lead time in Lagos</p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#18181C] border border-rose-100 dark:border-stone-800 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-pink-50 dark:bg-rose-950 flex items-center justify-center text-pink-600 shrink-0">
-              <HeartHandshake className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="font-bold text-stone-900 dark:text-stone-100">Direct Baker Chat</p>
-              <p className="text-stone-500">WhatsApp direct assistance available</p>
-            </div>
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#18181C] border border-rose-100 dark:border-stone-800">
+            <p className="font-bold text-stone-900 dark:text-stone-100">Direct Baker Chat</p>
+            <p className="text-stone-500 mt-0.5">WhatsApp direct assistance available</p>
           </div>
         </div>
 

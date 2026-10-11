@@ -291,6 +291,26 @@ export interface SiteGalleryContent {
   items: SiteGalleryItem[];
 }
 
+export interface SiteBudgetTierItem {
+  id: string; // 'petite' | 'celebration' | 'luxury'
+  badge?: string;
+  eyebrow: string;
+  title: string;
+  price: string;
+  features: string[];
+  buttonText: string;
+  buttonLink: string;
+}
+
+export interface SiteBudgetSectionContent {
+  badge?: string;
+  headline: string;
+  subtitle: string;
+  tier1: SiteBudgetTierItem;
+  tier2: SiteBudgetTierItem;
+  tier3: SiteBudgetTierItem;
+}
+
 export interface SiteContent {
   hero: SiteHeroContent;
   announcements: AnnouncementItem[];
@@ -300,6 +320,7 @@ export interface SiteContent {
   corporate?: SiteCorporateContent;
   occasionsSection?: SiteOccasionsContent;
   sweetMoments?: SiteGalleryContent;
+  budgetSection?: SiteBudgetSectionContent;
 }
 
 export interface LogoSettings {

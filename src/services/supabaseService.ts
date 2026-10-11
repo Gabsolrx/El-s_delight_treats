@@ -972,6 +972,7 @@ export const supabaseService = {
         corporate: safeContent.corporate || {},
         occasions_section: safeContent.occasionsSection || {},
         sweet_moments: safeContent.sweetMoments || {},
+        budget_section: safeContent.budgetSection || {},
         updated_at: new Date().toISOString(),
       };
 
@@ -996,6 +997,7 @@ export const supabaseService = {
         corporate: data.corporate || {},
         occasionsSection: data.occasions_section || undefined,
         sweetMoments: data.sweet_moments || undefined,
+        budgetSection: data.budget_section || undefined,
       };
     } catch {
       return null;

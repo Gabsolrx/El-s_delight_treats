@@ -62,6 +62,10 @@
     }
     </script>
 
+    <!-- Mobile & Browser Color Control -->
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#ffffff" id="theme-color-meta" />
+
     <!-- Synchronous Theme Script to ensure clean light mode by default and dark mode on choice -->
     <script>
       (function() {
@@ -69,18 +73,21 @@
           var saved = localStorage.getItem('els_theme');
           var isDark = saved === 'dark';
           var doc = document.documentElement;
+          var metaTheme = document.getElementById('theme-color-meta');
           if (isDark) {
             doc.classList.add('dark');
             doc.setAttribute('data-theme', 'dark');
+            if (metaTheme) metaTheme.setAttribute('content', '#0F0F12');
           } else {
             doc.classList.remove('dark');
             doc.setAttribute('data-theme', 'light');
+            if (metaTheme) metaTheme.setAttribute('content', '#ffffff');
           }
         } catch(e) {}
       })();
     </script>
   </head>
-  <body class="font-sans antialiased text-stone-900 bg-[#FAFAFA] dark:bg-[#0F0F12] dark:text-stone-100 transition-colors duration-200">
+  <body class="font-sans antialiased text-zinc-900 bg-white dark:bg-[#0F0F12] dark:text-zinc-100 transition-colors duration-200">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-pink-600 focus:text-white focus:rounded-xl focus:shadow-xl focus:font-bold focus:text-xs">
       Skip to main content
     </a>

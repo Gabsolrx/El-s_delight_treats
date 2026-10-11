@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { useApp } from '../context/AppContext';
 
@@ -24,10 +25,16 @@ const ROTATING_PROMPTS = [
 ];
 
 export const FloatingWhatsApp: React.FC = () => {
+  const location = useLocation();
   const { businessInfo } = useApp();
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
   const [isPromptDismissed, setIsPromptDismissed] = useState(false);
   const [isBubbleVisible, setIsBubbleVisible] = useState(true);
+
+  // Do not display floating WhatsApp on the admin dashboard
+  if (location.pathname.startsWith('/admin')) {
+    return null;
+  }
 
   // Automatically cycle through friendly bakery prompts every 6.5 seconds
   useEffect(() => {

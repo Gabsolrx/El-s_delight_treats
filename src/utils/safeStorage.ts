@@ -115,7 +115,7 @@ export function deepStripBase64(value: any, maxDataUrlLen = 25000): any {
   if (value === null || value === undefined) return value;
   if (typeof value === 'string') {
     if (value.startsWith('data:image/') && value.length > maxDataUrlLen) {
-      return 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80';
+      return '';
     }
     return value;
   }
@@ -213,13 +213,23 @@ export function safeSetItem(key: string, value: string): boolean {
         localStorage.setItem(key, value);
         return true;
       } catch (retryErr) {
-        // Strip heavy base64 data URLs from ANY JSON payload attempting to be saved
+        // Do not corrupt content, categories, business_info or products with stripped payloads in localStorage
+        if (
+          key === 'els_site_content' ||
+          key === 'els_categories' ||
+          key === 'els_business_info' ||
+          key === 'els_products'
+        ) {
+          // Keep pristine data in memory and IndexedDB; skip saving oversized base64 blob to localStorage
+          return false;
+        }
+
+        // For orders and logs, strip large embedded base64 URLs safely
         try {
           const stripped = stripLargeBase64Payload(value);
           localStorage.setItem(key, stripped);
           return true;
         } catch (stripErr) {
-          // If still failing and saving orders, keep only the top 5
           if (key === 'els_orders') {
             try {
               const parsed = JSON.parse(value);
@@ -230,7 +240,6 @@ export function safeSetItem(key: string, value: string): boolean {
               }
             } catch {}
           }
-          // Quota exceeded: safeSetItem gracefully fails without throwing
           return false;
         }
       }

@@ -1,4 +1,5 @@
 import { Product, CakeCategory, OccasionType, ReviewItem, CategoryItem } from '../types';
+import preseededData from './preseededData.json';
 
 export const BUSINESS_INFO = {
   name: "El's Delight Treats",
@@ -20,6 +21,7 @@ export const BUSINESS_INFO = {
     accountNumber: "0086485307",
   },
   openingHours: "Mon – Sat: 8:00 AM – 7:00 PM (Sunday Deliveries by Pre-order)",
+  logo: (preseededData.logoSettings as any) || undefined,
 };
 
 const DEFAULT_SIZES = [
@@ -48,7 +50,7 @@ const WEDDING_SIZES = [
   { name: '4-Tier Royal Wedding Cake (Feeds 200+)', label: '4-Tier (200+ guests)', priceModifier: 2.2 },
 ];
 
-export const PRODUCTS: Product[] = [
+const RAW_PRODUCTS: Product[] = [
   {
     id: 'prod-1',
     name: 'Classic Chocolate Birthday Cake',
@@ -58,8 +60,6 @@ export const PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Anniversary', 'General'],
     price: 25000,
-    oldPrice: 28000,
-    discount: 11,
     images: [
       'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',
       'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=900&q=80',
@@ -200,8 +200,6 @@ export const PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Anniversary', 'General'],
     price: 32000,
-    oldPrice: 36000,
-    discount: 11,
     images: [
       'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',
       'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
@@ -361,8 +359,6 @@ export const PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Anniversary', 'Corporate'],
     price: 40000,
-    oldPrice: 45000,
-    discount: 11,
     images: [
       'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80',
       'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
@@ -472,16 +468,62 @@ export const PRODUCTS: Product[] = [
   },
 ];
 
-export const CATEGORIES_LIST: CategoryItem[] = [
-  { name: 'Birthday Cakes', label: 'Celebration wonders', count: '10+ designs', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80' },
-  { name: 'Wedding Cakes', label: 'Grand tiered love', count: 'Bridal luxe', image: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=400&q=80' },
-  { name: 'Anniversary Cakes', label: 'Romantic milestones', count: 'Love & bliss', image: 'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=400&q=80' },
-  { name: 'Corporate/Office Cakes', label: 'Executive & brand events', count: 'Pro sheets', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80' },
-  { name: 'Graduation Cakes', label: 'Degrees & achievements', count: 'Academic win', image: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=400&q=80' },
-  { name: 'Baby Shower Cakes', label: 'Sweet arrivals & pastel bliss', count: 'Miracle joys', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=400&q=80' },
-  { name: 'Christmas Cakes', label: 'Festive holiday cheer', count: 'Seasonal luxe', image: 'https://images.unsplash.com/photo-1543257580-7269da773bf5?auto=format&fit=crop&crop=center&w=800&h=800&q=85' },
-  { name: 'Custom Cakes', label: 'Your idea, our craft', count: 'Bespoke art', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=400&q=80' },
-];
+function buildInitialProducts(): Product[] {
+  const map = new Map<string, Product>();
+  for (const p of RAW_PRODUCTS) {
+    map.set(p.id, p);
+  }
+  if (preseededData.products && Array.isArray(preseededData.products)) {
+    for (const p of preseededData.products as any[]) {
+      if (!map.has(p.id)) {
+        map.set(p.id, {
+          id: p.id,
+          name: p.name,
+          slug: p.slug || p.id,
+          category: p.category || 'Birthday Cakes',
+          price: Number(p.price) || 0,
+          description: p.description || '',
+          fullDescription: p.full_description || p.description || '',
+          images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : []),
+          flavours: Array.isArray(p.flavours) ? p.flavours : ['Vanilla Buttercream', 'Rich Chocolate Ganache'],
+          sizes: Array.isArray(p.sizes) ? p.sizes : DEFAULT_SIZES,
+          occasion: Array.isArray(p.occasion) ? p.occasion : ['Birthday', 'General'],
+          bestseller: Boolean(p.bestseller),
+          featured: Boolean(p.featured),
+          isNew: Boolean(p.is_new),
+          rating: Number(p.rating) || 5.0,
+          reviewCount: Number(p.review_count) || 12,
+          budgetRange: p.budget_range || 'Under ₦20,000',
+          preparationTime: p.preparation_time || '24 hours notice',
+          tag: p.tag || undefined,
+        });
+      } else {
+        const existing = map.get(p.id)!;
+        const pImages = Array.isArray(p.images) ? p.images : [];
+        if (pImages.some((img: string) => img.startsWith('data:'))) {
+          map.set(p.id, { ...existing, images: pImages });
+        }
+      }
+    }
+  }
+  return Array.from(map.values());
+}
+
+export const PRODUCTS: Product[] = buildInitialProducts();
+
+export const CATEGORIES_LIST: CategoryItem[] =
+  preseededData.categories && preseededData.categories.length > 0
+    ? (preseededData.categories as CategoryItem[])
+    : [
+        { name: 'Birthday Cakes', label: 'Celebration wonders', count: '10+ designs', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Wedding Cakes', label: 'Grand tiered love', count: 'Bridal luxe', image: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Anniversary Cakes', label: 'Romantic milestones', count: 'Love & bliss', image: 'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Corporate/Office Cakes', label: 'Executive & brand events', count: 'Pro sheets', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Graduation Cakes', label: 'Degrees & achievements', count: 'Academic win', image: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Baby Shower Cakes', label: 'Sweet arrivals & pastel bliss', count: 'Miracle joys', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Christmas Cakes', label: 'Festive holiday cheer', count: 'Seasonal luxe', image: 'https://images.unsplash.com/photo-1543257580-7269da773bf5?auto=format&fit=crop&crop=center&w=800&h=800&q=85' },
+        { name: 'Custom Cakes', label: 'Your idea, our craft', count: 'Bespoke art', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=400&q=80' },
+      ];
 
 export const OCCASIONS_LIST: { id: OccasionType; title: string; subtitle: string; image: string }[] = [
   { id: 'Birthday', title: 'Birthday', subtitle: 'Make their special day unforgettable.', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80' },

@@ -481,8 +481,8 @@ export const CustomCakeForm: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-rose-100 dark:border-stone-800 flex items-center justify-between gap-3">
-                <div>
+              <div className="pt-2 border-t border-rose-100 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="min-w-0">
                   <span className="text-[10px] uppercase font-bold text-pink-600 dark:text-pink-400">Account Number</span>
                   <p className="text-xl sm:text-2xl font-mono font-bold text-stone-900 dark:text-stone-100 tracking-wider">
                     {businessInfo.payment.accountNumber}
@@ -490,7 +490,7 @@ export const CustomCakeForm: React.FC = () => {
                 </div>
                 <CopyAccountButton
                   accountNumber={businessInfo.payment.accountNumber}
-                  className="py-1.5 px-3 text-xs shrink-0"
+                  className="w-full sm:w-auto justify-center py-2 px-3 text-xs"
                 />
               </div>
             </div>
@@ -581,8 +581,8 @@ export const CustomCakeForm: React.FC = () => {
             <span className="text-[10px] uppercase font-bold text-pink-600 dark:text-pink-400 flex items-center gap-1">
               <ShieldCheck className="w-4 h-4 text-emerald-600" /> {businessInfo.payment.bank} Payment Account
             </span>
-            <div className="flex items-center justify-between gap-3">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="min-w-0">
                 <p className="font-bold text-stone-900 dark:text-stone-100 text-sm">
                   {businessInfo.payment.accountName}
                 </p>
@@ -592,7 +592,7 @@ export const CustomCakeForm: React.FC = () => {
               </div>
               <CopyAccountButton
                 accountNumber={businessInfo.payment.accountNumber}
-                className="py-1.5 px-3 text-xs shrink-0"
+                className="w-full sm:w-auto justify-center py-2 px-3 text-xs"
               />
             </div>
           </div>

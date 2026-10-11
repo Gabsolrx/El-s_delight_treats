@@ -13,7 +13,7 @@ export const Hero: React.FC = () => {
     Boolean(hero.featuredCakeImage && hero.featuredCakeImage !== 'none');
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-rose-50/70 via-[#FAFAFA] to-[#FAFAFA] dark:from-[#1D1318] dark:via-[#140F12] dark:to-[#0F0F12] pt-8 pb-16 lg:py-20 border-b border-rose-100/60 dark:border-rose-950/40">
+    <section className="relative overflow-hidden bg-gradient-to-b from-rose-50/60 via-white to-white dark:from-[#181216] dark:via-[#110D10] dark:to-[#0F0F12] pt-8 pb-16 lg:py-20 border-b border-rose-100/60 dark:border-rose-950/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           className={`grid grid-cols-1 ${
@@ -112,7 +112,7 @@ export const Hero: React.FC = () => {
             <div className="lg:col-span-5 relative">
               {/* Decorative backdrop shapes */}
               <div className="absolute -top-6 -right-6 w-72 h-72 bg-pink-200/40 dark:bg-rose-950/30 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-6 -left-6 w-60 h-60 bg-amber-100/50 dark:bg-amber-950/20 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-6 -left-6 w-60 h-60 bg-pink-100/40 dark:bg-rose-950/20 rounded-full blur-2xl pointer-events-none" />
 
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-stone-800 bg-white dark:bg-stone-900 group">
                 <div className="aspect-4/5 sm:aspect-square lg:aspect-4/5 min-h-[380px] sm:min-h-[440px] lg:min-h-[500px] w-full p-2 flex items-center justify-center bg-rose-50/30 dark:bg-stone-900/60">

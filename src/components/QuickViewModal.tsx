@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { X, Star, ShoppingBag, Check, ArrowRight, ShieldCheck, Clock, Truck } from 'lucide-react';
+import { X, ShoppingBag, Check, ArrowRight, ShieldCheck, Clock, Truck } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { Product, ProductSize, CakeFlavour, StoredOrder } from '../types';
 import { useApp } from '../context/AppContext';
@@ -120,18 +120,11 @@ export const QuickViewModal: React.FC = () => {
         {/* Right: Customization Form */}
         <div className="w-full md:w-7/12 p-5 sm:p-6 overflow-y-auto flex flex-col justify-between space-y-4">
           <div>
-            {/* Category & Rating */}
-            <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
+            {/* Category */}
+            <div className="text-xs text-stone-500 dark:text-stone-400">
               <span className="uppercase tracking-wider font-semibold text-pink-600 dark:text-pink-400">
                 {quickViewProduct.category}
               </span>
-              <div className="flex items-center text-amber-500 font-semibold">
-                <Star className="w-3.5 h-3.5 fill-current" />
-                <span className="ml-1 text-stone-800 dark:text-stone-200">
-                  {quickViewProduct.rating.toFixed(1)}
-                </span>
-                <span className="ml-1 text-stone-400">({quickViewProduct.reviewCount})</span>
-              </div>
             </div>
 
             {/* Title & Price */}
@@ -223,7 +216,7 @@ export const QuickViewModal: React.FC = () => {
                 maxLength={45}
                 value={cakeMessage}
                 onChange={(e) => setCakeMessage(e.target.value)}
-                placeholder="e.g. Happy 30th Birthday Tunde! 🎉"
+                placeholder="e.g. Happy 30th Birthday Tunde!"
                 className="w-full px-3 py-2 text-xs rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-pink-500"
               />
             </div>

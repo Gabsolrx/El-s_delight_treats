@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Star, ShoppingBag, Eye } from 'lucide-react';
+import { Heart, ShoppingBag, Eye } from 'lucide-react';
 import { Product } from '../types';
 import { useApp } from '../context/AppContext';
 import { formatNaira } from '../utils/format';
@@ -55,21 +55,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
           />
         </Link>
 
-        {/* Badge and Star Ranking at top of cake image */}
-        <div className="absolute top-2.5 left-2.5 z-10 flex items-center gap-1.5 flex-wrap max-w-[calc(100%-3.5rem)]">
-          {product.tag && (
-            <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-md bg-white/95 dark:bg-stone-900/95 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-900/60 shadow-xs">
-              {product.tag}
-            </span>
-          )}
-          <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-white/95 dark:bg-stone-900/95 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60 shadow-xs">
-            <Star className="w-3 h-3 fill-amber-400 text-amber-500" />
-            <span className="tabular-nums">{product.rating.toFixed(1)}</span>
-          </span>
-        </div>
-
-        {/* Discount Badge if applicable */}
-        {product.discount && (
+        {/* Discount Badge if applicable (excluding 11% off) */}
+        {product.discount && product.discount !== 11 && (
           <div className="absolute bottom-2.5 left-2.5 z-10">
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shadow-xs">
               {product.discount}% OFF
@@ -104,18 +91,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
       {/* Card Details */}
       <div className="p-3.5 sm:p-4 flex flex-col flex-1 justify-between gap-3">
         <div>
-          {/* Rating & Reviews line */}
-          <div className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400 mb-1">
-            <div className="flex items-center text-amber-500">
-              <Star className="w-3.5 h-3.5 fill-current" />
-              <span className="ml-1 font-semibold text-stone-800 dark:text-stone-200 tabular-nums">
-                {product.rating.toFixed(1)}
-              </span>
-            </div>
-            <span aria-hidden="true" className="text-stone-300 dark:text-stone-700">·</span>
-            <span className="tabular-nums">({product.reviewCount} reviews)</span>
-          </div>
-
           {/* Product Title */}
           <Link to={`/product/${product.slug}`} className="block group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 text-sm sm:text-base line-clamp-1 leading-snug">
@@ -142,9 +117,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
                 </span>
               )}
             </div>
-            <span className="text-[10px] text-stone-500 dark:text-stone-400 truncate">
-              Base: {product.sizes[0]?.label}
-            </span>
           </div>
 
           <div className="flex items-center gap-1 shrink-0 self-end xs:self-auto">

@@ -194,6 +194,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // 1. PRODUCTS STATE (with localStorage persistence)
   // -------------------------------------------------------------
   const hasLoadedIdb = useRef(false);
+  const hasLoadedSupabase = useRef(false);
 
   const [products, setProducts] = useState<Product[]>(() => {
     try {
@@ -292,7 +293,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           }
 
           return deduplicated.map((p) => {
-            const cleanCategory = p.category === 'Classic Cakes' ? 'Birthday Cakes' : p.category;
+            const cleanCategory = (p.category === 'Classic Cakes' || p.category === 'Classic') ? 'Birthday Cakes' : p.category;
             const isChristmas =
               p.id === 'prod-christmas' ||
               (cleanCategory && cleanCategory.toLowerCase().includes('christmas'));
@@ -323,7 +324,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       const initialProducts = PRODUCTS.filter((p) => !isPermanentlyDeleted(p));
       return initialProducts.map((p) => {
-        const cleanCategory = p.category === 'Classic Cakes' ? 'Birthday Cakes' : p.category;
+        const cleanCategory = (p.category === 'Classic Cakes' || p.category === 'Classic') ? 'Birthday Cakes' : p.category;
         if (p.id === 'prod-christmas' || (cleanCategory && cleanCategory.toLowerCase().includes('christmas'))) {
           const effectiveImg = dedicatedProductImg || VERIFIED_CHRISTMAS_CAKE_IMG;
           const remaining = (p.images || []).filter((img: string) => img !== effectiveImg);
@@ -376,7 +377,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               c.name !== 'Cake Slices' &&
               c.slug !== 'cake-slices' &&
               c.name !== 'Classic Cakes' &&
-              c.slug !== 'classic-cakes'
+              c.slug !== 'classic-cakes' &&
+              c.name.toLowerCase() !== 'classic' &&
+              c.slug.toLowerCase() !== 'classic'
           );
           const existingNames = new Set(filtered.map((c) => c.name.toLowerCase()));
           const missingDefaults = CATEGORIES_LIST.filter(
@@ -467,7 +470,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           idbGet<Product[]>('els_products'),
         ]);
 
-        if (idbChristmasCatImg && isMounted) {
+        if (idbChristmasCatImg && isMounted && !hasLoadedSupabase.current) {
           setCategories((prev) =>
             prev.map((c) => {
               if (c.name.toLowerCase().includes('christmas') && c.image !== idbChristmasCatImg) {
@@ -478,7 +481,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           );
         }
 
-        if (isMounted) {
+        if (isMounted && !hasLoadedSupabase.current) {
           setProducts((prev) => {
             // Determine base list: prefer idbProducts if it has valid products
             let list = (idbProducts && Array.isArray(idbProducts) && idbProducts.length > 0)
@@ -534,7 +537,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 images = [idbChristmasProductImg, ...rem];
               }
 
-              const cleanCategory = curr.category === 'Classic Cakes' ? 'Birthday Cakes' : curr.category;
+              const cleanCategory = (curr.category === 'Classic Cakes' || curr.category === 'Classic') ? 'Birthday Cakes' : curr.category;
               return { ...curr, category: cleanCategory, images };
             });
 
@@ -872,6 +875,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             };
           })(),
           sweetMoments: parsed.sweetMoments || DEFAULT_SITE_CONTENT.sweetMoments,
+          budgetSection: parsed.budgetSection
+            ? {
+                ...DEFAULT_SITE_CONTENT.budgetSection!,
+                ...parsed.budgetSection,
+                tier1: { ...DEFAULT_SITE_CONTENT.budgetSection!.tier1, ...(parsed.budgetSection.tier1 || {}) },
+                tier2: { ...DEFAULT_SITE_CONTENT.budgetSection!.tier2, ...(parsed.budgetSection.tier2 || {}) },
+                tier3: { ...DEFAULT_SITE_CONTENT.budgetSection!.tier3, ...(parsed.budgetSection.tier3 || {}) },
+              }
+            : DEFAULT_SITE_CONTENT.budgetSection,
         };
       }
     } catch (e) {
@@ -1727,15 +1739,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     try {
-      const [
-        prodsRes,
-        catsRes,
-        contentRes,
-        bizRes,
-        revsRes,
-        ordersRes,
-        inqRes,
-      ] = await Promise.all([
+      hasLoadedSupabase.current = true;
+      const results = await Promise.allSettled([
         supabaseService.getProducts(),
         supabaseService.getCategories(),
         supabaseService.getSiteContent(),
@@ -1745,14 +1750,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         supabaseService.getInquiries(),
       ]);
 
+      const prodsRes = results[0].status === 'fulfilled' ? results[0].value : null;
+      const catsRes = results[1].status === 'fulfilled' ? results[1].value : null;
+      const contentRes = results[2].status === 'fulfilled' ? results[2].value : null;
+      const bizRes = results[3].status === 'fulfilled' ? results[3].value : null;
+      const revsRes = results[4].status === 'fulfilled' ? results[4].value : null;
+      const ordersRes = results[5].status === 'fulfilled' ? results[5].value : null;
+      const inqRes = results[6].status === 'fulfilled' ? results[6].value : null;
+
       // 1. PRODUCTS
-      if (prodsRes.products && prodsRes.products.length > 0) {
+      if (prodsRes?.products && prodsRes.products.length > 0) {
         const deletedRaw = safeGetItem('els_deleted_product_ids');
         const deletedIds = new Set<string>(deletedRaw ? JSON.parse(deletedRaw) : []);
         const validProds = prodsRes.products.filter((p) => !deletedIds.has(p.id));
         if (validProds.length > 0) {
           setProducts(validProds);
           safeSetItem('els_products', JSON.stringify(validProds));
+          idbSet('els_products', validProds).catch(() => {});
           idbSet('els_products_full', validProds).catch(() => {});
         }
       }
@@ -1761,6 +1775,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (catsRes && catsRes.length > 0) {
         setCategories(catsRes);
         safeSetItem('els_categories', JSON.stringify(catsRes));
+        idbSet('els_categories', catsRes).catch(() => {});
       }
 
       // 3. SITE CONTENT (Including custom hero image, sweet moments gallery photos, about, faqs)
@@ -1777,15 +1792,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             sweetMoments: contentRes.sweetMoments
               ? { ...prev.sweetMoments, ...contentRes.sweetMoments }
               : prev.sweetMoments,
+            budgetSection: contentRes.budgetSection
+              ? { ...prev.budgetSection, ...contentRes.budgetSection }
+              : prev.budgetSection,
           };
           safeSetItem('els_site_content', JSON.stringify(merged));
+          idbSet('els_site_content', merged).catch(() => {});
           idbSet('els_site_content_full', merged).catch(() => {});
           return merged;
         });
       }
 
       // 4. BUSINESS SETTINGS (Including custom logo and payment account)
-      const bizInfo = bizRes.info;
+      const bizInfo = bizRes?.info;
       if (bizInfo && Object.keys(bizInfo).length > 0) {
         setBusinessInfo((prev) => {
           const merged: BusinessInfo = {
@@ -1798,9 +1817,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             logo: bizInfo.logo ? { ...prev.logo, ...bizInfo.logo } : prev.logo,
           };
           safeSetItem('els_business_info', JSON.stringify(merged));
+          idbSet('els_business_info', merged).catch(() => {});
           return merged;
         });
-        if (bizRes.adminPin) {
+        if (bizRes?.adminPin) {
           setAdminPin(bizRes.adminPin);
           safeSetItem('els_admin_pin', bizRes.adminPin);
         }
@@ -1810,10 +1830,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (revsRes && revsRes.length > 0) {
         setReviews(revsRes);
         safeSetItem('els_reviews', JSON.stringify(revsRes));
+        idbSet('els_reviews', revsRes).catch(() => {});
       }
 
       // 6. ORDERS
-      if (ordersRes.orders && ordersRes.orders.length > 0) {
+      if (ordersRes?.orders && ordersRes.orders.length > 0) {
         const deletedOrderIds = getDeletedOrderIds();
         const validOrders = ordersRes.orders.filter((o) => !deletedOrderIds.has(o.orderId));
         if (validOrders.length > 0) {
@@ -1829,7 +1850,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
 
       // 7. INQUIRIES
-      if (inqRes.inquiries && inqRes.inquiries.length > 0) {
+      if (inqRes?.inquiries && inqRes.inquiries.length > 0) {
         const deletedInquiryIds = getDeletedInquiryIds();
         const validInquiries = inqRes.inquiries.filter((i) => !deletedInquiryIds.has(i.id));
         if (validInquiries.length > 0) {
@@ -2207,12 +2228,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const root = document.documentElement;
       const body = document.body;
+      const metaTheme = document.getElementById('theme-color-meta');
       if (isDarkMode) {
         root.classList.add('dark');
         root.setAttribute('data-theme', 'dark');
         if (body) {
           body.classList.add('dark');
           body.setAttribute('data-theme', 'dark');
+        }
+        if (metaTheme) {
+          metaTheme.setAttribute('content', '#0F0F12');
         }
         safeSetItem('els_theme', 'dark');
       } else {
@@ -2221,6 +2246,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (body) {
           body.classList.remove('dark');
           body.setAttribute('data-theme', 'light');
+        }
+        if (metaTheme) {
+          metaTheme.setAttribute('content', '#ffffff');
         }
         safeSetItem('els_theme', 'light');
       }

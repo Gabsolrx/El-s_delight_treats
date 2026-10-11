@@ -1,7 +1,8 @@
-import { SiteContent, BusinessInfo, LogoSettings, DeliveryMethodOption } from '../types';
+import { SiteContent, BusinessInfo, LogoSettings, DeliveryMethodOption, SiteBudgetSectionContent } from '../types';
 import { BUSINESS_INFO, TESTIMONIALS } from './products';
+import preseededData from './preseededData.json';
 
-export const DEFAULT_LOGO_SETTINGS: LogoSettings = {
+export const DEFAULT_LOGO_SETTINGS: LogoSettings = (preseededData.logoSettings as LogoSettings) || {
   mode: 'default',
   customUrl: '',
   alt: "El's Delight Treats Logo",
@@ -101,6 +102,55 @@ export const DEFAULT_BUSINESS_INFO: BusinessInfo = {
   deliveryMethods: DEFAULT_DELIVERY_METHODS,
 };
 
+export const DEFAULT_BUDGET_SECTION: SiteBudgetSectionContent = {
+  badge: 'Affordable Luxury',
+  headline: 'Something Sweet for Every Budget',
+  subtitle: "Whether it's an impromptu solo indulgence, a warm family birthday, or an extravagant Lagos wedding, we have your cravings covered.",
+  tier1: {
+    id: 'petite',
+    eyebrow: 'Pocket-Friendly & Quick',
+    title: 'Petite Celebrations',
+    price: '₦20,000 – ₦30,000',
+    features: [
+      'Single-tier 6-inch layer cakes',
+      'Feeds 6–8 family and friends',
+      'Free customized piped inscription',
+      'Same-day express pickup & dispatch',
+    ],
+    buttonText: 'Shop Petite Cakes',
+    buttonLink: '/shop?price=20k-40k',
+  },
+  tier2: {
+    id: 'celebration',
+    badge: 'Most Popular',
+    eyebrow: 'Unforgettable Memories',
+    title: 'Celebration',
+    price: '₦10,000 – ₦40,000',
+    features: [
+      'Signature chocolate, red velvet & vanilla',
+      '6, 8, and 10-inch birthday cakes',
+      'Free customized piped inscription',
+      'Anniversaries, graduations & family cakes',
+    ],
+    buttonText: 'Shop Celebration',
+    buttonLink: '/shop?price=10k-40k',
+  },
+  tier3: {
+    id: 'luxury',
+    eyebrow: 'Grand Occasions',
+    title: 'Luxury & Weddings',
+    price: '₦80,000+',
+    features: [
+      '2-Tier & 3-Tier luxury wedding cakes',
+      'Hand-crafted sugar flora & 24k gold leaf',
+      'Large corporate event sheet cakes',
+      'White-glove setup & dedicated delivery',
+    ],
+    buttonText: 'Shop Luxury',
+    buttonLink: '/shop?price=80k-plus',
+  },
+};
+
 export const DEFAULT_SITE_CONTENT: SiteContent = {
   hero: {
     kicker: 'Amuwo-Odofin, Lagos · Handcrafted Daily',
@@ -116,12 +166,13 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     badge3: 'Freshly Baked Daily',
     // Featured Today Cake (Right Hero Column)
     showFeaturedCake: true,
-    featuredCakeImage: '/assets/sister-nk-cake.svg',
-    featuredCakeTitle: 'Gold Splatter "Happy Birthday Sister NK" Cake',
-    featuredCakePrice: '₦38,000',
-    featuredCakeTag: 'Featured Today',
-    featuredCakeRating: '5.0 / 5.0 Rating',
-    featuredCakeSubtitle: 'Over 500+ Lagos Celebrations',
+    featuredCakeImage: (preseededData.hero?.featuredCakeImage as string) || '/assets/sister-nk-cake.svg',
+    featuredCakeTitle: (preseededData.hero?.featuredCakeTitle as string) || 'Gold Splatter "Happy Birthday Sister NK" Cake',
+    featuredCakePrice: (preseededData.hero?.featuredCakePrice as string) || '₦38,000',
+    featuredCakeTag: (preseededData.hero?.featuredCakeTag as string) || 'Featured Today',
+    featuredCakeRating: (preseededData.hero?.featuredCakeRating as string) || '5.0 / 5.0 Rating',
+    featuredCakeSubtitle: (preseededData.hero?.featuredCakeSubtitle as string) || 'Over 500+ Lagos Celebrations',
+    ...((preseededData.hero as any) || {}),
   },
   announcements: [
     {
@@ -278,7 +329,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { id: 'Baby Shower', title: 'Baby Shower', subtitle: 'Sweet treats for welcoming little miracles.', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=600&q=80' },
     ],
   },
-  sweetMoments: {
+  sweetMoments: (preseededData.sweetMoments as any) || {
     badge: 'els_delighttreats',
     headline: "Sweet Moments at El's",
     subtitle: 'Follow our daily baking journey, live frosting reels, and client setups in Lagos.',
@@ -329,4 +380,5 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       },
     ],
   },
+  budgetSection: DEFAULT_BUDGET_SECTION,
 };
