@@ -31,6 +31,7 @@ import {
   safeSetItem,
   safeGetItem,
   safeRemoveItem,
+  safeJsonParse,
   idbGet,
   idbSet,
   idbDelete,
@@ -446,15 +447,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         const mergedDeletedIds = new Set([
           ...(idbDeletedIds || []),
-          ...(safeGetItem('els_deleted_product_ids') ? JSON.parse(safeGetItem('els_deleted_product_ids')!) : []),
+          ...safeJsonParse<string[]>(safeGetItem('els_deleted_product_ids'), []),
         ]);
         const mergedDeletedSlugs = new Set([
           ...(idbDeletedSlugs || []),
-          ...(safeGetItem('els_deleted_product_slugs') ? JSON.parse(safeGetItem('els_deleted_product_slugs')!) : []),
+          ...safeJsonParse<string[]>(safeGetItem('els_deleted_product_slugs'), []),
         ]);
         const mergedDeletedNames = new Set([
           ...(idbDeletedNames || []),
-          ...(safeGetItem('els_deleted_product_names') ? JSON.parse(safeGetItem('els_deleted_product_names')!) : []),
+          ...safeJsonParse<string[]>(safeGetItem('els_deleted_product_names'), []),
         ]);
 
         const isDeleted = (p: { id: string; slug?: string; name?: string }) =>

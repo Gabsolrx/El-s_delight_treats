@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Heart, ArrowLeft, Check, ShieldCheck, Truck, Clock, Share2, CreditCard, ChevronDown, Copy, X, Plus, Trash2, Building, User, Hash, AlertTriangle } from 'lucide-react';
+import { ShoppingBag, Heart, ArrowLeft, Check, Truck, Clock, Share2, CreditCard, ChevronDown, Copy, X, Plus, Trash2, Building, User, Hash, AlertTriangle } from 'lucide-react';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { Product, ProductSize, CakeFlavour, StoredOrder, DeliveryMethodOption } from '../types';
 import { useApp } from '../context/AppContext';
@@ -19,8 +19,8 @@ export const ProductDetailPage: React.FC = () => {
   const product = products.find((p) => p.slug === slug);
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [selectedSize, setSelectedSize] = useState<ProductSize | null>(null);
-  const [selectedFlavour, setSelectedFlavour] = useState<CakeFlavour | null>(null);
+  const [selectedSize, setSelectedSize] = useState<ProductSize | null>(() => product?.sizes[0] || null);
+  const [selectedFlavour, setSelectedFlavour] = useState<CakeFlavour | null>(() => product?.flavours[0] || null);
   const [cakeMessage, setCakeMessage] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -52,8 +52,8 @@ export const ProductDetailPage: React.FC = () => {
   useEffect(() => {
     if (product) {
       addRecentlyViewed(product.id);
-      setSelectedSize(product.sizes[0] || null);
-      setSelectedFlavour(product.flavours[0] || null);
+      if (!selectedSize) setSelectedSize(product.sizes[0] || null);
+      if (!selectedFlavour) setSelectedFlavour(product.flavours[0] || null);
       setSelectedImageIndex(0);
       setCakeMessage('');
       setSpecialInstructions('');
@@ -62,7 +62,7 @@ export const ProductDetailPage: React.FC = () => {
     }
   }, [product, slug]);
 
-  if (!product || !selectedSize || !selectedFlavour) {
+  if (!product) {
     return (
       <div className="py-24 text-center">
         <h2 className="font-serif text-2xl font-bold">Cake Not Found</h2>
@@ -74,11 +74,14 @@ export const ProductDetailPage: React.FC = () => {
     );
   }
 
+  const currentSize = selectedSize || product.sizes[0] || { name: 'Standard', label: 'Standard', priceModifier: 1 };
+  const currentFlavour = selectedFlavour || product.flavours[0] || 'Vanilla Buttercream';
+
   const wishlisted = isWishlisted(product.id);
   const currentUnitPrice =
-    selectedSize.price !== undefined
-      ? selectedSize.price
-      : Math.round(product.price * (selectedSize.priceModifier || 1));
+    currentSize.price !== undefined
+      ? currentSize.price
+      : Math.round(product.price * (currentSize.priceModifier || 1));
   const currentTotalPrice = currentUnitPrice * quantity;
 
   const handleDirectPaymentMade = () => {
@@ -97,11 +100,11 @@ export const ProductDetailPage: React.FC = () => {
       createdAt: new Date().toISOString(),
       items: [
         {
-          id: `${product.id}_${selectedSize.label}_${selectedFlavour}_${Date.now()}`,
+          id: `${product.id}_${currentSize.label}_${currentFlavour}_${Date.now()}`,
           productId: product.id,
           product,
-          selectedSize,
-          selectedFlavour,
+          selectedSize: currentSize,
+          selectedFlavour: currentFlavour,
           cakeMessage: cakeMessage.trim(),
           specialInstructions: specialInstructions.trim(),
           quantity,
@@ -137,8 +140,8 @@ export const ProductDetailPage: React.FC = () => {
       `Order Reference: #${orderId}`,
       `Customer: ${customerName.trim()} (${customerPhone.trim()})`,
       `Cake: ${product.name}`,
-      `Size: ${selectedSize.name}`,
-      `Flavour: ${selectedFlavour}`,
+      `Size: ${currentSize.name}`,
+      `Flavour: ${currentFlavour}`,
       cakeMessage.trim() ? `Piped Message: "${cakeMessage.trim()}"` : null,
       `Quantity: ${quantity}`,
       `Total Transferred: ${formatNaira(currentTotalPrice)}`,
@@ -160,8 +163,8 @@ export const ProductDetailPage: React.FC = () => {
   const handleAddToCart = () => {
     addToCart(
       product,
-      selectedSize,
-      selectedFlavour,
+      currentSize,
+      currentFlavour,
       cakeMessage,
       specialInstructions,
       quantity
@@ -217,12 +220,6 @@ export const ProductDetailPage: React.FC = () => {
                 fitMode="auto"
                 className="w-full h-full"
               />
-
-              {product.tag && (
-                <span className="absolute top-4 left-4 z-10 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-white/95 dark:bg-stone-900/95 text-rose-700 dark:text-rose-300 border border-rose-200 shadow-sm">
-                  {product.tag}
-                </span>
-              )}
 
               {/* Wishlist and Share */}
               <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
@@ -289,7 +286,7 @@ export const ProductDetailPage: React.FC = () => {
                 </span>
                 {product.oldPrice && (
                   <span className="text-sm sm:text-base text-stone-400 line-through tabular-nums">
-                    {formatNaira(Math.round(product.oldPrice * (selectedSize.priceModifier || 1) * quantity))}
+                    {formatNaira(Math.round(product.oldPrice * (currentSize.priceModifier || 1) * quantity))}
                   </span>
                 )}
                 {quantity > 1 && (
@@ -308,7 +305,7 @@ export const ProductDetailPage: React.FC = () => {
             <div className="pt-2 border-t border-rose-50 dark:border-stone-800">
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-xs font-bold uppercase tracking-wider text-stone-800 dark:text-stone-200">
-                  1. Select Size: <span className="text-pink-600 font-semibold">{selectedSize.name}</span>
+                  1. Select Size: <span className="text-pink-600 font-semibold">{currentSize.name}</span>
                 </label>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -317,7 +314,7 @@ export const ProductDetailPage: React.FC = () => {
                     size.price !== undefined
                       ? size.price
                       : Math.round(product.price * (size.priceModifier || 1));
-                  const isSelected = selectedSize.label === size.label;
+                  const isSelected = currentSize.label === size.label;
                   return (
                     <button
                       key={size.name}
@@ -345,11 +342,11 @@ export const ProductDetailPage: React.FC = () => {
             {/* Customization 2: Flavour Selector */}
             <div className="pt-2 border-t border-rose-50 dark:border-stone-800">
               <label className="block text-xs font-bold uppercase tracking-wider text-stone-800 dark:text-stone-200 mb-2">
-                2. Select Flavour: <span className="text-pink-600 font-semibold">{selectedFlavour}</span>
+                2. Select Flavour: <span className="text-pink-600 font-semibold">{currentFlavour}</span>
               </label>
               <div className="flex flex-wrap gap-2">
                 {product.flavours.map((flavour) => {
-                  const isSelected = selectedFlavour === flavour;
+                  const isSelected = currentFlavour === flavour;
                   return (
                     <button
                       key={flavour}
@@ -432,9 +429,8 @@ export const ProductDetailPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsDirectPaymentOpen(true)}
-                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-700 via-pink-600 to-rose-700 hover:from-rose-800 hover:to-pink-800 text-white font-bold text-sm sm:text-base shadow-lg transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-700 via-pink-600 to-rose-700 hover:from-rose-800 hover:to-pink-800 text-white font-bold text-sm sm:text-base shadow-lg transition-all flex items-center justify-center active:scale-[0.99]"
               >
-                <ShieldCheck className="w-5 h-5 text-emerald-300" />
                 <span>PAY VIA BANK TRANSFER · {formatNaira(currentTotalPrice)}</span>
               </button>
 
@@ -450,8 +446,8 @@ export const ProductDetailPage: React.FC = () => {
                 href={generateDirectProductWhatsAppUrl(
                   product.name,
                   currentTotalPrice,
-                  selectedSize.name,
-                  selectedFlavour,
+                  currentSize.name,
+                  currentFlavour,
                   businessInfo.whatsappUrlNumber
                 )}
                 target="_blank"
@@ -519,18 +515,13 @@ export const ProductDetailPage: React.FC = () => {
             <div className="bg-white dark:bg-[#18181C] rounded-3xl border border-rose-200 dark:border-stone-800 shadow-2xl max-w-xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-7 space-y-5 animate-in fade-in zoom-in-95 duration-200 my-auto">
               
               <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-pink-100 dark:bg-rose-950 flex items-center justify-center text-pink-600">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-100">
-                      Bank Transfer Payment
-                    </h3>
-                    <p className="text-[11px] text-stone-500">
-                      Verified {businessInfo.payment.bank} account · Following FAQ Guidelines
-                    </p>
-                  </div>
+                <div>
+                  <h3 className="font-serif text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-100">
+                    Bank Transfer Payment
+                  </h3>
+                  <p className="text-[11px] text-stone-500">
+                    Verified {businessInfo.payment.bank} account · Following FAQ Guidelines
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -548,7 +539,7 @@ export const ProductDetailPage: React.FC = () => {
                     {product.name}
                   </p>
                   <p className="text-stone-500 mt-0.5">
-                    {selectedSize.name} · {selectedFlavour} {cakeMessage.trim() ? `· "${cakeMessage.trim()}"` : ''}
+                    {currentSize.name} · {currentFlavour} {cakeMessage.trim() ? `· "${cakeMessage.trim()}"` : ''}
                   </p>
                   {quantity > 1 && (
                     <span className="text-[11px] text-pink-600 font-semibold">Qty: {quantity}</span>
@@ -597,8 +588,7 @@ export const ProductDetailPage: React.FC = () => {
                 </div>
 
                 {/* Delivery Policy Note */}
-                <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 text-[11px] flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 text-[11px]">
                   <p>
                     <strong>Delivery Policy:</strong> {businessInfo.deliveryPolicyNotice || "Delivery fee is NOT added to cake payment. Customer pays courier on delivery based on Uber / live rate (or free pickup at our Amuwo-Odofin studio)."}
                   </p>
@@ -651,28 +641,28 @@ export const ProductDetailPage: React.FC = () => {
                 <h4 className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   2. Official {businessInfo.payment.bank} Account
                 </h4>
-                <div className="p-4 rounded-2xl bg-rose-50/70 dark:bg-stone-900 border-2 border-rose-200 dark:border-rose-900/60 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
+                <div className="p-4 rounded-2xl bg-rose-50/70 dark:bg-stone-900 border-2 border-rose-200 dark:border-rose-900/60 space-y-3 overflow-hidden">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
                       <span className="text-[10px] uppercase font-bold text-stone-400">Bank</span>
-                      <p className="font-bold text-sm text-stone-900 dark:text-stone-100">{businessInfo.payment.bank}</p>
+                      <p className="font-bold text-sm text-stone-900 dark:text-stone-100 truncate">{businessInfo.payment.bank}</p>
                     </div>
-                    <div>
+                    <div className="min-w-0 text-right">
                       <span className="text-[10px] uppercase font-bold text-stone-400">Account Name</span>
-                      <p className="font-bold text-sm text-stone-900 dark:text-stone-100">{businessInfo.payment.accountName}</p>
+                      <p className="font-bold text-sm text-stone-900 dark:text-stone-100 truncate">{businessInfo.payment.accountName}</p>
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-rose-100 dark:border-stone-800 flex items-center justify-between gap-3">
-                    <div>
+                  <div className="pt-2 border-t border-rose-100 dark:border-stone-800 flex flex-wrap items-center justify-between gap-2">
+                    <div className="min-w-0">
                       <span className="text-[10px] uppercase font-bold text-pink-600 dark:text-pink-400">Account Number</span>
-                      <p className="text-xl sm:text-2xl font-mono font-bold text-stone-900 dark:text-stone-100 tracking-wider">
+                      <p className="text-lg sm:text-xl font-mono font-bold text-stone-900 dark:text-stone-100 tracking-wider">
                         {businessInfo.payment.accountNumber}
                       </p>
                     </div>
                     <CopyAccountButton
                       accountNumber={businessInfo.payment.accountNumber}
-                      className="py-2 px-3 text-xs shrink-0"
+                      className="w-full sm:w-auto text-[10px] py-1.5 px-2.5 justify-center shrink-0"
                     />
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Star } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { SafeImage } from './SafeImage';
 import { useApp } from '../context/AppContext';
 import { safeGetItem } from '../utils/safeStorage';
@@ -128,21 +128,6 @@ export const Hero: React.FC = () => {
                     fitMode="auto"
                     className="w-full h-full rounded-2xl group-hover:scale-102 transition-transform duration-500"
                   />
-                </div>
-
-                {/* Floating Customer Proof Badge (Always visible on mobile & tablets) */}
-                <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 z-20 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-lg border border-rose-100 dark:border-stone-800 flex items-center gap-2 sm:gap-2.5 max-w-[calc(100%-1.25rem)] sm:max-w-xs">
-                  <div className="flex items-center text-amber-500 shrink-0">
-                    <Star className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-amber-400 text-amber-500" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[11px] sm:text-xs font-bold text-stone-900 dark:text-stone-100 tabular-nums leading-tight">
-                      {hero.featuredCakeRating || '5.0 / 5.0 Rating'}
-                    </p>
-                    <p className="text-[9.5px] sm:text-[11px] text-stone-600 dark:text-stone-300 font-medium leading-tight">
-                      {hero.featuredCakeSubtitle || 'Over 500+ Lagos Celebrations'}
-                    </p>
-                  </div>
                 </div>
 
                 {/* Floating Pricing Badge (Always fully visible on mobile & tablets) */}

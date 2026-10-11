@@ -11,7 +11,7 @@ export const BestSellersPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 text-xs font-semibold">
-            <span>Highest Rated by Lagos Celebrants</span>
+            <span>Most Celebrated Cakes in Lagos</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-5xl font-bold text-stone-900 dark:text-stone-100">
             Our Best Sellers

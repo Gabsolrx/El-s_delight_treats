@@ -262,6 +262,18 @@ export function safeGetItem(key: string): string | null {
 }
 
 /**
+ * Safe JSON parser that never throws on malformed JSON or corrupted storage.
+ */
+export function safeJsonParse<T>(jsonStr: string | null | undefined, fallback: T): T {
+  if (!jsonStr) return fallback;
+  try {
+    return JSON.parse(jsonStr) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+/**
  * Safe wrapper around localStorage.removeItem.
  */
 export function safeRemoveItem(key: string): void {

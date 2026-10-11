@@ -170,7 +170,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     featuredCakeTitle: (preseededData.hero?.featuredCakeTitle as string) || 'Gold Splatter "Happy Birthday Sister NK" Cake',
     featuredCakePrice: (preseededData.hero?.featuredCakePrice as string) || '₦38,000',
     featuredCakeTag: (preseededData.hero?.featuredCakeTag as string) || 'Featured Today',
-    featuredCakeRating: (preseededData.hero?.featuredCakeRating as string) || '5.0 / 5.0 Rating',
+    featuredCakeRating: '',
     featuredCakeSubtitle: (preseededData.hero?.featuredCakeSubtitle as string) || 'Over 500+ Lagos Celebrations',
     ...((preseededData.hero as any) || {}),
   },

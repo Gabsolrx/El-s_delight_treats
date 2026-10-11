@@ -1283,10 +1283,10 @@ export const AdminPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar border-t border-rose-50 dark:border-stone-800/60 py-2">
           {[
             { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-            { id: 'products', label: `Products (${products.length})`, icon: Cake },
+            { id: 'products', label: `Products (${products.length})` },
             { id: 'categories', label: `Categories (${categories.length})`, icon: Layers },
             { id: 'orders', label: `Orders (${orders.length})`, icon: ShoppingBag, badge: pendingOrdersCount },
-            { id: 'inquiries', label: `Custom Inquiries (${customInquiries.length})`, icon: Palette, badge: newInquiriesCount },
+            { id: 'inquiries', label: `Custom Inquiries (${customInquiries.length})`, badge: newInquiriesCount },
             { id: 'content', label: 'Site Content & Banners', icon: FileText },
             { id: 'store', label: 'Store & Brand Settings', icon: Building2 },
             { id: 'reviews', label: `Reviews (${reviews.length})`, icon: Star },
@@ -1304,7 +1304,7 @@ export const AdminPage: React.FC = () => {
                     : 'text-stone-600 dark:text-stone-400 hover:bg-rose-50/70 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100'
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                {Icon && <Icon className="w-4 h-4" />}
                 <span>{tab.label}</span>
                 {Boolean(tab.badge && tab.badge > 0) && (
                   <span className="w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center font-bold">
@@ -1329,7 +1329,7 @@ export const AdminPage: React.FC = () => {
           <div className="space-y-8">
             {/* Top Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs">
                 <div>
                   <span className="text-xs uppercase tracking-wider font-semibold text-stone-500">
                     Total Order Value
@@ -1341,12 +1341,9 @@ export const AdminPage: React.FC = () => {
                     ● Stanbic IBTC bank verified
                   </span>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 flex items-center justify-center">
-                  <CreditCard className="w-6 h-6" />
-                </div>
               </div>
 
-              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs">
                 <div>
                   <span className="text-xs uppercase tracking-wider font-semibold text-stone-500">
                     Customer Orders
@@ -1358,12 +1355,9 @@ export const AdminPage: React.FC = () => {
                     {pendingOrdersCount} pending verification
                   </span>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-pink-50 dark:bg-pink-950/60 text-pink-600 flex items-center justify-center">
-                  <ShoppingBag className="w-6 h-6" />
-                </div>
               </div>
 
-              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs">
                 <div>
                   <span className="text-xs uppercase tracking-wider font-semibold text-stone-500">
                     Live Products
@@ -1375,12 +1369,9 @@ export const AdminPage: React.FC = () => {
                     Across {categories.length} categories
                   </span>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center">
-                  <Cake className="w-6 h-6" />
-                </div>
               </div>
 
-              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex items-center justify-between">
+              <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs">
                 <div>
                   <span className="text-xs uppercase tracking-wider font-semibold text-stone-500">
                     Custom Requests
@@ -1391,9 +1382,6 @@ export const AdminPage: React.FC = () => {
                   <span className="text-[11px] text-pink-600 font-semibold mt-1 inline-block">
                     {newInquiriesCount} new WhatsApp inquiries
                   </span>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 flex items-center justify-center">
-                  <Palette className="w-6 h-6" />
                 </div>
               </div>
             </div>
@@ -1466,42 +1454,36 @@ export const AdminPage: React.FC = () => {
                   onClick={handleOpenCreateProduct}
                   className="p-4 rounded-2xl bg-pink-50 dark:bg-pink-950/40 hover:bg-pink-100 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-900 text-left font-semibold text-xs transition-colors flex flex-col gap-2"
                 >
-                  <Plus className="w-5 h-5 text-pink-600" />
                   <span>Add New Cake</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('categories')}
                   className="p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 hover:bg-rose-100 text-rose-800 dark:text-rose-200 border border-rose-200 dark:border-rose-900 text-left font-semibold text-xs transition-colors flex flex-col gap-2"
                 >
-                  <Layers className="w-5 h-5 text-pink-600" />
                   <span>Categories ({categories.length})</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('content')}
                   className="p-4 rounded-2xl bg-pink-50/50 dark:bg-stone-900 hover:bg-stone-100 text-stone-800 dark:text-stone-200 border border-stone-200 dark:border-stone-800 text-left font-semibold text-xs transition-colors flex flex-col gap-2"
                 >
-                  <Crown className="w-5 h-5 text-pink-600" />
                   <span>Hero Featured Cake</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('orders')}
                   className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 hover:bg-stone-100 text-stone-800 dark:text-stone-200 border border-stone-200 dark:border-stone-800 text-left font-semibold text-xs transition-colors flex flex-col gap-2"
                 >
-                  <ShoppingBag className="w-5 h-5 text-pink-600" />
                   <span>Review Orders</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('store')}
                   className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 hover:bg-stone-100 text-stone-800 dark:text-stone-200 border border-stone-200 dark:border-stone-800 text-left font-semibold text-xs transition-colors flex flex-col gap-2"
                 >
-                  <Palette className="w-5 h-5 text-pink-600" />
                   <span>Customize Logo</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('store')}
                   className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 hover:bg-stone-100 text-stone-800 dark:text-stone-200 border border-stone-200 dark:border-stone-800 text-left font-semibold text-xs transition-colors flex flex-col gap-2"
                 >
-                  <Building2 className="w-5 h-5 text-pink-600" />
                   <span>Bank & Contact</span>
                 </button>
               </div>
@@ -1513,16 +1495,11 @@ export const AdminPage: React.FC = () => {
               <div className="bg-white dark:bg-[#16161A] p-6 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between gap-3 mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-pink-100 dark:bg-pink-950/60 text-pink-600 flex items-center justify-center">
-                        <Crown className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <h4 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100">
-                          Featured Today Cake (Hero Visual)
-                        </h4>
-                        <p className="text-[11px] text-stone-500">Live showcase on homepage hero</p>
-                      </div>
+                    <div>
+                      <h4 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100">
+                        Featured Today Cake (Hero Visual)
+                      </h4>
+                      <p className="text-[11px] text-stone-500">Live showcase on homepage hero</p>
                     </div>
 
                     {heroForm.showFeaturedCake !== false && Boolean(heroForm.featuredCakeImage) ? (
@@ -1560,7 +1537,7 @@ export const AdminPage: React.FC = () => {
                         {heroForm.featuredCakePrice || '₦38,000'}
                       </p>
                       <p className="text-[10px] text-stone-500 dark:text-stone-400 mt-0.5 truncate">
-                        {heroForm.featuredCakeSubtitle || '5.0 / 5.0 Rating · 500+ Lagos Celebrations'}
+                        {heroForm.featuredCakeSubtitle || 'Handcrafted Fresh · 500+ Lagos Celebrations'}
                       </p>
                     </div>
                   </div>
@@ -1781,17 +1758,15 @@ export const AdminPage: React.FC = () => {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setActiveTab('categories')}
-                  className="px-3.5 py-2.5 rounded-xl border border-pink-200 dark:border-pink-900/60 bg-pink-50/50 dark:bg-pink-950/30 hover:bg-pink-100 text-pink-700 dark:text-pink-300 font-bold text-xs transition-colors flex items-center gap-1.5"
+                  className="px-3.5 py-2.5 rounded-xl border border-pink-200 dark:border-pink-900/60 bg-pink-50/50 dark:bg-pink-950/30 hover:bg-pink-100 text-pink-700 dark:text-pink-300 font-bold text-xs transition-colors flex items-center justify-center"
                 >
-                  <Layers className="w-3.5 h-3.5 text-pink-600" />
                   <span>Categories ({categories.length})</span>
                 </button>
 
                 <button
                   onClick={resetProductsToDefault}
-                  className="px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-800 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs font-semibold text-stone-600 dark:text-stone-400 transition-colors flex items-center gap-1.5"
+                  className="px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-800 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs font-semibold text-stone-600 dark:text-stone-400 transition-colors flex items-center justify-center"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
                   <span>Reset Catalog</span>
                 </button>
 
@@ -1803,18 +1778,16 @@ export const AdminPage: React.FC = () => {
                     await syncProductsToSupabase();
                     setIsSavingProductsSupabase(false);
                   }}
-                  className="px-3.5 py-2.5 rounded-xl border border-pink-300 dark:border-pink-800 bg-white dark:bg-stone-900 hover:bg-pink-50 dark:hover:bg-rose-950/40 text-pink-700 dark:text-pink-300 font-bold text-xs transition-colors flex items-center gap-1.5 shadow-2xs"
+                  className="px-3.5 py-2.5 rounded-xl border border-pink-300 dark:border-pink-800 bg-white dark:bg-stone-900 hover:bg-pink-50 dark:hover:bg-rose-950/40 text-pink-700 dark:text-pink-300 font-bold text-xs transition-colors flex items-center justify-center shadow-2xs"
                   title="Upload all website products and active images into Supabase database"
                 >
-                  <UploadCloud className={`w-3.5 h-3.5 ${isSavingProductsSupabase ? 'animate-bounce' : 'text-pink-600'}`} />
                   <span>{isSavingProductsSupabase ? 'Saving to Supabase...' : 'Save Products to Supabase'}</span>
                 </button>
 
                 <button
                   onClick={handleOpenCreateProduct}
-                  className="px-4 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-colors flex items-center gap-2"
+                  className="px-4 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-colors flex items-center justify-center"
                 >
-                  <Plus className="w-4 h-4" />
                   <span>Add New Cake</span>
                 </button>
               </div>
@@ -1860,21 +1833,6 @@ export const AdminPage: React.FC = () => {
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                        <span className="px-2 py-0.5 rounded-full bg-white/90 dark:bg-stone-900/90 text-rose-900 dark:text-rose-100 text-[10px] font-bold shadow-xs">
-                          {product.category}
-                        </span>
-                        {product.bestseller && (
-                          <span className="px-2 py-0.5 rounded-full bg-pink-600 text-white text-[10px] font-bold">
-                            Bestseller
-                          </span>
-                        )}
-                        {product.isNew && (
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">
-                            New
-                          </span>
-                        )}
-                      </div>
                     </div>
 
                     {/* Details */}
@@ -2472,10 +2430,9 @@ export const AdminPage: React.FC = () => {
                           `${customInquiries.length} total inquiries will be permanently removed.`
                         );
                       }}
-                      className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 text-xs font-semibold transition-colors flex items-center gap-1.5 border border-rose-200/60 dark:border-rose-900/40 shadow-2xs"
+                      className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 text-xs font-semibold transition-colors flex items-center justify-center border border-rose-200/60 dark:border-rose-900/40 shadow-2xs"
                       title="Permanently remove all inquiries from admin and Supabase database"
                     >
-                      <Trash2 className="w-3.5 h-3.5 text-rose-600" />
                       <span>Delete All from DB</span>
                     </button>
 
@@ -2487,10 +2444,9 @@ export const AdminPage: React.FC = () => {
                         await syncInquiriesToSupabase();
                         setIsSavingInquiriesSupabase(false);
                       }}
-                      className="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-2xs"
+                      className="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition-colors flex items-center justify-center shadow-2xs"
                       title="Upload all custom cake inquiries into the Supabase inquiries table"
                     >
-                      <Database className={`w-3.5 h-3.5 ${isSavingInquiriesSupabase ? 'animate-spin' : ''}`} />
                       <span>{isSavingInquiriesSupabase ? 'Saving to Supabase...' : `Save All ${customInquiries.length} Inquiries to Supabase`}</span>
                     </button>
                   </>
@@ -3010,19 +2966,6 @@ export const AdminPage: React.FC = () => {
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
-                            </div>
-
-                            {/* Rating badge */}
-                            <div className="absolute top-3 left-3 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md px-2.5 py-1.5 rounded-xl shadow-xs border border-rose-100 dark:border-stone-800 flex items-center gap-1.5">
-                              <span className="text-xs">⭐️</span>
-                              <div>
-                                <p className="text-[10px] font-bold text-stone-900 dark:text-stone-100">
-                                  {heroForm.featuredCakeRating || '5.0 / 5.0 Rating'}
-                                </p>
-                                <p className="text-[8px] text-stone-500 dark:text-stone-400">
-                                  {heroForm.featuredCakeSubtitle || 'Over 500+ Lagos Celebrations'}
-                                </p>
-                              </div>
                             </div>
 
                             {/* Price badge */}

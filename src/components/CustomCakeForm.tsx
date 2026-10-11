@@ -456,8 +456,8 @@ export const CustomCakeForm: React.FC = () => {
           <div className="p-5 rounded-2xl bg-rose-50/50 dark:bg-stone-900/80 border border-rose-200/80 dark:border-rose-900/60 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-rose-200/60 dark:border-stone-800 pb-3">
               <div>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-pink-600 dark:text-pink-400 flex items-center gap-1">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Bank Transfer & Booking Deposit
+                <span className="text-[10px] uppercase font-bold tracking-wider text-pink-600 dark:text-pink-400 block">
+                  Bank Transfer & Booking Deposit
                 </span>
                 <p className="text-xs font-bold text-stone-900 dark:text-stone-100 mt-0.5">
                   Lock in your event date with a direct Stanbic IBTC bank transfer
@@ -481,7 +481,7 @@ export const CustomCakeForm: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-rose-100 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="pt-2 border-t border-rose-100 dark:border-stone-800 flex flex-wrap items-center justify-between gap-2.5 overflow-hidden">
                 <div className="min-w-0">
                   <span className="text-[10px] uppercase font-bold text-pink-600 dark:text-pink-400">Account Number</span>
                   <p className="text-xl sm:text-2xl font-mono font-bold text-stone-900 dark:text-stone-100 tracking-wider">
@@ -490,7 +490,7 @@ export const CustomCakeForm: React.FC = () => {
                 </div>
                 <CopyAccountButton
                   accountNumber={businessInfo.payment.accountNumber}
-                  className="w-full sm:w-auto justify-center py-2 px-3 text-xs"
+                  className="w-full sm:w-auto justify-center py-1.5 px-2.5 text-[10px] shrink-0"
                 />
               </div>
             </div>
@@ -577,13 +577,13 @@ export const CustomCakeForm: React.FC = () => {
           </div>
 
           {/* Bank Account Verification Reminder Card */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-stone-950 border-2 border-rose-200 dark:border-rose-900/60 max-w-md mx-auto text-left space-y-2">
-            <span className="text-[10px] uppercase font-bold text-pink-600 dark:text-pink-400 flex items-center gap-1">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" /> {businessInfo.payment.bank} Payment Account
+          <div className="p-4 rounded-2xl bg-white dark:bg-stone-950 border-2 border-rose-200 dark:border-rose-900/60 max-w-md mx-auto text-left space-y-2 overflow-hidden">
+            <span className="text-[10px] uppercase font-bold text-pink-600 dark:text-pink-400 block">
+              {businessInfo.payment.bank} Payment Account
             </span>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-2.5">
               <div className="min-w-0">
-                <p className="font-bold text-stone-900 dark:text-stone-100 text-sm">
+                <p className="font-bold text-stone-900 dark:text-stone-100 text-sm truncate">
                   {businessInfo.payment.accountName}
                 </p>
                 <p className="font-mono text-base font-bold text-stone-800 dark:text-stone-200">
@@ -592,7 +592,7 @@ export const CustomCakeForm: React.FC = () => {
               </div>
               <CopyAccountButton
                 accountNumber={businessInfo.payment.accountNumber}
-                className="w-full sm:w-auto justify-center py-2 px-3 text-xs"
+                className="w-full sm:w-auto justify-center py-1.5 px-2.5 text-[10px] shrink-0"
               />
             </div>
           </div>

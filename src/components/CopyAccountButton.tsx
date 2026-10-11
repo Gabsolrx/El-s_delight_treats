@@ -33,7 +33,7 @@ export const CopyAccountButton: React.FC<CopyAccountButtonProps> = ({
     <button
       type="button"
       onClick={handleCopy}
-      className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all max-w-full text-center ${
+      className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold transition-all max-w-full text-center shrink-0 ${
         copied
           ? 'bg-emerald-600 text-white'
           : 'bg-rose-100 hover:bg-rose-200 dark:bg-rose-950 dark:hover:bg-rose-900 text-rose-900 dark:text-rose-200'
@@ -42,12 +42,12 @@ export const CopyAccountButton: React.FC<CopyAccountButtonProps> = ({
     >
       {copied ? (
         <>
-          <Check className="w-3.5 h-3.5 shrink-0" />
+          <Check className="w-3 h-3 shrink-0" />
           <span className="truncate">COPIED ✓</span>
         </>
       ) : (
         <>
-          <Copy className="w-3.5 h-3.5 shrink-0" />
+          <Copy className="w-3 h-3 shrink-0" />
           <span className="truncate">COPY ACCOUNT NUMBER</span>
         </>
       )}

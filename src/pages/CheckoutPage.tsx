@@ -547,10 +547,9 @@ export const CheckoutPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleProceedToPayment}
-                className="px-8 py-3.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition-colors flex items-center gap-2"
+                className="px-8 py-3.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition-colors flex items-center justify-center"
               >
                 <span>Continue to Bank Payment</span>
-                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>

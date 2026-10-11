@@ -169,8 +169,8 @@ export const ContactPage: React.FC = () => {
 
               {/* Direct Bank Details Reference */}
               <div className="pt-4 border-t border-rose-100 dark:border-stone-800 space-y-2">
-                <span className="text-[10px] uppercase font-bold text-stone-400 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Payment Account
+                <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                  Payment Account
                 </span>
                 <p className="text-xs text-stone-700 dark:text-stone-300">
                   {businessInfo.payment.bank} · <strong>{businessInfo.payment.accountNumber}</strong>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { X, ShoppingBag, Check, ArrowRight, ShieldCheck, Clock, Truck } from 'lucide-react';
+import { X, ShoppingBag, Check, ArrowRight, Clock, Truck } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { Product, ProductSize, CakeFlavour, StoredOrder } from '../types';
 import { useApp } from '../context/AppContext';
@@ -26,19 +26,22 @@ export const QuickViewModal: React.FC = () => {
     }
   }, [quickViewProduct]);
 
-  if (!quickViewProduct || !selectedSize || !selectedFlavour) return null;
+  if (!quickViewProduct) return null;
+
+  const currentSize = selectedSize || quickViewProduct.sizes[0] || { name: 'Standard', label: 'Standard', priceModifier: 1 };
+  const currentFlavour = selectedFlavour || quickViewProduct.flavours[0] || 'Vanilla Buttercream';
 
   const currentUnitPrice =
-    selectedSize.price !== undefined
-      ? selectedSize.price
-      : Math.round(quickViewProduct.price * (selectedSize.priceModifier || 1));
+    currentSize.price !== undefined
+      ? currentSize.price
+      : Math.round(quickViewProduct.price * (currentSize.priceModifier || 1));
   const currentTotalPrice = currentUnitPrice * quantity;
 
   const handleAddToCart = () => {
     addToCart(
       quickViewProduct,
-      selectedSize,
-      selectedFlavour,
+      currentSize,
+      currentFlavour,
       cakeMessage,
       specialInstructions,
       quantity
@@ -52,11 +55,11 @@ export const QuickViewModal: React.FC = () => {
       createdAt: new Date().toISOString(),
       items: [
         {
-          id: `${quickViewProduct.id}_${selectedSize.label}_${selectedFlavour}_${Date.now()}`,
+          id: `${quickViewProduct.id}_${currentSize.label}_${currentFlavour}_${Date.now()}`,
           productId: quickViewProduct.id,
           product: quickViewProduct,
-          selectedSize,
-          selectedFlavour,
+          selectedSize: currentSize,
+          selectedFlavour: currentFlavour,
           cakeMessage: cakeMessage.trim(),
           specialInstructions: specialInstructions.trim(),
           quantity,
@@ -146,7 +149,7 @@ export const QuickViewModal: React.FC = () => {
             {/* Size Options */}
             <div className="mt-4">
               <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 dark:text-stone-300 mb-1.5">
-                Select Size: <span className="text-pink-600 dark:text-pink-400 font-normal">{selectedSize.name}</span>
+                Select Size: <span className="text-pink-600 dark:text-pink-400 font-normal">{currentSize.name}</span>
               </label>
               <div className="grid grid-cols-2 gap-1.5">
                 {quickViewProduct.sizes.map((size) => {
@@ -154,7 +157,7 @@ export const QuickViewModal: React.FC = () => {
                     size.price !== undefined
                       ? size.price
                       : Math.round(quickViewProduct.price * (size.priceModifier || 1));
-                  const isSelected = selectedSize.label === size.label;
+                  const isSelected = currentSize.label === size.label;
                   return (
                     <button
                       key={size.name}
@@ -182,11 +185,11 @@ export const QuickViewModal: React.FC = () => {
             {/* Flavour Options */}
             <div className="mt-4">
               <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 dark:text-stone-300 mb-1.5">
-                Select Flavour: <span className="text-pink-600 dark:text-pink-400 font-normal">{selectedFlavour}</span>
+                Select Flavour: <span className="text-pink-600 dark:text-pink-400 font-normal">{currentFlavour}</span>
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {quickViewProduct.flavours.map((flavour) => {
-                  const isSelected = selectedFlavour === flavour;
+                  const isSelected = currentFlavour === flavour;
                   return (
                     <button
                       key={flavour}
@@ -255,9 +258,8 @@ export const QuickViewModal: React.FC = () => {
             <button
               type="button"
               onClick={handlePayViaBankTransfer}
-              className="w-full py-2.5 px-4 bg-gradient-to-r from-rose-700 to-pink-700 hover:from-rose-800 hover:to-pink-800 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-all"
+              className="w-full py-2.5 px-4 bg-gradient-to-r from-rose-700 to-pink-700 hover:from-rose-800 hover:to-pink-800 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center transition-all"
             >
-              <ShieldCheck className="w-4 h-4 text-emerald-300" />
               <span>Pay via Bank Transfer ({formatNaira(currentTotalPrice)})</span>
             </button>
 
@@ -274,8 +276,8 @@ export const QuickViewModal: React.FC = () => {
                 href={generateDirectProductWhatsAppUrl(
                   quickViewProduct.name,
                   currentTotalPrice,
-                  selectedSize.name,
-                  selectedFlavour
+                  currentSize.name,
+                  currentFlavour
                 )}
                 target="_blank"
                 rel="noopener noreferrer"

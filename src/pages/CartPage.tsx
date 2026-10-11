@@ -162,8 +162,7 @@ export const CartPage: React.FC = () => {
             </button>
 
             <div className="pt-2 text-[11px] text-stone-500 space-y-1">
-              <p className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <p>
                 Stanbic IBTC Direct Bank Transfer
               </p>
               <p className="flex items-center gap-1.5">

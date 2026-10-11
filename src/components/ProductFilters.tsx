@@ -75,7 +75,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
   const sortOptions = [
     { label: 'Featured', value: 'featured' },
     { label: 'Best Selling', value: 'best-selling' },
-    { label: 'Highest Rated', value: 'rating' },
+    { label: 'Most Popular', value: 'rating' },
     { label: 'Price: Low to High', value: 'price-asc' },
     { label: 'Price: High to Low', value: 'price-desc' },
   ];

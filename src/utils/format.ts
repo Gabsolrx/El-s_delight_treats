@@ -1,12 +1,14 @@
 import { StoredOrder, CustomCakeFormData } from '../types';
 import { BUSINESS_INFO } from '../data/products';
 
-export function formatNaira(amount: number): string {
+export function formatNaira(amount: number | string | undefined | null): string {
+  const num = typeof amount === 'number' ? amount : Number(amount);
+  const safeAmount = isNaN(num) ? 0 : num;
   return new Intl.NumberFormat('en-NG', {
     style: 'currency',
     currency: 'NGN',
     maximumFractionDigits: 0,
-  }).format(amount).replace('NGN', '₦').trim();
+  }).format(safeAmount).replace('NGN', '₦').trim();
 }
 
 export async function copyToClipboard(text: string): Promise<boolean> {

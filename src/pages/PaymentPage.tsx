@@ -449,19 +449,19 @@ export const PaymentPage: React.FC = () => {
               </div>
 
               {/* Account Number with Prominent Copy Button */}
-              <div className="p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
+              <div className="p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/70 flex flex-wrap items-center justify-between gap-2.5 overflow-hidden">
+                <div className="min-w-0">
                   <span className="text-[10px] uppercase font-bold text-rose-700 dark:text-rose-300 block">
                     {businessInfo.payment.bank} Account Number
                   </span>
-                  <p className="text-2xl sm:text-3xl font-mono font-bold text-stone-900 dark:text-stone-100 tracking-wider mt-0.5">
+                  <p className="text-xl sm:text-2xl font-mono font-bold text-stone-900 dark:text-stone-100 tracking-wider mt-0.5">
                     {businessInfo.payment.accountNumber}
                   </p>
                 </div>
 
                 <CopyAccountButton
                   accountNumber={businessInfo.payment.accountNumber}
-                  className="py-2.5 px-4 text-xs font-bold shadow-xs shrink-0"
+                  className="w-full sm:w-auto py-1.5 px-2.5 text-[10px] font-bold shadow-xs shrink-0 justify-center"
                 />
               </div>
             </div>
