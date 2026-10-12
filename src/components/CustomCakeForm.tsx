@@ -599,7 +599,6 @@ export const CustomCakeForm: React.FC = () => {
               onClick={handlePaymentMade}
               className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <WhatsAppIcon className="w-5 h-5 text-white" />
               <span>{hasMadePayment ? 'Payment Recorded! (Re-open WhatsApp)' : 'PAYMENT MADE (Confirm on WhatsApp)'}</span>
             </button>
 
@@ -609,7 +608,6 @@ export const CustomCakeForm: React.FC = () => {
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 text-xs font-semibold flex items-center justify-center gap-2"
             >
-              <WhatsAppIcon className="w-4 h-4 text-emerald-600" />
               <span>Continue on WhatsApp (Enquiry)</span>
             </a>
 

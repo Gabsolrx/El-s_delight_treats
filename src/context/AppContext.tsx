@@ -238,6 +238,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               p.id !== 'prod-10' &&
               p.id !== 'prod-19' &&
               p.id !== 'prod-20' &&
+              p.id !== 'prod-muvrp76orxs' &&
+              p.id !== 'prod-muvrnr2k7eu' &&
               p.slug !== 'bento-cake' &&
               p.slug !== 'cupcake-box' &&
               p.slug !== 'dessert-gift-box' &&
@@ -1722,12 +1724,55 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (prodsRes?.products && prodsRes.products.length > 0) {
         const deletedRaw = safeGetItem('els_deleted_product_ids');
         const deletedIds = new Set<string>(deletedRaw ? JSON.parse(deletedRaw) : []);
-        const validProds = prodsRes.products.filter((p) => !deletedIds.has(p.id));
-        if (validProds.length > 0) {
-          setProducts(validProds);
-          safeSetItem('els_products', JSON.stringify(validProds));
-          idbSet('els_products', validProds).catch(() => {});
-          idbSet('els_products_full', validProds).catch(() => {});
+        const savedDeletedSlugs = safeGetItem('els_deleted_product_slugs');
+        const deletedSlugs = new Set<string>(savedDeletedSlugs ? JSON.parse(savedDeletedSlugs) : []);
+        const savedDeletedNames = safeGetItem('els_deleted_product_names');
+        const deletedNames = new Set<string>(savedDeletedNames ? JSON.parse(savedDeletedNames) : []);
+
+        const isDeleted = (p: { id: string; slug?: string; name?: string }) =>
+          deletedIds.has(p.id) ||
+          (p.slug && deletedSlugs.has(p.slug.toLowerCase())) ||
+          (p.name && deletedNames.has(p.name.trim().toLowerCase()));
+
+        const validProds = prodsRes.products.filter(
+          (p) =>
+            !isDeleted(p) &&
+            p.id !== 'prod-10' &&
+            p.id !== 'prod-19' &&
+            p.id !== 'prod-20' &&
+            p.id !== 'prod-muvrp76orxs' &&
+            p.id !== 'prod-muvrnr2k7eu' &&
+            p.slug !== 'bento-cake' &&
+            p.slug !== 'cupcake-box' &&
+            p.slug !== 'dessert-gift-box' &&
+            p.slug !== 'premium-celebration-box' &&
+            p.slug !== 'chocolate-cake-slice' &&
+            p.slug !== 'red-velvet-cake-slice' &&
+            p.category !== 'Cake Slices'
+        );
+
+        // Deduplicate by name and ID identically so product count never jumps between 17 and 15
+        const seenNames = new Set<string>();
+        const seenIds = new Set<string>();
+        const deduped: Product[] = [];
+        for (const item of validProds) {
+          if (isDeleted(item)) continue;
+          const normName = (item.name || '').trim().toLowerCase();
+          if (seenIds.has(item.id)) continue;
+          if (normName && seenNames.has(normName)) continue;
+          seenIds.add(item.id);
+          if (normName) seenNames.add(normName);
+          deduped.push({
+            ...item,
+            images: (item.images || []).filter((img) => typeof img === 'string' && !img.includes('unsplash')),
+          });
+        }
+
+        if (deduped.length > 0) {
+          setProducts(deduped);
+          safeSetItem('els_products', JSON.stringify(deduped));
+          idbSet('els_products', deduped).catch(() => {});
+          idbSet('els_products_full', deduped).catch(() => {});
         }
       }
 

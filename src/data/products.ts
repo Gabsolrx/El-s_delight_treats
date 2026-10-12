@@ -60,9 +60,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Anniversary', 'General'],
     price: 25000,
-    images: [
-      'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#4A2810',
     flavours: ['Rich Chocolate Ganache', 'Vanilla Buttercream', 'Marble Swirl', 'Salted Caramel'],
     sizes: DEFAULT_SIZES,
@@ -82,10 +80,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Anniversary', 'Valentine', 'Corporate'],
     price: 30000,
-    images: [
-      'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#881337',
     flavours: ['Velvet Red Velvet', 'Vanilla Buttercream', 'Rich Chocolate Ganache'],
     sizes: DEFAULT_SIZES,
@@ -105,10 +100,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Naming Ceremony', 'Baby Shower', 'School'],
     price: 20000,
-    images: [
-      'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1562440499-64c9a111f713?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#FDF2F4',
     flavours: ['Vanilla Buttercream', 'Fresh Strawberry Cream', 'Toasted Coconut'],
     sizes: DEFAULT_SIZES,
@@ -130,10 +122,7 @@ const RAW_PRODUCTS: Product[] = [
     price: 28000,
     oldPrice: 32000,
     discount: 12,
-    images: [
-      'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1542826438-bd32f43d626f?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#FB7185',
     flavours: ['Fresh Strawberry Cream', 'Vanilla Buttercream', 'Velvet Red Velvet'],
     sizes: DEFAULT_SIZES,
@@ -153,9 +142,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Anniversary', 'Graduation', 'Corporate'],
     price: 35000,
-    images: [
-      'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#271B15',
     flavours: ['Rich Chocolate Ganache', 'Salted Caramel', 'Marble Swirl'],
     sizes: DEFAULT_SIZES,
@@ -175,10 +162,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Anniversary Cakes',
     occasion: ['Valentine', 'Anniversary', 'Birthday', 'Mother\'s Day'],
     price: 25000,
-    images: [
-      'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#F472B6',
     flavours: ['Vanilla Buttercream', 'Velvet Red Velvet', 'Fresh Strawberry Cream'],
     sizes: DEFAULT_SIZES,
@@ -198,9 +182,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Anniversary', 'General'],
     price: 32000,
-    images: [
-      'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#78350F',
     flavours: ['Salted Caramel', 'Vanilla Buttercream', 'Marble Swirl'],
     sizes: DEFAULT_SIZES,
@@ -220,10 +202,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Mother\'s Day', 'Baby Shower', 'Anniversary'],
     price: 28000,
-    images: [
-      'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#FB7185',
     flavours: ['Vanilla Buttercream', 'Fresh Strawberry Cream', 'Toasted Coconut'],
     sizes: DEFAULT_SIZES,
@@ -245,10 +224,7 @@ const RAW_PRODUCTS: Product[] = [
     price: 38000,
     oldPrice: 42000,
     discount: 10,
-    images: [
-      'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#BE185D',
     flavours: ['Velvet Red Velvet', 'Vanilla Buttercream', 'Rich Chocolate Ganache'],
     sizes: DEFAULT_SIZES,
@@ -268,10 +244,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Anniversary Cakes',
     occasion: ['Anniversary', 'Valentine', 'Wedding'],
     price: 30000,
-    images: [
-      'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#BE185D',
     flavours: ['Velvet Red Velvet', 'Rich Chocolate Ganache', 'Vanilla Buttercream'],
     sizes: DEFAULT_SIZES,
@@ -290,10 +263,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Baby Shower Cakes',
     occasion: ['Baby Shower', 'Naming Ceremony', 'General'],
     price: 35000,
-    images: [
-      'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#FDE8E9',
     flavours: ['Vanilla Buttercream', 'Fresh Strawberry Cream', 'Toasted Coconut'],
     sizes: DEFAULT_SIZES,
@@ -312,9 +282,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Graduation Cakes',
     occasion: ['Graduation', 'School', 'General'],
     price: 30000,
-    images: [
-      'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#1E293B',
     flavours: ['Rich Chocolate Ganache', 'Velvet Red Velvet', 'Vanilla Buttercream'],
     sizes: DEFAULT_SIZES,
@@ -333,10 +301,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Anniversary', 'Corporate', 'School', 'Church'],
     price: 35000,
-    images: [
-      'https://images.unsplash.com/photo-1562440499-64c9a111f713?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#FCE7EB',
     flavours: ['Vanilla Buttercream', 'Rich Chocolate Ganache', 'Marble Swirl', 'Velvet Red Velvet'],
     sizes: DEFAULT_SIZES,
@@ -355,10 +320,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Birthday Cakes',
     occasion: ['Birthday', 'Anniversary', 'Corporate'],
     price: 40000,
-    images: [
-      'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#701A35',
     flavours: ['Velvet Red Velvet', 'Rich Chocolate Ganache', 'Spiced Carrot & Walnut', 'Salted Caramel'],
     sizes: DEFAULT_SIZES,
@@ -379,10 +341,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Wedding Cakes',
     occasion: ['Wedding', 'Anniversary'],
     price: 120000,
-    images: [
-      'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#FFFBF5',
     flavours: ['Vanilla Buttercream', 'Velvet Red Velvet', 'Rich Chocolate Ganache', 'Toasted Coconut'],
     sizes: WEDDING_SIZES,
@@ -403,10 +362,7 @@ const RAW_PRODUCTS: Product[] = [
     price: 180000,
     oldPrice: 200000,
     discount: 10,
-    images: [
-      'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#F5EBE6',
     flavours: ['Vanilla Buttercream', 'Velvet Red Velvet', 'Rich Chocolate Ganache', 'Toasted Coconut', 'Spiced Carrot & Walnut'],
     sizes: WEDDING_SIZES,
@@ -426,9 +382,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Corporate/Office Cakes',
     occasion: ['Corporate', 'General'],
     price: 50000,
-    images: [
-      'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
-    ],
+    images: [],
     imagePlaceholderColor: '#1E293B',
     flavours: ['Rich Chocolate Ganache', 'Vanilla Buttercream', 'Velvet Red Velvet'],
     sizes: DEFAULT_SIZES,
@@ -447,10 +401,7 @@ const RAW_PRODUCTS: Product[] = [
     category: 'Christmas Cakes',
     occasion: ['Christmas', 'General'],
     price: 35000,
-    images: [
-      'https://images.unsplash.com/photo-1543257580-7269da773bf5?auto=format&fit=crop&crop=center&w=1000&h=1000&q=85',
-      'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?auto=format&fit=crop&crop=center&w=1000&h=1000&q=85',
-    ],
+    images: [],
     imagePlaceholderColor: '#064E3B',
     flavours: ['Rich Chocolate Ganache', 'Velvet Red Velvet', 'Vanilla Buttercream', 'Spiced Carrot & Walnut'],
     sizes: DEFAULT_SIZES,
@@ -467,14 +418,14 @@ function buildInitialProducts(): Product[] {
   const map = new Map<string, Product>();
   for (const p of RAW_PRODUCTS) {
     const cleanImages = (p.images || []).filter(
-      (img) => !img.includes('photo-1578985545062') && !img.includes('photo-1512485800893-b097b693b169')
+      (img) => typeof img === 'string' && !img.includes('unsplash')
     );
     map.set(p.id, { ...p, images: cleanImages });
   }
   if (preseededData.products && Array.isArray(preseededData.products)) {
     for (const p of preseededData.products as any[]) {
       const pImages = (Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : []))
-        .filter((img: string) => !img.includes('photo-1578985545062') && !img.includes('photo-1512485800893-b097b693b169'));
+        .filter((img: string) => typeof img === 'string' && !img.includes('unsplash'));
       if (!map.has(p.id)) {
         map.set(p.id, {
           id: p.id,

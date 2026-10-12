@@ -6,37 +6,37 @@ import { SiteGalleryItem } from '../types';
 
 const GALLERY_PHOTOS: SiteGalleryItem[] = [
   {
-    image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80',
+    image: '/og-logo.png',
     tag: '#BirthdayGlam',
     likes: '248',
     category: 'Birthday',
   },
   {
-    image: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=600&q=80',
+    image: '/og-logo.png',
     tag: '#LagosWeddings',
     likes: '412',
     category: 'Wedding',
   },
   {
-    image: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=600&q=80',
+    image: '/og-logo.png',
     tag: '#CelebrationCakes',
     likes: '195',
     category: 'Birthday Cakes',
   },
   {
-    image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=600&q=80',
+    image: '/og-logo.png',
     tag: '#CustomCakes',
     likes: '284',
     category: 'Custom Cakes',
   },
   {
-    image: 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=600&q=80',
+    image: '/og-logo.png',
     tag: '#BirthdayCakes',
     likes: '310',
     category: 'Birthday Cakes',
   },
   {
-    image: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=600&q=80',
+    image: '/og-logo.png',
     tag: '#CorporateGifting',
     likes: '162',
     category: 'Corporate',

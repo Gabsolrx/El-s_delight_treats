@@ -596,6 +596,7 @@ export const AdminPage: React.FC = () => {
 
   // Reviews Tab State
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
   const [reviewForm, setReviewForm] = useState<Omit<ReviewItem, 'id'>>({
     name: '',
     location: 'Festac Town, Lagos',
@@ -2595,7 +2596,6 @@ export const AdminPage: React.FC = () => {
                   onClick={() => setActiveTab('store')}
                   className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-pink-50 dark:bg-pink-950/40 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-900 hover:bg-pink-100 text-xs font-semibold transition-colors shrink-0"
                 >
-                  <Palette className="w-4 h-4 text-pink-600" />
                   <span>Customize Brand Logo & Crest →</span>
                 </button>
               </div>
@@ -2605,12 +2605,12 @@ export const AdminPage: React.FC = () => {
             <div className="flex flex-wrap gap-2 border-b border-rose-100 dark:border-stone-800 pb-3">
               {[
                 { id: 'hero', label: 'Hero Banner', icon: Cake },
-                { id: 'budget', label: 'Budget & Celebration Tiers', icon: Sparkles },
+                { id: 'budget', label: 'Budget & Celebration Tiers' },
                 { id: 'occasions', label: `Occasions (${(occasionsForm.items || []).length})`, icon: Calendar },
                 { id: 'moments', label: `Sweet Moments (${(sweetMomentsForm.items || []).length})`, icon: Instagram },
                 { id: 'announcements', label: `Announcements (${siteContent.announcements.length})` },
-                { id: 'about', label: 'About Us & Story', icon: BookOpen },
-                { id: 'promises', label: 'Brand Promises', icon: Award },
+                { id: 'about', label: 'About Us & Story' },
+                { id: 'promises', label: 'Brand Promises' },
                 { id: 'faqs', label: `FAQs (${(siteContent.faqs || []).length})`, icon: HelpCircle },
                 { id: 'corporate', label: 'Corporate Solutions', icon: Briefcase },
               ].map((sub) => {
@@ -3370,7 +3370,6 @@ export const AdminPage: React.FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-4 gap-3">
                   <div>
                     <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-pink-600" />
                       <span>Homepage Budget & Celebration Tiers</span>
                     </h4>
                     <p className="text-xs text-stone-500 mt-0.5">
@@ -3383,7 +3382,6 @@ export const AdminPage: React.FC = () => {
                       onClick={handleResetBudgetDefault}
                       className="px-3.5 py-2 rounded-xl border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 font-semibold text-xs flex items-center gap-1.5 transition-colors"
                     >
-                      <RotateCcw className="w-3.5 h-3.5" />
                       <span>Reset Defaults</span>
                     </button>
                     <button
@@ -3391,7 +3389,6 @@ export const AdminPage: React.FC = () => {
                       onClick={handleSaveBudgetSection}
                       className="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs flex items-center gap-1.5 transition-all"
                     >
-                      <Save className="w-3.5 h-3.5" />
                       <span>Save Budget Tiers</span>
                     </button>
                   </div>
@@ -3830,7 +3827,6 @@ export const AdminPage: React.FC = () => {
                     onClick={handleSaveBudgetSection}
                     className="px-6 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-sm hover:shadow flex items-center gap-2 transition-all"
                   >
-                    <Save className="w-4 h-4" />
                     <span>Save & Publish Budget Tiers</span>
                   </button>
                 </div>
@@ -4399,7 +4395,6 @@ export const AdminPage: React.FC = () => {
                     }}
                     className="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs flex items-center gap-1.5"
                   >
-                    <Save className="w-3.5 h-3.5" />
                     <span>Save About Page</span>
                   </button>
                 </div>
@@ -4551,10 +4546,10 @@ export const AdminPage: React.FC = () => {
                                   }
                                 );
                               }}
-                              className="absolute top-2.5 right-2.5 p-1.5 rounded-lg bg-white/90 dark:bg-stone-900/90 text-stone-600 dark:text-stone-300 hover:text-rose-600 dark:hover:text-rose-400 shadow-xs transition-colors"
+                              className="absolute top-2.5 right-2.5 px-2 py-1 rounded-lg bg-white/90 dark:bg-stone-900/90 text-stone-600 dark:text-stone-300 hover:text-rose-600 dark:hover:text-rose-400 shadow-xs transition-colors text-[10px] font-bold"
                               title="Remove showcase image"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              Remove
                             </button>
                           )}
                         </div>
@@ -4575,7 +4570,7 @@ export const AdminPage: React.FC = () => {
                                 : 'text-stone-500 hover:text-stone-900 dark:hover:text-stone-200'
                             }`}
                           >
-                            📁 Upload from Gallery
+                            Upload from Gallery
                           </button>
                           <button
                             type="button"
@@ -4586,7 +4581,7 @@ export const AdminPage: React.FC = () => {
                                 : 'text-stone-500 hover:text-stone-900 dark:hover:text-stone-200'
                             }`}
                           >
-                            ✨ Bakery Presets
+                            Bakery Presets
                           </button>
                           <button
                             type="button"
@@ -4597,7 +4592,7 @@ export const AdminPage: React.FC = () => {
                                 : 'text-stone-500 hover:text-stone-900 dark:hover:text-stone-200'
                             }`}
                           >
-                            🔗 Paste URL
+                            Paste URL
                           </button>
                         </div>
 
@@ -4611,9 +4606,6 @@ export const AdminPage: React.FC = () => {
                                 disabled={isUploadingAboutImage}
                                 className="hidden"
                               />
-                              <div className="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-950/60 text-pink-600 dark:text-pink-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                                <Upload className="w-6 h-6" />
-                              </div>
                               <span className="font-bold text-stone-900 dark:text-stone-100 text-xs">
                                 {isUploadingAboutImage ? 'Optimizing & Uploading Photo...' : 'Click to Upload from Phone Gallery or Computer'}
                               </span>
@@ -4748,21 +4740,16 @@ export const AdminPage: React.FC = () => {
                     }}
                     className="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs flex items-center gap-1.5"
                   >
-                    <Save className="w-3.5 h-3.5" />
                     <span>Save Brand Promises</span>
                   </button>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {brandPromisesForm.map((bp, idx) => {
-                    const SvgIcon = getPromiseSvgIcon(bp.iconName, bp.id, bp.title);
                     return (
                       <div key={bp.id || idx} className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-xl bg-pink-100 dark:bg-rose-950/60 text-pink-600 dark:text-pink-400 flex items-center justify-center shrink-0">
-                              <SvgIcon className="w-5 h-5" />
-                            </div>
                             <span className="text-[10px] uppercase font-bold tracking-wider text-pink-600 dark:text-pink-400">
                               Pillar #{idx + 1}
                             </span>
@@ -4930,43 +4917,137 @@ export const AdminPage: React.FC = () => {
                 <div className="divide-y divide-rose-100 dark:divide-stone-800 space-y-4">
                   {(siteContent.faqs || [])
                     .filter((f) => faqCategoryFilter === 'All' || f.category === faqCategoryFilter)
-                    .map((faq) => (
-                      <div key={faq.id} className="pt-4 first:pt-0 space-y-2">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="space-y-1">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-pink-600 bg-pink-50 dark:bg-rose-950/60 px-2 py-0.5 rounded">
-                              {faq.category || 'General'}
-                            </span>
-                            <h5 className="text-sm font-bold text-stone-900 dark:text-stone-100">
-                              {faq.q}
-                            </h5>
+                    .map((faq) => {
+                      const isEditing = editingFaq?.id === faq.id;
+                      if (isEditing && editingFaq) {
+                        return (
+                          <div key={faq.id} className="pt-4 first:pt-0 p-4 rounded-2xl bg-pink-50/50 dark:bg-stone-900/80 border border-pink-200 dark:border-pink-900 space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-pink-700 dark:text-pink-300">Edit Question & Answer</span>
+                              <span className="text-[10px] text-stone-500 font-mono">ID: {faq.id}</span>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                              <div className="sm:col-span-4">
+                                <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                                  Category
+                                </label>
+                                <select
+                                  value={editingFaq.category}
+                                  onChange={(e) => setEditingFaq({ ...editingFaq, category: e.target.value })}
+                                  className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-xs font-medium"
+                                >
+                                  <option value="Ordering & Notice">Ordering & Notice</option>
+                                  <option value="Payment">Payment</option>
+                                  <option value="Delivery">Delivery</option>
+                                  <option value="Pickup">Pickup</option>
+                                  <option value="Care">Care</option>
+                                  <option value="Customization">Customization</option>
+                                  <option value="Corporate">Corporate</option>
+                                </select>
+                              </div>
+                              <div className="sm:col-span-8">
+                                <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                                  Question
+                                </label>
+                                <input
+                                  type="text"
+                                  value={editingFaq.q}
+                                  onChange={(e) => setEditingFaq({ ...editingFaq, q: e.target.value })}
+                                  className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-xs font-bold"
+                                />
+                              </div>
+                              <div className="sm:col-span-12">
+                                <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                                  Answer
+                                </label>
+                                <textarea
+                                  rows={3}
+                                  value={editingFaq.a}
+                                  onChange={(e) => setEditingFaq({ ...editingFaq, a: e.target.value })}
+                                  className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-xs leading-relaxed"
+                                />
+                              </div>
+                              <div className="sm:col-span-12 flex justify-end gap-2 pt-1">
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingFaq(null)}
+                                  className="px-3.5 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 text-xs font-semibold hover:bg-stone-100 dark:hover:bg-stone-800"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (!editingFaq.q.trim() || !editingFaq.a.trim()) {
+                                      showToast('Missing details', 'Question and answer cannot be empty.', 'error');
+                                      return;
+                                    }
+                                    updateFaq(faq.id, {
+                                      q: editingFaq.q.trim(),
+                                      a: editingFaq.a.trim(),
+                                      category: editingFaq.category,
+                                    });
+                                    setEditingFaq(null);
+                                    showToast('FAQ Updated! ✨', 'Changes published to the Help Center.');
+                                  }}
+                                  className="px-4 py-1.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs shadow-xs"
+                                >
+                                  Save Changes
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div key={faq.id} className="pt-4 first:pt-0 space-y-2">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-pink-600 bg-pink-50 dark:bg-rose-950/60 px-2 py-0.5 rounded">
+                                {faq.category || 'General'}
+                              </span>
+                              <h5 className="text-sm font-bold text-stone-900 dark:text-stone-100">
+                                {faq.q}
+                              </h5>
+                            </div>
+
+                            <div className="flex items-center gap-1 shrink-0">
+                              <button
+                                type="button"
+                                onClick={() => setEditingFaq({ ...faq })}
+                                className="px-2.5 py-1 text-xs font-semibold text-pink-600 hover:text-pink-700 hover:bg-pink-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors"
+                                title="Edit Question & Answer"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  requestDelete(
+                                    'Delete FAQ Question?',
+                                    'Are you sure you want to delete this FAQ question from the website?',
+                                    () => {
+                                      deleteFaq(faq.id);
+                                      showToast('Deleted', 'FAQ item removed.');
+                                    },
+                                    `Q: "${faq.q}"`
+                                  );
+                                }}
+                                className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 dark:hover:bg-stone-800 transition-colors"
+                                title="Delete FAQ"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </div>
 
-                          <button
-                            type="button"
-                            onClick={() => {
-                              requestDelete(
-                                'Delete FAQ Question?',
-                                'Are you sure you want to delete this FAQ question from the website?',
-                                () => {
-                                  deleteFaq(faq.id);
-                                  showToast('Deleted', 'FAQ item removed.');
-                                },
-                                `Q: "${faq.q}"`
-                              );
-                            }}
-                            className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 dark:hover:bg-stone-800 transition-colors"
-                            title="Delete FAQ"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed whitespace-pre-line">
+                            {faq.a}
+                          </p>
                         </div>
-
-                        <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed whitespace-pre-line">
-                          {faq.a}
-                        </p>
-                      </div>
-                    ))}
+                      );
+                    })}
                 </div>
               </div>
             )}
@@ -5145,9 +5226,6 @@ export const AdminPage: React.FC = () => {
               <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-rose-100 dark:border-stone-800 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-950/60 text-pink-600 flex items-center justify-center shrink-0">
-                      <Palette className="w-5 h-5" />
-                    </div>
                     <div>
                       <h4 className="font-serif text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-100">
                         Brand Logo & Visual Identity
@@ -5769,9 +5847,6 @@ export const AdminPage: React.FC = () => {
               <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-rose-100 dark:border-stone-800 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-950/60 text-pink-600 flex items-center justify-center shrink-0">
-                      <Truck className="w-5 h-5" />
-                    </div>
                     <div>
                       <h4 className="font-serif text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-100">
                         Cake Delivery Options & Pay-on-Delivery Policy (Nigeria)
@@ -6265,7 +6340,7 @@ export const AdminPage: React.FC = () => {
         {/* ------------------------------------------------------- */}
         {activeTab === 'reviews' && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
               <div>
                 <h3 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
                   Customer Testimonials ({reviews.length})
@@ -6275,7 +6350,7 @@ export const AdminPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
                 {reviews.length > 0 && (
                   <button
                     type="button"
@@ -6285,16 +6360,17 @@ export const AdminPage: React.FC = () => {
                       await syncReviewsToSupabase();
                       setIsSavingReviewsSupabase(false);
                     }}
-                    className="px-3.5 py-2.5 rounded-xl border border-pink-300 dark:border-pink-800 bg-white dark:bg-stone-900 hover:bg-pink-50 text-pink-700 dark:text-pink-300 font-bold text-xs transition-colors flex items-center gap-1.5 shadow-2xs"
+                    className="px-2.5 py-2 sm:px-3.5 sm:py-2.5 rounded-xl border border-pink-300 dark:border-pink-800 bg-white dark:bg-stone-900 hover:bg-pink-50 text-pink-700 dark:text-pink-300 font-bold text-[11px] sm:text-xs transition-colors flex items-center gap-1.5 shadow-2xs whitespace-nowrap"
                     title="Upload all customer reviews into Supabase reviews table"
                   >
                     <Database className={`w-3.5 h-3.5 ${isSavingReviewsSupabase ? 'animate-spin' : ''}`} />
-                    <span>{isSavingReviewsSupabase ? 'Saving to Supabase...' : `Save All ${reviews.length} Reviews to Supabase`}</span>
+                    <span>{isSavingReviewsSupabase ? 'Saving...' : `Save (${reviews.length}) to Supabase`}</span>
                   </button>
                 )}
 
                 <button
                   onClick={() => {
+                    setEditingReviewId(null);
                     setReviewForm({
                       name: '',
                       location: 'Amuwo-Odofin, Lagos',
@@ -6307,9 +6383,9 @@ export const AdminPage: React.FC = () => {
                     });
                     setIsReviewModalOpen(true);
                   }}
-                  className="px-4 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider shadow-sm flex items-center gap-2"
+                  className="px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-[11px] sm:text-xs tracking-normal sm:tracking-wider shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-3.5 h-3.5" />
                   <span>Add Testimonial</span>
                 </button>
               </div>
@@ -6344,20 +6420,43 @@ export const AdminPage: React.FC = () => {
                       <p className="text-[11px] text-pink-600">{rev.occasion} · {rev.productName}</p>
                     </div>
 
-                    <button
-                      onClick={() => {
-                        requestDelete(
-                          'Delete Customer Review?',
-                          'Are you sure you want to delete this customer review testimonial from the website?',
-                          () => deleteReview(rev.id),
-                          `"${rev.text.slice(0, 80)}..." — ${rev.name}`
-                        );
-                      }}
-                      title="Delete review"
-                      className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingReviewId(rev.id);
+                          setReviewForm({
+                            name: rev.name,
+                            location: rev.location || '',
+                            occasion: rev.occasion || '',
+                            rating: rev.rating || 5,
+                            date: rev.date || 'Just now',
+                            text: rev.text,
+                            productName: rev.productName || '',
+                            verified: rev.verified ?? true,
+                          });
+                          setIsReviewModalOpen(true);
+                        }}
+                        className="px-2.5 py-1 text-xs font-semibold text-pink-600 hover:text-pink-700 hover:bg-pink-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors"
+                        title="Edit testimonial"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          requestDelete(
+                            'Delete Customer Review?',
+                            'Are you sure you want to delete this customer review testimonial from the website?',
+                            () => deleteReview(rev.id),
+                            `"${rev.text.slice(0, 80)}..." — ${rev.name}`
+                          );
+                        }}
+                        title="Delete review"
+                        className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -8038,8 +8137,10 @@ export const AdminPage: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white dark:bg-[#18181C] w-full max-w-md rounded-3xl border border-rose-100 dark:border-stone-800 shadow-2xl p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-3">
-              <h4 className="font-serif text-lg font-bold">Add Customer Testimonial</h4>
-              <button onClick={() => setIsReviewModalOpen(false)}>
+              <h4 className="font-serif text-lg font-bold">
+                {editingReviewId ? 'Edit Customer Testimonial' : 'Add Customer Testimonial'}
+              </h4>
+              <button onClick={() => { setIsReviewModalOpen(false); setEditingReviewId(null); }}>
                 <X className="w-5 h-5 text-stone-400" />
               </button>
             </div>
@@ -8047,8 +8148,15 @@ export const AdminPage: React.FC = () => {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                addReview(reviewForm);
+                if (editingReviewId) {
+                  updateReview(editingReviewId, reviewForm);
+                  showToast('Testimonial Updated', 'Customer review updated successfully.');
+                } else {
+                  addReview(reviewForm);
+                  showToast('Testimonial Added', 'New customer testimonial added.');
+                }
                 setIsReviewModalOpen(false);
+                setEditingReviewId(null);
               }}
               className="space-y-3 text-xs"
             >
@@ -8111,7 +8219,7 @@ export const AdminPage: React.FC = () => {
                   type="submit"
                   className="px-5 py-2 bg-pink-600 text-white font-bold rounded-xl"
                 >
-                  Save Review
+                  {editingReviewId ? 'Update Review' : 'Save Review'}
                 </button>
               </div>
             </form>
@@ -8547,7 +8655,7 @@ export const AdminPage: React.FC = () => {
             <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
               <img
                 src={
-                  (productToDelete.images[0] && !productToDelete.images[0].includes('photo-1578985545062'))
+                  (productToDelete.images[0] && !productToDelete.images[0].includes('unsplash'))
                     ? productToDelete.images[0]
                     : '/logo.svg'
                 }
