@@ -4681,17 +4681,10 @@ export const AdminPage: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {(aboutForm.values || []).map((val, idx) => (
                       <div key={val.id || idx} className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="text"
-                            value={val.emoji}
-                            onChange={(e) => {
-                              const updated = [...(aboutForm.values || [])];
-                              updated[idx] = { ...updated[idx], emoji: e.target.value };
-                              setAboutForm({ ...aboutForm, values: updated });
-                            }}
-                            className="w-12 px-2 py-1 text-center rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-lg"
-                          />
+                        <div>
+                          <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                            Standard #{idx + 1} Title
+                          </label>
                           <input
                             type="text"
                             value={val.title}
@@ -4701,20 +4694,25 @@ export const AdminPage: React.FC = () => {
                               setAboutForm({ ...aboutForm, values: updated });
                             }}
                             placeholder="Value Title"
-                            className="flex-1 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-xs font-bold"
+                            className="w-full px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-xs font-bold"
                           />
                         </div>
-                        <textarea
-                          rows={2}
-                          value={val.desc}
-                          onChange={(e) => {
-                            const updated = [...(aboutForm.values || [])];
-                            updated[idx] = { ...updated[idx], desc: e.target.value };
-                            setAboutForm({ ...aboutForm, values: updated });
-                          }}
-                          placeholder="Description"
-                          className="w-full px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-xs"
-                        />
+                        <div>
+                          <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                            Description
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={val.desc}
+                            onChange={(e) => {
+                              const updated = [...(aboutForm.values || [])];
+                              updated[idx] = { ...updated[idx], desc: e.target.value };
+                              setAboutForm({ ...aboutForm, values: updated });
+                            }}
+                            placeholder="Description"
+                            className="w-full px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-xs"
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>

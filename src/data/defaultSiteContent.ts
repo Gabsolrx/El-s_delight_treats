@@ -246,10 +246,10 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     founderRole: 'Founder & Head Confectioner',
     imageUrl: 'https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=900&q=80',
     values: [
-      { id: 'val-1', emoji: '🍫', title: 'Real Ingredients', desc: 'Pure vanilla beans, authentic Belgian cocoa, and rich dairy butter.' },
-      { id: 'val-2', emoji: '🎨', title: 'Artisan Piping', desc: 'Vintage Lambeth ruffles, smooth ganache drip, and custom edible prints.' },
-      { id: 'val-3', emoji: '⏱️', title: 'Reliable Timing', desc: 'Same-day availability for rush orders and prompt weekend delivery.' },
-      { id: 'val-4', emoji: '🤝', title: 'Personal Service', desc: 'Direct WhatsApp support and personalized cake inscriptions.' },
+      { id: 'val-1', emoji: '', title: 'Real Ingredients', desc: 'Pure vanilla beans, authentic Belgian cocoa, and rich dairy butter.' },
+      { id: 'val-2', emoji: '', title: 'Artisan Piping', desc: 'Vintage Lambeth ruffles, smooth ganache drip, and custom edible prints.' },
+      { id: 'val-3', emoji: '', title: 'Reliable Timing', desc: 'Same-day availability for rush orders and prompt weekend delivery.' },
+      { id: 'val-4', emoji: '', title: 'Personal Service', desc: 'Direct WhatsApp support and personalized cake inscriptions.' },
     ],
   },
   faqs: [
