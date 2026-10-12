@@ -14,9 +14,6 @@ export const CartPage: React.FC = () => {
     return (
       <div className="py-24 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-[70vh] flex items-center justify-center">
         <div className="text-center p-8 bg-white dark:bg-[#18181C] rounded-3xl border border-rose-100 dark:border-stone-800 shadow-sm max-w-md w-full mx-4">
-          <div className="w-16 h-16 rounded-full bg-pink-50 dark:bg-rose-950 flex items-center justify-center text-3xl mx-auto mb-4">
-            🍰
-          </div>
           <h1 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
             Your Cart is Empty
           </h1>

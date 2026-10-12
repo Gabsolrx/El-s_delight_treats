@@ -49,9 +49,6 @@ export const CartDrawer: React.FC = () => {
           <div className="flex-1 overflow-y-auto p-5 divide-y divide-rose-50 dark:divide-stone-800/80">
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                <div className="w-16 h-16 rounded-full bg-rose-50 dark:bg-stone-800 flex items-center justify-center text-3xl mb-4">
-                  🍰
-                </div>
                 <h3 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
                   Your bag is empty
                 </h3>
