@@ -20,7 +20,7 @@ export const CopyAccountButton: React.FC<CopyAccountButtonProps> = ({
     const success = await copyToClipboard(accountNumber);
     if (success) {
       setCopied(true);
-      showToast('Account number copied successfully! 📋', 'Paste this into your banking app to transfer.');
+      showToast('Account number copied successfully!', 'Paste this into your banking app to transfer.', 'success', true);
       setTimeout(() => {
         setCopied(false);
       }, 3000);

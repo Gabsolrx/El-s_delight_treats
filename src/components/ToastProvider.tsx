@@ -45,7 +45,7 @@ export const ToastProvider: React.FC = () => {
               className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 transition-colors p-1 text-xs font-semibold"
               aria-label="Close notification"
             >
-              {toast.hideIcon ? 'Close' : <X className="w-4 h-4" />}
+              {toast.hideIcon ? <span className="text-xs font-bold leading-none">✕</span> : <X className="w-4 h-4" />}
             </button>
           </div>
         );

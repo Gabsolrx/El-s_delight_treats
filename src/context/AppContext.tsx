@@ -253,24 +253,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               p.category !== 'Cake Slices'
           );
 
-          const existingIds = new Set(filtered.map((p) => p.id));
-          const existingNames = new Set(filtered.map((p) => (p.name || '').trim().toLowerCase()));
-          const existingSlugs = new Set(filtered.map((p) => (p.slug || '').toLowerCase()).filter(Boolean));
-
-          const missingDefaults = PRODUCTS.filter(
-            (p) =>
-              !existingIds.has(p.id) &&
-              !existingNames.has((p.name || '').trim().toLowerCase()) &&
-              !(p.slug && existingSlugs.has(p.slug.toLowerCase())) &&
-              !isPermanentlyDeleted(p)
-          );
-
           // Deduplicate by normalized name and ID so no duplicate copies can exist
           const seenNames = new Set<string>();
           const seenIds = new Set<string>();
           const deduplicated: Product[] = [];
 
-          for (const item of [...filtered, ...missingDefaults]) {
+          for (const item of filtered) {
             if (isPermanentlyDeleted(item)) continue;
             const normName = (item.name || '').trim().toLowerCase();
             if (seenIds.has(item.id)) continue;
@@ -280,17 +268,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             seenIds.add(item.id);
             if (normName) seenNames.add(normName);
             deduplicated.push(item);
-          }
-
-          // Ensure all 18 catalog products are always present
-          if (deduplicated.length < PRODUCTS.length) {
-            for (const catProd of PRODUCTS) {
-              if (!seenIds.has(catProd.id) && !seenNames.has((catProd.name || '').trim().toLowerCase())) {
-                seenIds.add(catProd.id);
-                seenNames.add((catProd.name || '').trim().toLowerCase());
-                deduplicated.push(catProd);
-              }
-            }
           }
 
           return deduplicated.map((p) => {
@@ -492,24 +469,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             // Remove permanently deleted items
             list = list.filter((p) => !isDeleted(p));
 
-            // Ensure all 18 catalog products from PRODUCTS are present (unless permanently deleted)
-            const existingIds = new Set(list.map((p) => p.id));
-            const existingNames = new Set(list.map((p) => (p.name || '').trim().toLowerCase()));
-            const missingCatalog = PRODUCTS.filter(
-              (p) =>
-                !existingIds.has(p.id) &&
-                !existingNames.has((p.name || '').trim().toLowerCase()) &&
-                !isDeleted(p)
-            );
-            if (missingCatalog.length > 0) {
-              list = [...list, ...missingCatalog];
-            }
-            if (list.length < PRODUCTS.length) {
-              const currentIds = new Set(list.map((p) => p.id));
-              const missing = PRODUCTS.filter((p) => !currentIds.has(p.id));
-              list = [...list, ...missing];
-            }
-
             const idbMap = new Map((idbProducts || []).map((p) => [p.id, p]));
 
             const updated = list.map((curr) => {
@@ -597,7 +556,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           count: category.count || 'Fresh daily',
           image:
             category.image?.trim() ||
-            'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80',
+            '/og-logo.png',
         },
       ];
     });
@@ -608,7 +567,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         name: trimmedName,
         label: category.label?.trim() || 'Delicious styles',
         count: category.count || 'Fresh daily',
-        image: category.image?.trim() || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80',
+        image: category.image?.trim() || '/og-logo.png',
       }).catch(console.warn);
     }
 
@@ -781,7 +740,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                       iconType: 'freshly_baked',
                       imageUrl:
                         ann.imageUrl ||
-                        'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=100&h=100&q=80',
+                        '/logo.svg',
                     };
                   }
                   if (
@@ -1919,11 +1878,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return;
     }
     try {
-      const currentIds = new Set(products.map((p) => p.id));
-      const missingCatalog = PRODUCTS.filter((p) => !currentIds.has(p.id));
-      const allProds = missingCatalog.length > 0 ? [...products, ...missingCatalog] : products;
-
-      const res = await supabaseService.saveAllProducts(allProds);
+      const res = await supabaseService.saveAllProducts(products);
 
       if (res.success) {
         showToast('Products Saved to Supabase! 🎉', `All ${res.savedCount} products are now live in your Supabase products table.`, 'success');
@@ -2071,16 +2026,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return;
     }
     try {
-      // Ensure all 18 catalog products are included
-      const currentIds = new Set(products.map((p) => p.id));
-      const missingCatalog = PRODUCTS.filter((p) => !currentIds.has(p.id));
-      const allProds = missingCatalog.length > 0 ? [...products, ...missingCatalog] : products;
-
       const effectiveOrders = orders.length > 0 ? orders : INITIAL_DEMO_ORDERS;
       const effectiveInquiries = customInquiries.length > 0 ? customInquiries : INITIAL_DEMO_INQUIRIES;
 
       const res = await supabaseService.saveAllWebsiteData({
-        products: allProds,
+        products,
         orders: effectiveOrders,
         inquiries: effectiveInquiries,
         categories,

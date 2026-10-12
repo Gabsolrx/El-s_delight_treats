@@ -183,7 +183,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       enabled: true,
       external: false,
       iconType: 'freshly_baked',
-      imageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=100&h=100&q=80',
+      imageUrl: '/logo.svg',
     },
     {
       id: 'ann-2',
@@ -320,12 +320,12 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     headline: 'Find a Cake for Every Occasion',
     viewAllText: 'View All Occasion Collections',
     items: [
-      { id: 'Birthday', title: 'Birthday', subtitle: 'Make their special day unforgettable.', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80' },
+      { id: 'Birthday', title: 'Birthday', subtitle: 'Make their special day unforgettable.', image: '/og-logo.png' },
       { id: 'Wedding', title: 'Wedding', subtitle: 'Elegant cakes for beautiful beginnings.', image: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=600&q=80' },
       { id: 'Christmas', title: 'Christmas', subtitle: 'Celebrate the festive season with holiday sweetness.', image: 'https://images.unsplash.com/photo-1543257580-7269da773bf5?auto=format&fit=crop&crop=center&w=800&h=800&q=85' },
       { id: 'Anniversary', title: 'Anniversary', subtitle: 'Celebrate your love with something delicious.', image: 'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=600&q=80' },
       { id: 'Graduation', title: 'Graduation', subtitle: 'Celebrate every proud milestone & academic win.', image: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=600&q=80' },
-      { id: 'Corporate', title: 'Corporate', subtitle: 'Professional cakes for memorable business moments.', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80' },
+      { id: 'Corporate', title: 'Corporate', subtitle: 'Professional cakes for memorable business moments.', image: '/og-logo.png' },
       { id: 'Baby Shower', title: 'Baby Shower', subtitle: 'Sweet treats for welcoming little miracles.', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=600&q=80' },
     ],
   },
@@ -338,7 +338,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     items: [
       {
         id: 'gal-1',
-        image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80',
+        image: '/og-logo.png',
         tag: '#BirthdayGlam',
         likes: '248',
         category: 'Birthday',
@@ -373,7 +373,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       },
       {
         id: 'gal-6',
-        image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80',
+        image: '/og-logo.png',
         tag: '#CorporateGifting',
         likes: '162',
         category: 'Corporate',

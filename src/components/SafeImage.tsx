@@ -29,20 +29,27 @@ export const SafeImage: React.FC<SafeImageProps> = ({
     }
   }, [src]);
 
-  if (hasError || !src) {
+  const isDefaultCakeImg = Boolean(
+    typeof src === 'string' &&
+    (src.includes('photo-1578985545062') || src.includes('photo-1512485800893-b097b693b169'))
+  );
+
+  if (hasError || !src || isDefaultCakeImg) {
     return (
       <div
-        className={`relative flex flex-col items-center justify-center p-4 bg-rose-50/50 dark:bg-[#151518] border border-rose-100/60 dark:border-zinc-800 text-rose-900 dark:text-rose-200 overflow-hidden select-none ${className}`}
+        className={`relative flex flex-col items-center justify-center p-4 bg-gradient-to-b from-rose-50/70 to-pink-50/40 dark:from-stone-900 dark:to-stone-950 border border-rose-100/60 dark:border-zinc-800 text-rose-900 dark:text-rose-200 overflow-hidden select-none ${className}`}
       >
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#E85382_1px,transparent_1px)] [background-size:16px_16px]" />
-        <div className="w-10 h-10 rounded-full bg-rose-200/60 dark:bg-rose-950/60 flex items-center justify-center mb-2 shadow-inner text-rose-700 dark:text-rose-300 font-serif font-bold text-sm tracking-tight">
-          El's
-        </div>
-        <p className="text-xs font-semibold tracking-wide uppercase text-rose-800 dark:text-rose-300 text-center line-clamp-1">
+        <img
+          src="/logo.svg"
+          alt="El's Delight Treats Logo"
+          className="w-14 h-14 object-contain mb-2 drop-shadow-sm select-none"
+        />
+        <p className="text-xs font-bold tracking-wide uppercase text-rose-800 dark:text-rose-300 text-center line-clamp-1">
           {category || "El's Delight Treats"}
         </p>
-        <span className="text-[11px] text-zinc-600 dark:text-zinc-400 text-center line-clamp-1 mt-0.5">
-          {fallbackTitle || 'Freshly Baked'}
+        <span className="text-[11px] text-stone-600 dark:text-stone-400 text-center line-clamp-1 mt-0.5 font-medium">
+          {fallbackTitle || 'Artisan Handcrafted Cake'}
         </span>
       </div>
     );

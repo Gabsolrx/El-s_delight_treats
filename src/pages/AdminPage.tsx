@@ -119,11 +119,11 @@ import { safeSetItem, safeRemoveItem, idbSet } from '../utils/safeStorage';
 // Preset curated images for creating/replacing cake categories
 const PRESET_CATEGORY_IMAGES = [
   { label: 'Celebration Masterpiece', url: 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=400&q=80' },
-  { label: 'Celebration Cakes', url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80' },
+  { label: 'Celebration Cakes', url: '/og-logo.png' },
   { label: 'Wedding Luxe', url: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=400&q=80' },
   { label: 'Mini Celebration Cakes', url: 'https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=400&q=80' },
   { label: 'Anniversary Luxe', url: 'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=400&q=80' },
-  { label: 'Corporate / Office', url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80' },
+  { label: 'Corporate / Office', url: '/og-logo.png' },
   { label: 'Graduation Special', url: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=400&q=80' },
   { label: 'Baby Shower Special', url: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=400&q=80' },
   { label: 'Christmas Festive', url: 'https://images.unsplash.com/photo-1543257580-7269da773bf5?auto=format&fit=crop&w=400&q=80' },
@@ -136,7 +136,7 @@ const PRESET_CATEGORY_IMAGES = [
 // Preset curated images for About Us and Bakery Story showcase
 const PRESET_BAKERY_STORY_IMAGES = [
   { label: 'Artisan Baking Kitchen', url: 'https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=900&q=80' },
-  { label: 'Cake Decorating Studio', url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80' },
+  { label: 'Cake Decorating Studio', url: '/logo.svg' },
   { label: 'Fresh Oven Pastries', url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80' },
   { label: 'Wedding Cake Showcase', url: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=900&q=80' },
 ];
@@ -174,7 +174,7 @@ const OCCASION_OPTIONS: OccasionType[] = [
 const PRESET_CAKE_IMAGES = [
   { label: 'Sister NK Gold Splatter', url: '/assets/sister-nk-cake.svg' },
   { label: 'Gold Splatter Artisan', url: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Chocolate Fudge', url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80' },
+  { label: 'Chocolate Fudge', url: '/og-logo.png' },
   { label: 'Red Velvet Crown', url: 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=800&q=80' },
   { label: 'Pastel Celebration Cake', url: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80' },
   { label: '3-Tier Wedding Cake', url: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=800&q=80' },
@@ -574,7 +574,7 @@ export const AdminPage: React.FC = () => {
     {
       name: 'Luxe Gold Emblem',
       mode: 'custom' as const,
-      url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80',
+      url: '/og-logo.png',
       shape: 'circle' as const,
       desc: 'Circular gold pastry monogram',
     },
@@ -1194,7 +1194,7 @@ export const AdminPage: React.FC = () => {
       count: categoryForm.count?.trim() || 'Fresh daily',
       image:
         categoryForm.image?.trim() ||
-        'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80',
+        '/og-logo.png',
     };
 
     if (editingCategory) {
@@ -8547,11 +8547,12 @@ export const AdminPage: React.FC = () => {
             <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
               <img
                 src={
-                  productToDelete.images[0] ||
-                  'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=200&q=80'
+                  (productToDelete.images[0] && !productToDelete.images[0].includes('photo-1578985545062'))
+                    ? productToDelete.images[0]
+                    : '/logo.svg'
                 }
                 alt={productToDelete.name}
-                className="w-14 h-14 rounded-xl object-cover shrink-0"
+                className="w-14 h-14 rounded-xl object-contain bg-rose-50 dark:bg-stone-800 p-1 shrink-0"
               />
               <div className="min-w-0 flex-1">
                 <p className="font-semibold text-xs text-stone-900 dark:text-stone-100 truncate">

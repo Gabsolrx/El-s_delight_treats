@@ -57,7 +57,7 @@ export const CustomCakeForm: React.FC = () => {
 
     addCustomInquiry(formData);
     setSubmitted(true);
-    showToast('Custom Cake Request Prepared!', 'Follow payment instructions or continue on WhatsApp for confirmation.');
+    showToast('Custom Cake Request Prepared!', 'Follow payment instructions or continue on WhatsApp for confirmation.', 'success', true);
   };
 
   const generatePaymentWhatsAppUrl = () => {
@@ -555,10 +555,6 @@ export const CustomCakeForm: React.FC = () => {
       ) : (
         /* Submitted state with Continue on WhatsApp and PAYMENT MADE buttons */
         <div className="py-8 text-center space-y-5">
-          <div className="w-16 h-16 rounded-full bg-pink-100 dark:bg-rose-950 flex items-center justify-center text-pink-600 dark:text-pink-400 mx-auto">
-            <CheckCircle2 className="w-10 h-10" />
-          </div>
-
           <h3 className="font-serif text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100">
             Your Custom Cake Request is Ready!
           </h3>

@@ -61,7 +61,6 @@ const RAW_PRODUCTS: Product[] = [
     occasion: ['Birthday', 'Anniversary', 'General'],
     price: 25000,
     images: [
-      'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',
       'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=900&q=80',
     ],
     imagePlaceholderColor: '#4A2810',
@@ -156,7 +155,6 @@ const RAW_PRODUCTS: Product[] = [
     price: 35000,
     images: [
       'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',
     ],
     imagePlaceholderColor: '#271B15',
     flavours: ['Rich Chocolate Ganache', 'Salted Caramel', 'Marble Swirl'],
@@ -201,7 +199,6 @@ const RAW_PRODUCTS: Product[] = [
     occasion: ['Birthday', 'Anniversary', 'General'],
     price: 32000,
     images: [
-      'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',
       'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
     ],
     imagePlaceholderColor: '#78350F',
@@ -317,7 +314,6 @@ const RAW_PRODUCTS: Product[] = [
     price: 30000,
     images: [
       'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',
     ],
     imagePlaceholderColor: '#1E293B',
     flavours: ['Rich Chocolate Ganache', 'Velvet Red Velvet', 'Vanilla Buttercream'],
@@ -431,7 +427,6 @@ const RAW_PRODUCTS: Product[] = [
     occasion: ['Corporate', 'General'],
     price: 50000,
     images: [
-      'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',
       'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=900&q=80',
     ],
     imagePlaceholderColor: '#1E293B',
@@ -471,10 +466,15 @@ const RAW_PRODUCTS: Product[] = [
 function buildInitialProducts(): Product[] {
   const map = new Map<string, Product>();
   for (const p of RAW_PRODUCTS) {
-    map.set(p.id, p);
+    const cleanImages = (p.images || []).filter(
+      (img) => !img.includes('photo-1578985545062') && !img.includes('photo-1512485800893-b097b693b169')
+    );
+    map.set(p.id, { ...p, images: cleanImages });
   }
   if (preseededData.products && Array.isArray(preseededData.products)) {
     for (const p of preseededData.products as any[]) {
+      const pImages = (Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : []))
+        .filter((img: string) => !img.includes('photo-1578985545062') && !img.includes('photo-1512485800893-b097b693b169'));
       if (!map.has(p.id)) {
         map.set(p.id, {
           id: p.id,
@@ -484,7 +484,7 @@ function buildInitialProducts(): Product[] {
           price: Number(p.price) || 0,
           description: p.description || '',
           fullDescription: p.full_description || p.description || '',
-          images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : []),
+          images: pImages,
           flavours: Array.isArray(p.flavours) ? p.flavours : ['Vanilla Buttercream', 'Rich Chocolate Ganache'],
           sizes: Array.isArray(p.sizes) ? p.sizes : DEFAULT_SIZES,
           occasion: Array.isArray(p.occasion) ? p.occasion : ['Birthday', 'General'],
@@ -499,7 +499,6 @@ function buildInitialProducts(): Product[] {
         });
       } else {
         const existing = map.get(p.id)!;
-        const pImages = Array.isArray(p.images) ? p.images : [];
         if (pImages.some((img: string) => img.startsWith('data:'))) {
           map.set(p.id, { ...existing, images: pImages });
         }
@@ -515,10 +514,10 @@ export const CATEGORIES_LIST: CategoryItem[] =
   preseededData.categories && preseededData.categories.length > 0
     ? (preseededData.categories as CategoryItem[])
     : [
-        { name: 'Birthday Cakes', label: 'Celebration wonders', count: '10+ designs', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Birthday Cakes', label: 'Celebration wonders', count: '10+ designs', image: '/og-logo.png' },
         { name: 'Wedding Cakes', label: 'Grand tiered love', count: 'Bridal luxe', image: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=400&q=80' },
         { name: 'Anniversary Cakes', label: 'Romantic milestones', count: 'Love & bliss', image: 'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=400&q=80' },
-        { name: 'Corporate/Office Cakes', label: 'Executive & brand events', count: 'Pro sheets', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80' },
+        { name: 'Corporate/Office Cakes', label: 'Executive & brand events', count: 'Pro sheets', image: '/og-logo.png' },
         { name: 'Graduation Cakes', label: 'Degrees & achievements', count: 'Academic win', image: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=400&q=80' },
         { name: 'Baby Shower Cakes', label: 'Sweet arrivals & pastel bliss', count: 'Miracle joys', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=400&q=80' },
         { name: 'Christmas Cakes', label: 'Festive holiday cheer', count: 'Seasonal luxe', image: 'https://images.unsplash.com/photo-1543257580-7269da773bf5?auto=format&fit=crop&crop=center&w=800&h=800&q=85' },
@@ -526,12 +525,12 @@ export const CATEGORIES_LIST: CategoryItem[] =
       ];
 
 export const OCCASIONS_LIST: { id: OccasionType; title: string; subtitle: string; image: string }[] = [
-  { id: 'Birthday', title: 'Birthday', subtitle: 'Make their special day unforgettable.', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80' },
+  { id: 'Birthday', title: 'Birthday', subtitle: 'Make their special day unforgettable.', image: '/og-logo.png' },
   { id: 'Wedding', title: 'Wedding', subtitle: 'Elegant cakes for beautiful beginnings.', image: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=600&q=80' },
   { id: 'Christmas', title: 'Christmas', subtitle: 'Celebrate the festive season with holiday sweetness.', image: 'https://images.unsplash.com/photo-1543257580-7269da773bf5?auto=format&fit=crop&w=600&q=80' },
   { id: 'Anniversary', title: 'Anniversary', subtitle: 'Celebrate your love with something delicious.', image: 'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=600&q=80' },
   { id: 'Graduation', title: 'Graduation', subtitle: 'Celebrate every proud milestone & academic win.', image: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=600&q=80' },
-  { id: 'Corporate', title: 'Corporate', subtitle: 'Professional cakes for memorable business moments.', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80' },
+  { id: 'Corporate', title: 'Corporate', subtitle: 'Professional cakes for memorable business moments.', image: '/og-logo.png' },
   { id: 'Baby Shower', title: 'Baby Shower', subtitle: 'Sweet treats for welcoming little miracles.', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=600&q=80' },
 ];
 
