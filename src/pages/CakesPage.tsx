@@ -4,16 +4,10 @@ import { useApp } from '../context/AppContext';
 
 export const CakesPage: React.FC = () => {
   const { products } = useApp();
-  const celebrationCakes = products.filter(
-    (p) =>
-      p.category === 'Birthday Cakes' ||
-      p.category === 'Wedding Cakes' ||
-      p.category === 'Anniversary Cakes' ||
-      p.category === 'Corporate/Office Cakes' ||
-      p.category === 'Graduation Cakes' ||
-      p.category === 'Baby Shower Cakes' ||
-      p.category === 'Christmas Cakes'
-  );
+  const celebrationCakes = products.filter((p) => {
+    const cat = (p.category || '').toLowerCase();
+    return !cat.includes('treat') && !cat.includes('cookie') && !cat.includes('pastry') && !cat.includes('cupcake');
+  });
 
   return (
     <div className="py-12 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">

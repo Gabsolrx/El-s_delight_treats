@@ -213,12 +213,21 @@ export function safeSetItem(key: string, value: string): boolean {
         localStorage.setItem(key, value);
         return true;
       } catch (retryErr) {
-        // Do not corrupt content, categories, business_info or products with stripped payloads in localStorage
+        // If els_products fails due to oversized base64 images, strip heavy data URLs for localStorage
+        // while IndexedDB retains the pristine full-resolution images
+        if (key === 'els_products') {
+          try {
+            const stripped = stripLargeBase64Payload(value);
+            localStorage.setItem(key, stripped);
+            return true;
+          } catch {}
+        }
+
+        // Do not corrupt content, categories or business_info with stripped payloads in localStorage
         if (
           key === 'els_site_content' ||
           key === 'els_categories' ||
-          key === 'els_business_info' ||
-          key === 'els_products'
+          key === 'els_business_info'
         ) {
           // Keep pristine data in memory and IndexedDB; skip saving oversized base64 blob to localStorage
           return false;

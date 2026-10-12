@@ -332,6 +332,7 @@ export const AdminPage: React.FC = () => {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleteProductModalOpen, setIsDeleteProductModalOpen] = useState(false);
+  const [isSavingProductModal, setIsSavingProductModal] = useState(false);
 
   // New/Edit Product Form State
   const [productForm, setProductForm] = useState<Partial<Product>>({
@@ -766,37 +767,48 @@ export const AdminPage: React.FC = () => {
   };
 
   // Save Product Form
-  const handleSaveProduct = (e: React.FormEvent) => {
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!productForm.name) {
-      showToast('Cake name is required', '', 'error');
+    if (!productForm.name || !productForm.name.trim()) {
+      showToast('Cake name is required', 'Please provide a name for this cake listing.', 'error');
       return;
     }
 
-    const baseSize = (productForm.sizes || []).find((s) => s.isBase) || (productForm.sizes || [])[0];
-    const finalBasePrice = baseSize?.price !== undefined ? Number(baseSize.price) : Number(productForm.price || 25000);
+    setIsSavingProductModal(true);
+    try {
+      const baseSize = (productForm.sizes || []).find((s) => s.isBase) || (productForm.sizes || [])[0];
+      const finalBasePrice = baseSize?.price !== undefined ? Number(baseSize.price) : Number(productForm.price || 25000);
 
-    const updatedSizes = (productForm.sizes || []).map((s) => {
-      const p = s.price !== undefined ? Number(s.price) : Math.round(finalBasePrice * (s.priceModifier || 1));
-      return {
-        ...s,
-        price: p,
-        priceModifier: finalBasePrice > 0 ? Number((p / finalBasePrice).toFixed(2)) : 1,
+      const updatedSizes = (productForm.sizes || []).map((s) => {
+        const p = s.price !== undefined ? Number(s.price) : Math.round(finalBasePrice * (s.priceModifier || 1));
+        return {
+          ...s,
+          price: p,
+          priceModifier: finalBasePrice > 0 ? Number((p / finalBasePrice).toFixed(2)) : 1,
+        };
+      });
+
+      const finalProduct = {
+        ...productForm,
+        name: productForm.name.trim(),
+        price: finalBasePrice,
+        sizes: updatedSizes,
       };
-    });
 
-    const finalProduct = {
-      ...productForm,
-      price: finalBasePrice,
-      sizes: updatedSizes,
-    };
-
-    if (editingProduct) {
-      updateProduct(editingProduct.id, finalProduct);
-    } else {
-      addProduct(finalProduct as Omit<Product, 'id'>);
+      if (editingProduct) {
+        await updateProduct(editingProduct.id, finalProduct);
+      } else {
+        await addProduct(finalProduct as Omit<Product, 'id'>);
+        // Clear search & category filter so the newly added cake is instantly visible in the inventory list
+        setProductSearch('');
+        setProductCategoryFilter('All');
+      }
+      setIsProductModalOpen(false);
+    } catch (err: any) {
+      showToast('Error Saving Cake', err?.message || 'Could not save product', 'error');
+    } finally {
+      setIsSavingProductModal(false);
     }
-    setIsProductModalOpen(false);
   };
 
   // Direct Gallery Photo Upload Handler
@@ -1271,6 +1283,12 @@ export const AdminPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              to="/shop"
+              className="px-3 py-1.5 rounded-lg border border-pink-200 dark:border-pink-900/60 bg-pink-50/70 dark:bg-pink-950/40 hover:bg-pink-100 text-xs font-semibold text-pink-700 dark:text-pink-300 transition-colors flex items-center gap-1.5"
+            >
+              <span>View Live Store →</span>
+            </Link>
             <button
               onClick={logoutAdmin}
               className="px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-stone-700 text-xs font-semibold text-stone-600 dark:text-stone-300 transition-colors"
@@ -8117,9 +8135,17 @@ export const AdminPage: React.FC = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs uppercase tracking-wider"
+                    disabled={isSavingProductModal}
+                    className="px-6 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 disabled:opacity-60 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer disabled:cursor-not-allowed"
                   >
-                    {editingProduct ? 'Save Product' : 'Create Product'}
+                    {isSavingProductModal ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Saving Cake...</span>
+                      </>
+                    ) : (
+                      <span>{editingProduct ? 'Save Product' : 'Create Product'}</span>
+                    )}
                   </button>
                 </div>
               </div>

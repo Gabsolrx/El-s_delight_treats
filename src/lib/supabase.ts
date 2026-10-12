@@ -64,7 +64,6 @@ export function isSupabaseExplicitlyDisconnected(): boolean {
 }
 
 export function resolveSupabaseUrl(): string {
-  if (isSupabaseExplicitlyDisconnected()) return '';
   const stored = (getStoredItem('els_supabase_url') || '').trim();
   if (stored && isValidSupabaseUrl(stored)) {
     return cleanSupabaseUrl(stored);
@@ -77,7 +76,6 @@ export function resolveSupabaseUrl(): string {
 }
 
 export function resolveSupabaseKey(): string {
-  if (isSupabaseExplicitlyDisconnected()) return '';
   const stored = (getStoredItem('els_supabase_anon_key') || '').trim();
   if (stored && isValidSupabaseKey(stored)) {
     return stored;

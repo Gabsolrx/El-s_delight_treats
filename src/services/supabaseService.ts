@@ -1,4 +1,5 @@
-import { supabase, getSupabaseClient, isSupabaseReady } from '../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+import { supabase, getSupabaseClient, isSupabaseReady, DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_ANON_KEY } from '../lib/supabase';
 import {
   StoredOrder,
   CustomCakeInquiry,
@@ -41,8 +42,10 @@ function extractMissingColumn(msg?: string): string | null {
 }
 
 const CORE_PRODUCT_KEYS = [
-  'id', 'name', 'slug', 'category', 'price', 'description',
-  'images', 'rating', 'review_count', 'bestseller', 'created_at'
+  'id', 'name', 'slug', 'category', 'price', 'old_price', 'discount',
+  'description', 'full_description', 'images', 'flavours', 'sizes', 'occasion',
+  'bestseller', 'featured', 'is_new', 'in_stock', 'rating', 'review_count',
+  'budget_range', 'preparation_time', 'tag', 'created_at', 'updated_at'
 ];
 
 const CORE_ORDER_KEYS = [
@@ -114,14 +117,14 @@ async function resilientUpsertRow(
 
     // 4. Try existence check and explicit UPDATE or INSERT
     try {
-      const { data: existingRecord } = await supabase
+      const { data: existingRecord } = await client
         .from(tableName)
         .select(conflictKey)
         .eq(conflictKey, currentRow[conflictKey])
         .maybeSingle();
 
       if (existingRecord) {
-        const updRes = await supabase
+        const updRes = await client
           .from(tableName)
           .update(currentRow)
           .eq(conflictKey, currentRow[conflictKey]);
@@ -134,7 +137,7 @@ async function resilientUpsertRow(
           continue;
         }
       } else {
-        const insRes = await supabase.from(tableName).insert([currentRow]);
+        const insRes = await client.from(tableName).insert([currentRow]);
         if (!insRes.error) return { success: true };
 
         if (
@@ -142,14 +145,14 @@ async function resilientUpsertRow(
           insRes.error.message?.includes('duplicate key') ||
           insRes.error.message?.includes('already exists')
         ) {
-          const updRes = await supabase
+          const updRes = await client
             .from(tableName)
             .update(currentRow)
             .eq(conflictKey, currentRow[conflictKey]);
           if (!updRes.error) return { success: true };
 
           if (tableName === 'products' && currentRow.slug) {
-            const slugUpd = await supabase
+            const slugUpd = await client
               .from('products')
               .update(currentRow)
               .eq('slug', currentRow.slug);
@@ -695,13 +698,37 @@ export const supabaseService = {
   },
 
   async saveProduct(product: Product): Promise<{ success: boolean; error?: string }> {
-    if (!this.isAvailable() || !supabase) {
+    const client = this.getClient();
+    if (!this.isAvailable() || !client) {
       return { success: false, error: 'Supabase not configured' };
     }
 
     try {
       const row = this.mapProductToRow(product);
-      return await resilientUpsertRow('products', row, 'id', CORE_PRODUCT_KEYS);
+      if (!row.images || !Array.isArray(row.images) || row.images.length === 0) {
+        row.images = ['/assets/sister-nk-cake.svg'];
+      }
+
+      // 1. Resilient upsert attempt
+      const upsertRes = await resilientUpsertRow('products', row, 'id', CORE_PRODUCT_KEYS);
+      if (upsertRes.success) {
+        return { success: true };
+      }
+
+      // 2. Direct insert fallback
+      const insRes = await client.from('products').insert([row]);
+      if (!insRes.error) {
+        return { success: true };
+      }
+
+      // 3. Direct update fallback (if record already exists)
+      const updRes = await client.from('products').update(row).eq('id', row.id);
+      if (!updRes.error) {
+        return { success: true };
+      }
+
+      console.warn('Supabase saveProduct failed all fallbacks:', upsertRes.error, insRes.error, updRes.error);
+      return { success: false, error: insRes.error?.message || upsertRes.error || 'Failed to save product' };
     } catch (err: any) {
       console.warn('Supabase saveProduct exception:', err);
       return { success: false, error: err?.message || 'Failed to save product' };
@@ -716,31 +743,20 @@ export const supabaseService = {
     try {
       // Ensure all 18 catalog products from PRODUCTS are included in the upload
       const existingIds = new Set(products.map((p) => p.id));
-      const existingSlugs = new Set(products.map((p) => (p.slug || '').toLowerCase()).filter(Boolean));
-      const missingCatalog = PRODUCTS.filter(
-        (p) => !existingIds.has(p.id) && !(p.slug && existingSlugs.has(p.slug.toLowerCase()))
-      );
+      const missingCatalog = PRODUCTS.filter((p) => !existingIds.has(p.id));
       const combined = [...products, ...missingCatalog];
 
       const seenIds = new Set<string>();
-      const seenSlugs = new Set<string>();
       const finalProducts: Product[] = [];
 
       for (const p of combined) {
         if (seenIds.has(p.id)) continue;
-        const normSlug = (p.slug || p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')).toLowerCase();
-        if (normSlug && seenSlugs.has(normSlug)) continue;
         seenIds.add(p.id);
-        if (normSlug) seenSlugs.add(normSlug);
-        finalProducts.push(p);
-      }
-
-      // Guarantee all 18 catalog products are always present
-      for (const catProd of PRODUCTS) {
-        if (!seenIds.has(catProd.id)) {
-          seenIds.add(catProd.id);
-          finalProducts.push(catProd);
-        }
+        const safeImages = (p.images && p.images.length > 0) ? p.images : ['/assets/sister-nk-cake.svg'];
+        finalProducts.push({
+          ...p,
+          images: safeImages,
+        });
       }
 
       const rows = finalProducts.map((p) => this.mapProductToRow(p));

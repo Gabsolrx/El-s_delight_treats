@@ -10,10 +10,10 @@ export const AboutPage: React.FC = () => {
   const about = siteContent.about;
 
   const defaultValues = [
-    { id: '1', emoji: '🍫', title: 'Real Ingredients', desc: 'Pure vanilla beans, authentic Belgian cocoa, and rich dairy butter.' },
-    { id: '2', emoji: '🎨', title: 'Artisan Piping', desc: 'Vintage Lambeth ruffles, smooth ganache drip, and custom edible prints.' },
-    { id: '3', emoji: '⏱️', title: 'Reliable Timing', desc: 'Same-day availability for rush orders and prompt weekend delivery.' },
-    { id: '4', emoji: '🤝', title: 'Personal Service', desc: 'Direct WhatsApp support and personalized cake inscriptions.' },
+    { id: '1', emoji: '', title: 'Real Ingredients', desc: 'Pure vanilla beans, authentic Belgian cocoa, and rich dairy butter.' },
+    { id: '2', emoji: '', title: 'Artisan Piping', desc: 'Vintage Lambeth ruffles, smooth ganache drip, and custom edible prints.' },
+    { id: '3', emoji: '', title: 'Reliable Timing', desc: 'Same-day availability for rush orders and prompt weekend delivery.' },
+    { id: '4', emoji: '', title: 'Personal Service', desc: 'Direct WhatsApp support and personalized cake inscriptions.' },
   ];
 
   const values = about.values && about.values.length > 0 ? about.values : defaultValues;

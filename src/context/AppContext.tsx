@@ -66,8 +66,8 @@ interface AppContextType {
   updateAdminPin: (newPin: string) => void;
 
   // Product CRUD
-  addProduct: (product: Omit<Product, 'id'>) => Product;
-  updateProduct: (id: string, updates: Partial<Product>) => void;
+  addProduct: (product: Omit<Product, 'id'>) => Promise<Product>;
+  updateProduct: (id: string, updates: Partial<Product>) => Promise<void>;
   deleteProduct: (id: string) => void;
   duplicateProduct: (id: string) => Product | null;
   resetProductsToDefault: () => void;
@@ -201,15 +201,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const savedDeleted = safeGetItem('els_deleted_product_ids');
       const deletedIds = new Set<string>(savedDeleted ? JSON.parse(savedDeleted) : []);
-      const savedDeletedSlugs = safeGetItem('els_deleted_product_slugs');
-      const deletedSlugs = new Set<string>(savedDeletedSlugs ? JSON.parse(savedDeletedSlugs) : []);
-      const savedDeletedNames = safeGetItem('els_deleted_product_names');
-      const deletedNames = new Set<string>(savedDeletedNames ? JSON.parse(savedDeletedNames) : []);
 
       const isPermanentlyDeleted = (p: { id: string; slug?: string; name?: string }) =>
-        deletedIds.has(p.id) ||
-        (p.slug && deletedSlugs.has(p.slug.toLowerCase())) ||
-        (p.name && deletedNames.has(p.name.trim().toLowerCase()));
+        deletedIds.has(p.id);
 
       let dedicatedProductImg = safeGetItem('els_christmas_cake_image');
       if (dedicatedProductImg && dedicatedProductImg.includes('photo-1512485800893-b097b693b169')) {
@@ -255,20 +249,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               p.category !== 'Cake Slices'
           );
 
-          // Deduplicate by normalized name and ID so no duplicate copies can exist
-          const seenNames = new Set<string>();
+          // Deduplicate by ID so newly added products are never discarded
           const seenIds = new Set<string>();
           const deduplicated: Product[] = [];
 
           for (const item of filtered) {
             if (isPermanentlyDeleted(item)) continue;
-            const normName = (item.name || '').trim().toLowerCase();
             if (seenIds.has(item.id)) continue;
-            if (normName && seenNames.has(normName)) {
-              continue; // Skip duplicate copy
-            }
             seenIds.add(item.id);
-            if (normName) seenNames.add(normName);
             deduplicated.push(item);
           }
 
@@ -438,9 +426,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         ]);
 
         const isDeleted = (p: { id: string; slug?: string; name?: string }) =>
-          mergedDeletedIds.has(p.id) ||
-          (p.slug && mergedDeletedSlugs.has(p.slug.toLowerCase())) ||
-          (p.name && mergedDeletedNames.has(p.name.trim().toLowerCase()));
+          mergedDeletedIds.has(p.id);
 
         // 2. Load dedicated images and products from IDB
         const [idbChristmasProductImg, idbWeddingProductImg, idbChristmasCatImg, idbProducts] = await Promise.all([
@@ -461,19 +447,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           );
         }
 
-        if (isMounted && !hasLoadedSupabase.current) {
+        if (isMounted) {
           setProducts((prev) => {
-            // Determine base list: prefer idbProducts if it has valid products
-            let list = (idbProducts && Array.isArray(idbProducts) && idbProducts.length > 0)
+            const idbList = (idbProducts && Array.isArray(idbProducts) && idbProducts.length > 0)
               ? idbProducts
-              : prev;
+              : [];
 
-            // Remove permanently deleted items
-            list = list.filter((p) => !isDeleted(p));
+            const prevIds = new Set(prev.map((p) => p.id));
+            const idbMap = new Map(idbList.map((p) => [p.id, p]));
 
-            const idbMap = new Map((idbProducts || []).map((p) => [p.id, p]));
+            // Include any products from idb that aren't in prev
+            const idbExtra = idbList.filter(
+              (p) => !prevIds.has(p.id) && !isDeleted(p)
+            );
 
-            const updated = list.map((curr) => {
+            const combinedList = [...prev, ...idbExtra].filter((p) => !isDeleted(p));
+
+            const updated = combinedList.map((curr) => {
               const fromIdb = idbMap.get(curr.id);
               let images = curr.images || [];
 
@@ -503,17 +493,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               return { ...curr, category: cleanCategory, images };
             });
 
-            // Deduplicate by name and ID
-            const seenNames = new Set<string>();
+            // Deduplicate by ID only
             const seenIds = new Set<string>();
             const deduped: Product[] = [];
             for (const item of updated) {
               if (isDeleted(item)) continue;
-              const normName = (item.name || '').trim().toLowerCase();
               if (seenIds.has(item.id)) continue;
-              if (normName && seenNames.has(normName)) continue;
               seenIds.add(item.id);
-              if (normName) seenNames.add(normName);
               deduped.push(item);
             }
 
@@ -1165,13 +1151,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // -------------------------------------------------------------
   // 8. PRODUCT CRUD OPERATIONS
   // -------------------------------------------------------------
-  const addProduct = (newProductData: Omit<Product, 'id'>): Product => {
+  const addProduct = async (newProductData: Omit<Product, 'id'>): Promise<Product> => {
     const id = 'prod-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 5);
     const slug = newProductData.slug || newProductData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const safeImages = (newProductData.images && newProductData.images.length > 0)
+      ? newProductData.images
+      : ['/assets/sister-nk-cake.svg'];
+
     const newProduct: Product = {
       ...newProductData,
       id,
       slug,
+      images: safeImages,
     };
 
     const normName = (newProduct.name || '').trim().toLowerCase();
@@ -1193,6 +1184,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         safeSetItem('els_deleted_product_slugs', JSON.stringify(nextList));
         idbSet('els_deleted_product_slugs', nextList);
       }
+      const savedDeletedIds = safeGetItem('els_deleted_product_ids');
+      if (savedDeletedIds) {
+        const list: string[] = JSON.parse(savedDeletedIds);
+        const nextList = list.filter((i) => i !== id);
+        safeSetItem('els_deleted_product_ids', JSON.stringify(nextList));
+        idbSet('els_deleted_product_ids', nextList);
+      }
     } catch (e) {}
 
     // If this is a wedding cake, save its image as well
@@ -1205,24 +1203,33 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     setProducts((prev) => {
-      // Deduplicate by name and ID
-      const filtered = prev.filter(
-        (p) => p.id !== id && (p.name || '').trim().toLowerCase() !== normName
-      );
+      // Deduplicate by ID only so newly created cakes are never omitted
+      const filtered = prev.filter((p) => p.id !== id);
       const next = [newProduct, ...filtered];
       safeSetItem('els_products', JSON.stringify(next));
       idbSet('els_products', next);
+      idbSet('els_products_full', next);
       return next;
     });
 
-    showToast('Product Created', `"${newProduct.name}" is now live on the store.`);
-    if (supabaseService.isAvailable()) {
-      supabaseService.saveProduct(newProduct).catch((err) => console.warn('Supabase product sync warning:', err));
+    // Automatically save to Supabase database products table
+    try {
+      const res = await supabaseService.saveProduct(newProduct);
+      if (res.success) {
+        showToast('Product Created & Saved to Cloud! ☁️', `"${newProduct.name}" is saved to Supabase database and live on your store.`);
+      } else {
+        console.warn('Supabase product sync warning:', res.error);
+        showToast('Product Created! ✨', `"${newProduct.name}" is live on the store.`);
+      }
+    } catch (err) {
+      console.warn('Supabase product sync exception:', err);
+      showToast('Product Created! ✨', `"${newProduct.name}" is live on the store.`);
     }
+
     return newProduct;
   };
 
-  const updateProduct = (id: string, updates: Partial<Product>) => {
+  const updateProduct = async (id: string, updates: Partial<Product>): Promise<void> => {
     const isChristmas =
       id === 'prod-christmas' ||
       (updates.category && updates.category.toLowerCase().includes('christmas'));
@@ -1240,16 +1247,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       idbSet('els_wedding_cake_image', updates.images[0]);
     }
 
+    let updatedItem: Product | undefined;
     setProducts((prev) => {
       const next = prev.map((item) => (item.id === id ? { ...item, ...updates } : item));
       safeSetItem('els_products', JSON.stringify(next));
       idbSet('els_products', next);
-      const updatedItem = next.find((p) => p.id === id);
-      if (updatedItem && supabaseService.isAvailable()) {
-        supabaseService.saveProduct(updatedItem).catch((err) => console.warn('Supabase product sync warning:', err));
-      }
+      idbSet('els_products_full', next);
+      updatedItem = next.find((p) => p.id === id);
       return next;
     });
+
+    if (updatedItem) {
+      try {
+        const res = await supabaseService.saveProduct(updatedItem);
+        if (res.success) {
+          showToast('Product Saved to Cloud! ☁️', `"${updatedItem.name}" updated in Supabase database.`);
+          return;
+        }
+      } catch (err) {
+        console.warn('Supabase product update warning:', err);
+      }
+    }
     showToast('Product Saved', 'Changes have been updated live across the website.');
   };
 
@@ -1730,9 +1748,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const deletedNames = new Set<string>(savedDeletedNames ? JSON.parse(savedDeletedNames) : []);
 
         const isDeleted = (p: { id: string; slug?: string; name?: string }) =>
-          deletedIds.has(p.id) ||
-          (p.slug && deletedSlugs.has(p.slug.toLowerCase())) ||
-          (p.name && deletedNames.has(p.name.trim().toLowerCase()));
+          deletedIds.has(p.id);
 
         const validProds = prodsRes.products.filter(
           (p) =>
@@ -1751,28 +1767,42 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             p.category !== 'Cake Slices'
         );
 
-        // Deduplicate by name and ID identically so product count never jumps between 17 and 15
-        const seenNames = new Set<string>();
+        // Deduplicate by ID only so all products (including newly added ones) are preserved
         const seenIds = new Set<string>();
         const deduped: Product[] = [];
         for (const item of validProds) {
           if (isDeleted(item)) continue;
-          const normName = (item.name || '').trim().toLowerCase();
           if (seenIds.has(item.id)) continue;
-          if (normName && seenNames.has(normName)) continue;
           seenIds.add(item.id);
-          if (normName) seenNames.add(normName);
+          const safeImgs = (item.images || []).filter((img) => typeof img === 'string' && img.length > 0);
           deduped.push({
             ...item,
-            images: (item.images || []).filter((img) => typeof img === 'string' && !img.includes('unsplash')),
+            images: safeImgs.length > 0 ? safeImgs : ['/assets/sister-nk-cake.svg'],
           });
         }
 
         if (deduped.length > 0) {
-          setProducts(deduped);
-          safeSetItem('els_products', JSON.stringify(deduped));
-          idbSet('els_products', deduped).catch(() => {});
-          idbSet('els_products_full', deduped).catch(() => {});
+          setProducts((currentProducts) => {
+            const supabaseIds = new Set(deduped.map((p) => p.id));
+
+            // Retain any locally added/created products that are not in Supabase yet
+            const localOnly = currentProducts.filter(
+              (p) => !supabaseIds.has(p.id) && !isDeleted(p)
+            );
+
+            // Back up any local additions to Supabase so cloud database stays synced
+            if (localOnly.length > 0 && supabaseService.isAvailable()) {
+              localOnly.forEach((localProd) => {
+                supabaseService.saveProduct(localProd).catch(console.warn);
+              });
+            }
+
+            const merged = [...localOnly, ...deduped];
+            safeSetItem('els_products', JSON.stringify(merged));
+            idbSet('els_products', merged).catch(() => {});
+            idbSet('els_products_full', merged).catch(() => {});
+            return merged;
+          });
         }
       }
 
