@@ -23,13 +23,19 @@ export const ToastProvider: React.FC = () => {
           iconColor = 'text-stone-600 dark:text-stone-400';
         }
 
+        const isNoIcon =
+          Boolean(toast.hideIcon) ||
+          toast.title.toLowerCase().includes('product') ||
+          toast.title.toLowerCase().includes('cake') ||
+          (toast.title.toLowerCase().includes('saved') && !toast.title.toLowerCase().includes('error'));
+
         return (
           <div
             key={toast.id}
             role="status"
             className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl border backdrop-blur-md transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 ${borderClass}`}
           >
-            {!toast.hideIcon && (
+            {!isNoIcon && (
               <Icon className={`w-5 h-5 shrink-0 mt-0.5 ${iconColor}`} />
             )}
             <div className="flex-1 text-sm">
@@ -45,7 +51,7 @@ export const ToastProvider: React.FC = () => {
               className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 transition-colors p-1 text-xs font-semibold"
               aria-label="Close notification"
             >
-              {toast.hideIcon ? <span className="text-xs font-bold leading-none">✕</span> : <X className="w-4 h-4" />}
+              {isNoIcon ? <span className="text-sm font-bold leading-none select-none">✕</span> : <X className="w-4 h-4" />}
             </button>
           </div>
         );

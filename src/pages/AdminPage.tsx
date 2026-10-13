@@ -805,7 +805,7 @@ export const AdminPage: React.FC = () => {
       }
       setIsProductModalOpen(false);
     } catch (err: any) {
-      showToast('Error Saving Cake', err?.message || 'Could not save product', 'error');
+      showToast('Error Saving Cake', err?.message || 'Could not save product', 'error', true);
     } finally {
       setIsSavingProductModal(false);
     }

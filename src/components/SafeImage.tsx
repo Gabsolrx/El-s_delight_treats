@@ -31,7 +31,7 @@ export const SafeImage: React.FC<SafeImageProps> = ({
 
   const isDefaultCakeImg = Boolean(
     typeof src === 'string' &&
-    (src.includes('photo-1578985545062') || src.includes('photo-1512485800893-b097b693b169') || src.includes('unsplash.com'))
+    (src.includes('photo-1578985545062') || src.includes('photo-1512485800893-b097b693b169'))
   );
 
   if (hasError || !src || isDefaultCakeImg) {

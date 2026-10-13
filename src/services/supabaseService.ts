@@ -736,20 +736,17 @@ export const supabaseService = {
   },
 
   async saveAllProducts(products: Product[]): Promise<{ success: boolean; savedCount: number; error?: string }> {
-    if (!this.isAvailable() || !supabase) {
+    const client = this.getClient();
+    if (!this.isAvailable() || !client) {
       return { success: false, savedCount: 0, error: 'Supabase not configured' };
     }
 
     try {
-      // Ensure all 18 catalog products from PRODUCTS are included in the upload
-      const existingIds = new Set(products.map((p) => p.id));
-      const missingCatalog = PRODUCTS.filter((p) => !existingIds.has(p.id));
-      const combined = [...products, ...missingCatalog];
-
       const seenIds = new Set<string>();
       const finalProducts: Product[] = [];
 
-      for (const p of combined) {
+      for (const p of products) {
+        if (!p || !p.id) continue;
         if (seenIds.has(p.id)) continue;
         seenIds.add(p.id);
         const safeImages = (p.images && p.images.length > 0) ? p.images : [];
@@ -795,6 +792,12 @@ export const supabaseService = {
     if (!this.isAvailable() || !client || !id) return false;
     try {
       const { error } = await client.from('products').delete().eq('id', id);
+      if (slug) {
+        await client.from('products').delete().eq('slug', slug);
+      }
+      if (name) {
+        await client.from('products').delete().eq('name', name);
+      }
       // Also delete any duplicate legacy rows from Supabase
       if (id === 'prod-12' || id === 'prod-13') {
         await client.from('products').delete().in('id', ['prod-12', 'prod-13']);

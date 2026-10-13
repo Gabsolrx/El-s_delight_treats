@@ -201,17 +201,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const savedDeleted = safeGetItem('els_deleted_product_ids');
       const deletedIds = new Set<string>(savedDeleted ? JSON.parse(savedDeleted) : []);
-      const savedDeletedSlugs = safeGetItem('els_deleted_product_slugs');
-      const deletedSlugs = new Set<string>(savedDeletedSlugs ? JSON.parse(savedDeletedSlugs) : []);
-      const savedDeletedNames = safeGetItem('els_deleted_product_names');
-      const deletedNames = new Set<string>(savedDeletedNames ? JSON.parse(savedDeletedNames) : []);
 
-      const isPermanentlyDeleted = (p: { id: string; slug?: string; name?: string }) =>
-        deletedIds.has(p.id) ||
-        (p.slug ? deletedSlugs.has(p.slug.toLowerCase()) : false) ||
-        (p.name ? deletedNames.has(p.name.trim().toLowerCase()) : false) ||
-        p.id === 'prod-12' ||
-        p.id === 'prod-13';
+      const isPermanentlyDeleted = (p: { id: string }) =>
+        deletedIds.has(p.id) || p.id === 'prod-12' || p.id === 'prod-13';
 
       let dedicatedProductImg = safeGetItem('els_christmas_cake_image');
       if (dedicatedProductImg && dedicatedProductImg.includes('photo-1512485800893-b097b693b169')) {
@@ -240,26 +232,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               p.id !== 'prod-10' &&
               p.id !== 'prod-12' &&
               p.id !== 'prod-13' &&
-              p.id !== 'prod-19' &&
-              p.id !== 'prod-20' &&
-              p.id !== 'prod-muvrp76orxs' &&
-              p.id !== 'prod-muvrnr2k7eu' &&
-              p.slug !== 'bento-cake' &&
-              p.slug !== 'cupcake-box' &&
-              p.slug !== 'dessert-gift-box' &&
-              p.slug !== 'premium-celebration-box' &&
-              p.slug !== 'chocolate-cake-slice' &&
-              p.slug !== 'red-velvet-cake-slice' &&
-              p.name !== 'Bento Cake' &&
-              p.name !== 'Cupcake Box' &&
-              p.name !== 'Dessert Gift Box' &&
-              p.name !== 'Premium Celebration Box' &&
-              p.name !== 'Chocolate Cake Slice' &&
-              p.name !== 'Red Velvet Cake Slice' &&
               p.category !== 'Cake Slices'
           );
 
-          // Deduplicate by ID so newly added products are never discarded
+          // Deduplicate by ID
           const seenIds = new Set<string>();
           const deduplicated: Product[] = [];
 
@@ -417,11 +393,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     let isMounted = true;
     (async () => {
       try {
-        // 1. Load permanent deletions from IndexedDB to guarantee deletions persist across browser sessions
-        const [idbDeletedIds, idbDeletedSlugs, idbDeletedNames, idbDeletedCategories] = await Promise.all([
+        // 1. Load permanent deletions from IndexedDB
+        const [idbDeletedIds, idbDeletedCategories] = await Promise.all([
           idbGet<string[]>('els_deleted_product_ids'),
-          idbGet<string[]>('els_deleted_product_slugs'),
-          idbGet<string[]>('els_deleted_product_names'),
           idbGet<string[]>('els_deleted_category_names'),
         ]);
 
@@ -429,25 +403,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           ...(idbDeletedIds || []),
           ...safeJsonParse<string[]>(safeGetItem('els_deleted_product_ids'), []),
         ]);
-        const mergedDeletedSlugs = new Set([
-          ...(idbDeletedSlugs || []),
-          ...safeJsonParse<string[]>(safeGetItem('els_deleted_product_slugs'), []),
-        ]);
-        const mergedDeletedNames = new Set([
-          ...(idbDeletedNames || []),
-          ...safeJsonParse<string[]>(safeGetItem('els_deleted_product_names'), []),
-        ]);
         const mergedDeletedCategories = new Set([
           ...(idbDeletedCategories || []),
           ...safeJsonParse<string[]>(safeGetItem('els_deleted_category_names'), []),
         ].map((c) => c.toLowerCase()));
 
-        const isDeleted = (p: { id: string; slug?: string; name?: string }) =>
-          mergedDeletedIds.has(p.id) ||
-          (p.slug ? mergedDeletedSlugs.has(p.slug.toLowerCase()) : false) ||
-          (p.name ? mergedDeletedNames.has(p.name.trim().toLowerCase()) : false) ||
-          p.id === 'prod-12' ||
-          p.id === 'prod-13';
+        const isDeleted = (p: { id: string }) =>
+          mergedDeletedIds.has(p.id) || p.id === 'prod-12' || p.id === 'prod-13';
 
         // 2. Load dedicated images and products from IDB
         const [idbChristmasProductImg, idbWeddingProductImg, idbChristmasCatImg, idbProducts] = await Promise.all([
@@ -470,63 +432,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         if (isMounted) {
           setProducts((prev) => {
+            const idbMap = new Map((idbProducts || []).map((p) => [p.id, p]));
+            if (prev.length > 0) {
+              return prev.filter((p) => !isDeleted(p)).map((curr) => {
+                const fromIdb = idbMap.get(curr.id);
+                if (fromIdb && fromIdb.images && fromIdb.images.length > 0 && (!curr.images || curr.images.length === 0)) {
+                  return { ...curr, images: fromIdb.images };
+                }
+                return curr;
+              });
+            }
             const idbList = (idbProducts && Array.isArray(idbProducts) && idbProducts.length > 0)
               ? idbProducts
-              : [];
-
-            const prevIds = new Set(prev.map((p) => p.id));
-            const idbMap = new Map(idbList.map((p) => [p.id, p]));
-
-            // Include any products from idb that aren't in prev
-            const idbExtra = idbList.filter(
-              (p) => !prevIds.has(p.id) && !isDeleted(p)
-            );
-
-            const combinedList = [...prev, ...idbExtra].filter((p) => !isDeleted(p));
-
-            const updated = combinedList.map((curr) => {
-              const fromIdb = idbMap.get(curr.id);
-              let images = curr.images || [];
-
-              if (fromIdb && fromIdb.images && fromIdb.images.length > 0) {
-                images = fromIdb.images;
-              }
-
-              // Luxury Wedding Cake dedicated image (preserve user uploaded photos)
-              const isWedding =
-                curr.id === 'prod-16' ||
-                (curr.name && curr.name.toLowerCase().includes('luxury wedding')) ||
-                curr.slug === 'luxury-wedding-cake';
-              if (isWedding && idbWeddingProductImg && (!images || images.length === 0)) {
-                images = [idbWeddingProductImg];
-              }
-
-              // Christmas Cake dedicated image
-              const isChristmas =
-                curr.id === 'prod-christmas' ||
-                (curr.category && curr.category.toLowerCase().includes('christmas'));
-              if (isChristmas && idbChristmasProductImg) {
-                const rem = images.filter((x) => x !== idbChristmasProductImg);
-                images = [idbChristmasProductImg, ...rem];
-              }
-
-              const cleanCategory = (curr.category === 'Classic Cakes' || curr.category === 'Classic') ? 'Birthday Cakes' : curr.category;
-              return { ...curr, category: cleanCategory, images };
-            });
-
-            // Deduplicate by ID only
-            const seenIds = new Set<string>();
-            const deduped: Product[] = [];
-            for (const item of updated) {
-              if (isDeleted(item)) continue;
-              if (seenIds.has(item.id)) continue;
-              seenIds.add(item.id);
-              deduped.push(item);
-            }
-
-            return deduped;
+              : PRODUCTS;
+            return idbList.filter((p) => !isDeleted(p));
           });
-
           hasLoadedIdb.current = true;
         }
       } catch (err) {
@@ -1206,25 +1126,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       images: safeImages,
     };
 
-    const normName = (newProduct.name || '').trim().toLowerCase();
-    const normSlug = (newProduct.slug || '').toLowerCase();
-
-    // If an item with this name or slug was previously in deleted lists, remove it so it's not hidden
     try {
-      const savedDeletedNames = safeGetItem('els_deleted_product_names');
-      if (savedDeletedNames) {
-        const list: string[] = JSON.parse(savedDeletedNames);
-        const nextList = list.filter((n) => n !== normName);
-        safeSetItem('els_deleted_product_names', JSON.stringify(nextList));
-        idbSet('els_deleted_product_names', nextList);
-      }
-      const savedDeletedSlugs = safeGetItem('els_deleted_product_slugs');
-      if (savedDeletedSlugs) {
-        const list: string[] = JSON.parse(savedDeletedSlugs);
-        const nextList = list.filter((s) => s !== normSlug);
-        safeSetItem('els_deleted_product_slugs', JSON.stringify(nextList));
-        idbSet('els_deleted_product_slugs', nextList);
-      }
       const savedDeletedIds = safeGetItem('els_deleted_product_ids');
       if (savedDeletedIds) {
         const list: string[] = JSON.parse(savedDeletedIds);
@@ -1244,7 +1146,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     setProducts((prev) => {
-      // Deduplicate by ID only so newly created cakes are never omitted
       const filtered = prev.filter((p) => p.id !== id);
       const next = [newProduct, ...filtered];
       safeSetItem('els_products', JSON.stringify(next));
@@ -1257,7 +1158,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await supabaseService.saveProduct(newProduct);
       if (res.success) {
-        showToast('Product Created & Saved to Cloud', `"${newProduct.name}" is saved to Supabase database and live on your store.`, 'success', true);
+        showToast('Product Created', `"${newProduct.name}" is saved to Supabase database and live on your store.`, 'success', true);
       } else {
         console.warn('Supabase product sync warning:', res.error);
         showToast('Product Created', `"${newProduct.name}" is live on the store.`, 'success', true);
@@ -1302,7 +1203,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       try {
         const res = await supabaseService.saveProduct(updatedItem);
         if (res.success) {
-          showToast('Product Saved to Cloud', `"${updatedItem.name}" updated in Supabase database.`, 'success', true);
+          showToast('Product Saved', `"${updatedItem.name}" updated in Supabase database.`, 'success', true);
           return;
         }
       } catch (err) {
@@ -1325,54 +1226,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (!deletedList.includes(id)) {
       deletedList.push(id);
     }
-
-    const savedDeletedSlugs = safeGetItem('els_deleted_product_slugs');
-    const deletedSlugsList: string[] = savedDeletedSlugs ? JSON.parse(savedDeletedSlugs) : [];
-    if (found?.slug && !deletedSlugsList.includes(found.slug.toLowerCase())) {
-      deletedSlugsList.push(found.slug.toLowerCase());
-    }
-
-    const savedDeletedNames = safeGetItem('els_deleted_product_names');
-    const deletedNamesList: string[] = savedDeletedNames ? JSON.parse(savedDeletedNames) : [];
-    if (found?.name) {
-      const normName = found.name.trim().toLowerCase();
-      if (!deletedNamesList.includes(normName)) {
-        deletedNamesList.push(normName);
-      }
-    }
-
-    // Bar graduation cake and baby shower cake defaults permanently
-    const isGradMatch =
-      id === 'prod-13' ||
-      found?.slug === 'graduation-cake' ||
-      (found?.name && found.name.toLowerCase().includes('graduation'));
-    if (isGradMatch) {
-      if (!deletedList.includes('prod-13')) deletedList.push('prod-13');
-      if (!deletedSlugsList.includes('graduation-cake')) deletedSlugsList.push('graduation-cake');
-      if (!deletedNamesList.includes('graduation cake')) deletedNamesList.push('graduation cake');
-    }
-
-    const isBabyShowerMatch =
-      id === 'prod-12' ||
-      found?.slug === 'baby-shower-cake' ||
-      (found?.name && found.name.toLowerCase().includes('baby shower'));
-    if (isBabyShowerMatch) {
+    if (id === 'prod-12' || id === 'prod-13') {
       if (!deletedList.includes('prod-12')) deletedList.push('prod-12');
-      if (!deletedSlugsList.includes('baby-shower-cake')) deletedSlugsList.push('baby-shower-cake');
-      if (!deletedNamesList.includes('baby shower cake')) deletedNamesList.push('baby shower cake');
-    }
-
-    // If this was the luxury wedding cake, also ensure default IDs and slugs are permanently barred
-    const isWeddingMatch =
-      id === 'prod-16' ||
-      found?.slug === 'luxury-wedding-cake' ||
-      (found?.name && found.name.toLowerCase().includes('luxury wedding'));
-    if (isWeddingMatch) {
-      if (!deletedList.includes('prod-16')) deletedList.push('prod-16');
-      if (!deletedSlugsList.includes('luxury-wedding-cake')) deletedSlugsList.push('luxury-wedding-cake');
-      if (!deletedNamesList.includes('luxury wedding cake')) deletedNamesList.push('luxury wedding cake');
-      safeRemoveItem('els_wedding_cake_image');
-      idbDelete('els_wedding_cake_image');
+      if (!deletedList.includes('prod-13')) deletedList.push('prod-13');
     }
 
     try {
@@ -1383,11 +1239,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       safeSetItem('els_deleted_product_ids', JSON.stringify(deletedList));
       idbSet('els_deleted_product_ids', deletedList);
 
-      safeSetItem('els_deleted_product_slugs', JSON.stringify(deletedSlugsList));
-      idbSet('els_deleted_product_slugs', deletedSlugsList);
-
-      safeSetItem('els_deleted_product_names', JSON.stringify(deletedNamesList));
-      idbSet('els_deleted_product_names', deletedNamesList);
+      // Clean up legacy ban lists so they never interfere with newly created products
+      safeRemoveItem('els_deleted_product_slugs');
+      safeRemoveItem('els_deleted_product_names');
+      idbDelete('els_deleted_product_slugs');
+      idbDelete('els_deleted_product_names');
     } catch (e) {
       console.warn('Error saving deleted product state:', e);
     }
@@ -1400,7 +1256,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     }
 
-    showToast('Product Permanently Deleted', `"${found?.name || 'Item'}" was removed permanently from admin and live website.`, 'info');
+    showToast('Product Permanently Deleted', `"${found?.name || 'Item'}" was removed permanently from admin and live website.`, 'info', true);
     return true;
   };
 
@@ -1810,17 +1666,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (prodsRes?.products && prodsRes.products.length > 0) {
         const deletedRaw = safeGetItem('els_deleted_product_ids');
         const deletedIds = new Set<string>(deletedRaw ? JSON.parse(deletedRaw) : []);
-        const savedDeletedSlugs = safeGetItem('els_deleted_product_slugs');
-        const deletedSlugs = new Set<string>(savedDeletedSlugs ? JSON.parse(savedDeletedSlugs) : []);
-        const savedDeletedNames = safeGetItem('els_deleted_product_names');
-        const deletedNames = new Set<string>(savedDeletedNames ? JSON.parse(savedDeletedNames) : []);
 
-        const isDeleted = (p: { id: string; slug?: string; name?: string }) =>
-          deletedIds.has(p.id) ||
-          (p.slug ? deletedSlugs.has(p.slug.toLowerCase()) : false) ||
-          (p.name ? deletedNames.has(p.name.trim().toLowerCase()) : false) ||
-          p.id === 'prod-12' ||
-          p.id === 'prod-13';
+        const isDeleted = (p: { id: string }) =>
+          deletedIds.has(p.id) || p.id === 'prod-12' || p.id === 'prod-13';
 
         const validProds = prodsRes.products.filter(
           (p) =>
@@ -1828,24 +1676,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             p.id !== 'prod-10' &&
             p.id !== 'prod-12' &&
             p.id !== 'prod-13' &&
-            p.id !== 'prod-19' &&
-            p.id !== 'prod-20' &&
-            p.id !== 'prod-muvrp76orxs' &&
-            p.id !== 'prod-muvrnr2k7eu' &&
-            p.slug !== 'bento-cake' &&
-            p.slug !== 'cupcake-box' &&
-            p.slug !== 'dessert-gift-box' &&
-            p.slug !== 'premium-celebration-box' &&
-            p.slug !== 'chocolate-cake-slice' &&
-            p.slug !== 'red-velvet-cake-slice' &&
             p.category !== 'Cake Slices'
         );
 
-        // Deduplicate by ID only so all products (including newly added ones) are preserved
+        // Deduplicate by ID
         const seenIds = new Set<string>();
         const deduped: Product[] = [];
         for (const item of validProds) {
-          if (isDeleted(item)) continue;
           if (seenIds.has(item.id)) continue;
           seenIds.add(item.id);
           const safeImgs = (item.images || []).filter((img) => typeof img === 'string' && img.length > 0);
@@ -1856,25 +1693,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
 
         if (deduped.length > 0) {
-          setProducts((currentProducts) => {
-            const supabaseIds = new Set(deduped.map((p) => p.id));
-
-            // Only retain truly custom local products (not seed/default products) that are not in Supabase yet and not deleted
-            const localOnly = currentProducts.filter(
-              (p) =>
-                !supabaseIds.has(p.id) &&
-                !isDeleted(p) &&
-                p.id.startsWith('prod-') &&
-                !p.id.match(/^prod-\d+$/) &&
-                p.id !== 'prod-christmas'
-            );
-
-            const merged = [...localOnly, ...deduped];
-            safeSetItem('els_products', JSON.stringify(merged));
-            idbSet('els_products', merged).catch(() => {});
-            idbSet('els_products_full', merged).catch(() => {});
-            return merged;
-          });
+          setProducts(deduped);
+          safeSetItem('els_products', JSON.stringify(deduped));
+          idbSet('els_products', deduped).catch(() => {});
+          idbSet('els_products_full', deduped).catch(() => {});
         }
       }
 

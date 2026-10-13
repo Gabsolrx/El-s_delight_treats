@@ -386,36 +386,30 @@ function buildInitialProducts(): Product[] {
   }
   if (preseededData.products && Array.isArray(preseededData.products)) {
     for (const p of preseededData.products as any[]) {
-      const pImages = (Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : []))
-        .filter((img: string) => typeof img === 'string' && !img.includes('unsplash'));
-      if (!map.has(p.id)) {
-        map.set(p.id, {
-          id: p.id,
-          name: p.name,
-          slug: p.slug || p.id,
-          category: p.category || 'Birthday Cakes',
-          price: Number(p.price) || 0,
-          description: p.description || '',
-          fullDescription: p.full_description || p.description || '',
-          images: pImages,
-          flavours: Array.isArray(p.flavours) ? p.flavours : ['Vanilla Buttercream', 'Rich Chocolate Ganache'],
-          sizes: Array.isArray(p.sizes) ? p.sizes : DEFAULT_SIZES,
-          occasion: Array.isArray(p.occasion) ? p.occasion : ['Birthday', 'General'],
-          bestseller: Boolean(p.bestseller),
-          featured: Boolean(p.featured),
-          isNew: Boolean(p.is_new),
-          rating: Number(p.rating) || 5.0,
-          reviewCount: Number(p.review_count) || 12,
-          budgetRange: p.budget_range || 'Under ₦20,000',
-          preparationTime: p.preparation_time || '24 hours notice',
-          tag: p.tag || undefined,
-        });
-      } else {
-        const existing = map.get(p.id)!;
-        if (pImages.some((img: string) => img.startsWith('data:'))) {
-          map.set(p.id, { ...existing, images: pImages });
-        }
-      }
+      const pImages = (Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : []));
+      const existing = map.get(p.id);
+      const productObj: Product = {
+        id: p.id,
+        name: p.name || existing?.name || '',
+        slug: p.slug || existing?.slug || p.id,
+        category: p.category || existing?.category || 'Birthday Cakes',
+        price: Number(p.price) || existing?.price || 0,
+        description: p.description || existing?.description || '',
+        fullDescription: p.full_description || p.description || existing?.fullDescription || '',
+        images: (pImages && pImages.length > 0) ? pImages : (existing?.images || []),
+        flavours: Array.isArray(p.flavours) ? p.flavours : (existing?.flavours || ['Vanilla Buttercream', 'Rich Chocolate Ganache']),
+        sizes: Array.isArray(p.sizes) ? p.sizes : (existing?.sizes || DEFAULT_SIZES),
+        occasion: Array.isArray(p.occasion) ? p.occasion : (existing?.occasion || ['Birthday', 'General']),
+        bestseller: p.bestseller !== undefined ? Boolean(p.bestseller) : Boolean(existing?.bestseller),
+        featured: p.featured !== undefined ? Boolean(p.featured) : Boolean(existing?.featured),
+        isNew: p.is_new !== undefined ? Boolean(p.is_new) : Boolean(existing?.isNew),
+        rating: Number(p.rating) || existing?.rating || 5.0,
+        reviewCount: Number(p.review_count) || existing?.reviewCount || 12,
+        budgetRange: p.budget_range || existing?.budgetRange || 'Under ₦20,000',
+        preparationTime: p.preparation_time || existing?.preparationTime || '24 hours notice',
+        tag: p.tag || existing?.tag || undefined,
+      };
+      map.set(p.id, productObj);
     }
   }
   return Array.from(map.values());
