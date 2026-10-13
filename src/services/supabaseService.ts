@@ -705,8 +705,8 @@ export const supabaseService = {
 
     try {
       const row = this.mapProductToRow(product);
-      if (!row.images || !Array.isArray(row.images) || row.images.length === 0) {
-        row.images = ['/assets/sister-nk-cake.svg'];
+      if (!row.images || !Array.isArray(row.images)) {
+        row.images = [];
       }
 
       // 1. Resilient upsert attempt
@@ -752,7 +752,7 @@ export const supabaseService = {
       for (const p of combined) {
         if (seenIds.has(p.id)) continue;
         seenIds.add(p.id);
-        const safeImages = (p.images && p.images.length > 0) ? p.images : ['/assets/sister-nk-cake.svg'];
+        const safeImages = (p.images && p.images.length > 0) ? p.images : [];
         finalProducts.push({
           ...p,
           images: safeImages,
@@ -768,12 +768,13 @@ export const supabaseService = {
   },
 
   async getProducts(): Promise<{ products: Product[]; error?: string }> {
-    if (!this.isAvailable() || !supabase) {
+    const client = this.getClient();
+    if (!this.isAvailable() || !client) {
       return { products: [], error: 'Supabase not configured' };
     }
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from('products')
         .select('*')
         .order('id', { ascending: true });
@@ -789,11 +790,18 @@ export const supabaseService = {
     }
   },
 
-  async deleteProduct(id: string): Promise<boolean> {
+  async deleteProduct(id: string, slug?: string, name?: string): Promise<boolean> {
     const client = this.getClient();
     if (!this.isAvailable() || !client || !id) return false;
     try {
       const { error } = await client.from('products').delete().eq('id', id);
+      // Also delete any duplicate legacy rows from Supabase
+      if (id === 'prod-12' || id === 'prod-13') {
+        await client.from('products').delete().in('id', ['prod-12', 'prod-13']);
+      }
+      if (slug && (slug === 'baby-shower-cake' || slug === 'graduation-cake')) {
+        await client.from('products').delete().in('id', ['prod-12', 'prod-13']);
+      }
       return !error;
     } catch {
       return false;
@@ -816,7 +824,8 @@ export const supabaseService = {
   // ============================================================================
 
   async saveCategory(category: CategoryItem): Promise<boolean> {
-    if (!this.isAvailable() || !supabase) return false;
+    const client = this.getClient();
+    if (!this.isAvailable() || !client) return false;
     try {
       const row = {
         name: category.name,
@@ -834,7 +843,8 @@ export const supabaseService = {
   },
 
   async saveAllCategories(categories: CategoryItem[]): Promise<boolean> {
-    if (!this.isAvailable() || !supabase || categories.length === 0) return false;
+    const client = this.getClient();
+    if (!this.isAvailable() || !client || categories.length === 0) return false;
     try {
       const rows = categories.map((c) => ({
         name: c.name,
@@ -852,9 +862,10 @@ export const supabaseService = {
   },
 
   async getCategories(): Promise<CategoryItem[] | null> {
-    if (!this.isAvailable() || !supabase) return null;
+    const client = this.getClient();
+    if (!this.isAvailable() || !client) return null;
     try {
-      const { data, error } = await supabase.from('categories').select('*');
+      const { data, error } = await client.from('categories').select('*');
       if (error || !data || data.length === 0) return null;
       return data.map((r) => ({
         name: r.name,
@@ -869,9 +880,10 @@ export const supabaseService = {
   },
 
   async deleteCategory(categoryName: string): Promise<boolean> {
-    if (!this.isAvailable() || !supabase) return false;
+    const client = this.getClient();
+    if (!this.isAvailable() || !client) return false;
     try {
-      const { error } = await supabase.from('categories').delete().eq('name', categoryName);
+      const { error } = await client.from('categories').delete().eq('name', categoryName);
       return !error;
     } catch {
       return false;

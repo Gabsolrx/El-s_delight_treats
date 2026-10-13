@@ -1006,67 +1006,6 @@
       "updated_at": "2026-10-10T12:31:16.228+00:00"
     },
     {
-      "id": "prod-13",
-      "name": "Graduation Cake",
-      "slug": "graduation-cake",
-      "category": "Graduation Cakes",
-      "price": 30000,
-      "old_price": null,
-      "discount": null,
-      "description": "Commemorative celebration cake with miniature fondant mortarboard cap, rolled diploma, and gold accents.",
-      "full_description": "Salute university and high school graduates in style. Customized with school or university faculty colors, a handcrafted fondant graduation cap, edible scroll, and inspiring personal message.",
-      "images": [],
-      "flavours": [
-        "Rich Chocolate Ganache",
-        "Velvet Red Velvet",
-        "Vanilla Buttercream"
-      ],
-      "sizes": [
-        {
-          "name": "6 inch (Feeds 6–8)",
-          "label": "6 inch",
-          "isBase": true,
-          "priceModifier": 1
-        },
-        {
-          "name": "8 inch (Feeds 12–16)",
-          "label": "8 inch",
-          "priceModifier": 1.35
-        },
-        {
-          "name": "10 inch (Feeds 20–25)",
-          "label": "10 inch",
-          "priceModifier": 1.75
-        },
-        {
-          "name": "12 inch (Feeds 30–35)",
-          "label": "12 inch",
-          "priceModifier": 2.2
-        },
-        {
-          "name": "Custom Tier / Corporate Size",
-          "label": "Custom",
-          "priceModifier": 2.8
-        }
-      ],
-      "occasion": [
-        "Graduation",
-        "School",
-        "General"
-      ],
-      "bestseller": false,
-      "featured": false,
-      "is_new": false,
-      "in_stock": true,
-      "rating": 4.88,
-      "review_count": 49,
-      "budget_range": "₦20,000–₦40,000",
-      "preparation_time": "24 hours notice",
-      "tag": "ACHIEVEMENT",
-      "created_at": "2026-10-08T12:41:08.345721+00:00",
-      "updated_at": "2026-10-10T12:31:16.229+00:00"
-    },
-    {
       "id": "prod-2",
       "name": "Vibrant Teal Buttercream Cake",
       "slug": "red-velvet-celebration-cake",
@@ -1127,67 +1066,6 @@
       "tag": "POPULAR",
       "created_at": "2026-10-08T12:41:08.345721+00:00",
       "updated_at": "2026-10-10T12:31:16.228+00:00"
-    },
-    {
-      "id": "prod-12",
-      "name": "Baby Shower Cake",
-      "slug": "baby-shower-cake",
-      "category": "Baby Shower Cakes",
-      "price": 35000,
-      "old_price": null,
-      "discount": null,
-      "description": "Charming pastel cake decorated with fluffy cloud buttercream, soft macarons, and baby celebration topper.",
-      "full_description": "Celebrate the arrival of your bundle of joy with this whimsical creation. Decorated in gentle gender-reveal or neutral baby pastels (baby pink, soft blue, or gentle lemon-cream), finished with airy clouds and sweet toppers.",
-      "images": [],
-      "flavours": [
-        "Vanilla Buttercream",
-        "Fresh Strawberry Cream",
-        "Toasted Coconut"
-      ],
-      "sizes": [
-        {
-          "name": "6 inch (Feeds 6–8)",
-          "label": "6 inch",
-          "isBase": true,
-          "priceModifier": 1
-        },
-        {
-          "name": "8 inch (Feeds 12–16)",
-          "label": "8 inch",
-          "priceModifier": 1.35
-        },
-        {
-          "name": "10 inch (Feeds 20–25)",
-          "label": "10 inch",
-          "priceModifier": 1.75
-        },
-        {
-          "name": "12 inch (Feeds 30–35)",
-          "label": "12 inch",
-          "priceModifier": 2.2
-        },
-        {
-          "name": "Custom Tier / Corporate Size",
-          "label": "Custom",
-          "priceModifier": 2.8
-        }
-      ],
-      "occasion": [
-        "Baby Shower",
-        "Naming Ceremony",
-        "General"
-      ],
-      "bestseller": false,
-      "featured": false,
-      "is_new": false,
-      "in_stock": true,
-      "rating": 4.92,
-      "review_count": 54,
-      "budget_range": "₦20,000–₦40,000",
-      "preparation_time": "24 hours notice",
-      "tag": "NEW ARRIVAL",
-      "created_at": "2026-10-08T12:41:08.345721+00:00",
-      "updated_at": "2026-10-10T12:31:16.229+00:00"
     },
     {
       "id": "prod-muwnviexemz",

@@ -68,14 +68,14 @@ interface AppContextType {
   // Product CRUD
   addProduct: (product: Omit<Product, 'id'>) => Promise<Product>;
   updateProduct: (id: string, updates: Partial<Product>) => Promise<void>;
-  deleteProduct: (id: string) => void;
+  deleteProduct: (id: string) => Promise<boolean>;
   duplicateProduct: (id: string) => Product | null;
   resetProductsToDefault: () => void;
 
   // Categories Management
   categories: CategoryItem[];
   addCategory: (category: CategoryItem) => void;
-  removeCategory: (categoryName: string, reassignTo?: string) => void;
+  removeCategory: (categoryName: string, reassignTo?: string) => Promise<void>;
   updateCategory: (categoryName: string, updates: Partial<CategoryItem>) => void;
   resetCategoriesToDefault: () => void;
 
@@ -201,9 +201,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const savedDeleted = safeGetItem('els_deleted_product_ids');
       const deletedIds = new Set<string>(savedDeleted ? JSON.parse(savedDeleted) : []);
+      const savedDeletedSlugs = safeGetItem('els_deleted_product_slugs');
+      const deletedSlugs = new Set<string>(savedDeletedSlugs ? JSON.parse(savedDeletedSlugs) : []);
+      const savedDeletedNames = safeGetItem('els_deleted_product_names');
+      const deletedNames = new Set<string>(savedDeletedNames ? JSON.parse(savedDeletedNames) : []);
 
       const isPermanentlyDeleted = (p: { id: string; slug?: string; name?: string }) =>
-        deletedIds.has(p.id);
+        deletedIds.has(p.id) ||
+        (p.slug ? deletedSlugs.has(p.slug.toLowerCase()) : false) ||
+        (p.name ? deletedNames.has(p.name.trim().toLowerCase()) : false) ||
+        p.id === 'prod-12' ||
+        p.id === 'prod-13';
 
       let dedicatedProductImg = safeGetItem('els_christmas_cake_image');
       if (dedicatedProductImg && dedicatedProductImg.includes('photo-1512485800893-b097b693b169')) {
@@ -230,6 +238,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             (p) =>
               !isPermanentlyDeleted(p) &&
               p.id !== 'prod-10' &&
+              p.id !== 'prod-12' &&
+              p.id !== 'prod-13' &&
               p.id !== 'prod-19' &&
               p.id !== 'prod-20' &&
               p.id !== 'prod-muvrp76orxs' &&
@@ -349,9 +359,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               c.name.toLowerCase() !== 'classic' &&
               c.slug.toLowerCase() !== 'classic'
           );
+          const savedDeletedCats = safeGetItem('els_deleted_category_names');
+          const deletedCatNames = new Set<string>(savedDeletedCats ? JSON.parse(savedDeletedCats).map((n: string) => n.toLowerCase()) : []);
           const existingNames = new Set(filtered.map((c) => c.name.toLowerCase()));
           const missingDefaults = CATEGORIES_LIST.filter(
-            (def) => !existingNames.has(def.name.toLowerCase())
+            (def) => !existingNames.has(def.name.toLowerCase()) && !deletedCatNames.has(def.name.toLowerCase())
           );
           let currentList = filtered;
           if (missingDefaults.length > 0) {
@@ -406,10 +418,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     (async () => {
       try {
         // 1. Load permanent deletions from IndexedDB to guarantee deletions persist across browser sessions
-        const [idbDeletedIds, idbDeletedSlugs, idbDeletedNames] = await Promise.all([
+        const [idbDeletedIds, idbDeletedSlugs, idbDeletedNames, idbDeletedCategories] = await Promise.all([
           idbGet<string[]>('els_deleted_product_ids'),
           idbGet<string[]>('els_deleted_product_slugs'),
           idbGet<string[]>('els_deleted_product_names'),
+          idbGet<string[]>('els_deleted_category_names'),
         ]);
 
         const mergedDeletedIds = new Set([
@@ -424,9 +437,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           ...(idbDeletedNames || []),
           ...safeJsonParse<string[]>(safeGetItem('els_deleted_product_names'), []),
         ]);
+        const mergedDeletedCategories = new Set([
+          ...(idbDeletedCategories || []),
+          ...safeJsonParse<string[]>(safeGetItem('els_deleted_category_names'), []),
+        ].map((c) => c.toLowerCase()));
 
         const isDeleted = (p: { id: string; slug?: string; name?: string }) =>
-          mergedDeletedIds.has(p.id);
+          mergedDeletedIds.has(p.id) ||
+          (p.slug ? mergedDeletedSlugs.has(p.slug.toLowerCase()) : false) ||
+          (p.name ? mergedDeletedNames.has(p.name.trim().toLowerCase()) : false) ||
+          p.id === 'prod-12' ||
+          p.id === 'prod-13';
 
         // 2. Load dedicated images and products from IDB
         const [idbChristmasProductImg, idbWeddingProductImg, idbChristmasCatImg, idbProducts] = await Promise.all([
@@ -562,29 +583,49 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('Category Created ✨', `"${trimmedName}" is now active across your website.`);
   };
 
-  const removeCategory = (categoryName: string, reassignTo?: string) => {
-    setCategories((prev) => prev.filter((c) => c.name.toLowerCase() !== categoryName.toLowerCase()));
+  const removeCategory = async (categoryName: string, reassignTo?: string): Promise<void> => {
+    const norm = categoryName.trim().toLowerCase();
+    const updatedCats = categories.filter((c) => c.name.toLowerCase() !== norm);
+    setCategories(updatedCats);
+    safeSetItem('els_categories', JSON.stringify(updatedCats));
+    idbSet('els_categories', updatedCats);
+
+    try {
+      const saved = safeGetItem('els_deleted_category_names');
+      const list: string[] = saved ? JSON.parse(saved) : [];
+      if (!list.includes(norm)) list.push(norm);
+      safeSetItem('els_deleted_category_names', JSON.stringify(list));
+      idbSet('els_deleted_category_names', list);
+    } catch {}
 
     if (supabaseService.isAvailable()) {
-      supabaseService.deleteCategory(categoryName).catch(console.warn);
+      try {
+        await supabaseService.deleteCategory(categoryName);
+      } catch (err) {
+        console.warn('Supabase delete category warning:', err);
+      }
     }
 
     // If products belong to this category, reassign them or keep them safe
-    setProducts((prev) =>
-      prev.map((p) => {
-        if (p.category.toLowerCase() === categoryName.toLowerCase()) {
+    setProducts((prev) => {
+      const updated = prev.map((p) => {
+        if (p.category.toLowerCase() === norm) {
           return {
             ...p,
             category: reassignTo || 'Birthday Cakes',
           };
         }
         return p;
-      })
-    );
+      });
+      safeSetItem('els_products', JSON.stringify(updated));
+      idbSet('els_products', updated);
+      return updated;
+    });
 
     showToast(
-      'Category Removed 🗑️',
-      `"${categoryName}" was removed.${reassignTo ? ` Assigned products moved to ${reassignTo}.` : ''}`
+      'Category Removed',
+      `"${categoryName}" was removed.${reassignTo ? ` Assigned products moved to ${reassignTo}.` : ''}`,
+      'info'
     );
   };
 
@@ -1156,7 +1197,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const slug = newProductData.slug || newProductData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     const safeImages = (newProductData.images && newProductData.images.length > 0)
       ? newProductData.images
-      : ['/assets/sister-nk-cake.svg'];
+      : [];
 
     const newProduct: Product = {
       ...newProductData,
@@ -1212,18 +1253,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return next;
     });
 
-    // Automatically save to Supabase database products table
+    // Automatically save to Supabase database products table immediately
     try {
       const res = await supabaseService.saveProduct(newProduct);
       if (res.success) {
-        showToast('Product Created & Saved to Cloud! ☁️', `"${newProduct.name}" is saved to Supabase database and live on your store.`);
+        showToast('Product Created & Saved to Cloud', `"${newProduct.name}" is saved to Supabase database and live on your store.`, 'success', true);
       } else {
         console.warn('Supabase product sync warning:', res.error);
-        showToast('Product Created! ✨', `"${newProduct.name}" is live on the store.`);
+        showToast('Product Created', `"${newProduct.name}" is live on the store.`, 'success', true);
       }
     } catch (err) {
       console.warn('Supabase product sync exception:', err);
-      showToast('Product Created! ✨', `"${newProduct.name}" is live on the store.`);
+      showToast('Product Created', `"${newProduct.name}" is live on the store.`, 'success', true);
     }
 
     return newProduct;
@@ -1261,17 +1302,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       try {
         const res = await supabaseService.saveProduct(updatedItem);
         if (res.success) {
-          showToast('Product Saved to Cloud! ☁️', `"${updatedItem.name}" updated in Supabase database.`);
+          showToast('Product Saved to Cloud', `"${updatedItem.name}" updated in Supabase database.`, 'success', true);
           return;
         }
       } catch (err) {
         console.warn('Supabase product update warning:', err);
       }
     }
-    showToast('Product Saved', 'Changes have been updated live across the website.');
+    showToast('Product Saved', 'Changes have been updated live across the website.', 'success', true);
   };
 
-  const deleteProduct = (id: string) => {
+  const deleteProduct = async (id: string): Promise<boolean> => {
     const found = products.find((p) => p.id === id);
     const updated = products.filter((item) => item.id !== id);
     setProducts(updated);
@@ -1279,47 +1320,65 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Also remove from active shopping cart if the customer or admin had added it
     setCart((prevCart) => prevCart.filter((item) => item.product.id !== id));
 
-    if (supabaseService.isAvailable()) {
-      supabaseService.deleteProduct(id).catch(console.warn);
+    const savedDeleted = safeGetItem('els_deleted_product_ids');
+    const deletedList: string[] = savedDeleted ? JSON.parse(savedDeleted) : [];
+    if (!deletedList.includes(id)) {
+      deletedList.push(id);
+    }
+
+    const savedDeletedSlugs = safeGetItem('els_deleted_product_slugs');
+    const deletedSlugsList: string[] = savedDeletedSlugs ? JSON.parse(savedDeletedSlugs) : [];
+    if (found?.slug && !deletedSlugsList.includes(found.slug.toLowerCase())) {
+      deletedSlugsList.push(found.slug.toLowerCase());
+    }
+
+    const savedDeletedNames = safeGetItem('els_deleted_product_names');
+    const deletedNamesList: string[] = savedDeletedNames ? JSON.parse(savedDeletedNames) : [];
+    if (found?.name) {
+      const normName = found.name.trim().toLowerCase();
+      if (!deletedNamesList.includes(normName)) {
+        deletedNamesList.push(normName);
+      }
+    }
+
+    // Bar graduation cake and baby shower cake defaults permanently
+    const isGradMatch =
+      id === 'prod-13' ||
+      found?.slug === 'graduation-cake' ||
+      (found?.name && found.name.toLowerCase().includes('graduation'));
+    if (isGradMatch) {
+      if (!deletedList.includes('prod-13')) deletedList.push('prod-13');
+      if (!deletedSlugsList.includes('graduation-cake')) deletedSlugsList.push('graduation-cake');
+      if (!deletedNamesList.includes('graduation cake')) deletedNamesList.push('graduation cake');
+    }
+
+    const isBabyShowerMatch =
+      id === 'prod-12' ||
+      found?.slug === 'baby-shower-cake' ||
+      (found?.name && found.name.toLowerCase().includes('baby shower'));
+    if (isBabyShowerMatch) {
+      if (!deletedList.includes('prod-12')) deletedList.push('prod-12');
+      if (!deletedSlugsList.includes('baby-shower-cake')) deletedSlugsList.push('baby-shower-cake');
+      if (!deletedNamesList.includes('baby shower cake')) deletedNamesList.push('baby shower cake');
+    }
+
+    // If this was the luxury wedding cake, also ensure default IDs and slugs are permanently barred
+    const isWeddingMatch =
+      id === 'prod-16' ||
+      found?.slug === 'luxury-wedding-cake' ||
+      (found?.name && found.name.toLowerCase().includes('luxury wedding'));
+    if (isWeddingMatch) {
+      if (!deletedList.includes('prod-16')) deletedList.push('prod-16');
+      if (!deletedSlugsList.includes('luxury-wedding-cake')) deletedSlugsList.push('luxury-wedding-cake');
+      if (!deletedNamesList.includes('luxury wedding cake')) deletedNamesList.push('luxury wedding cake');
+      safeRemoveItem('els_wedding_cake_image');
+      idbDelete('els_wedding_cake_image');
     }
 
     try {
       safeSetItem('els_products', JSON.stringify(updated));
       idbSet('els_products', updated);
-
-      const savedDeleted = safeGetItem('els_deleted_product_ids');
-      const deletedList: string[] = savedDeleted ? JSON.parse(savedDeleted) : [];
-      if (!deletedList.includes(id)) {
-        deletedList.push(id);
-      }
-
-      const savedDeletedSlugs = safeGetItem('els_deleted_product_slugs');
-      const deletedSlugsList: string[] = savedDeletedSlugs ? JSON.parse(savedDeletedSlugs) : [];
-      if (found?.slug && !deletedSlugsList.includes(found.slug.toLowerCase())) {
-        deletedSlugsList.push(found.slug.toLowerCase());
-      }
-
-      const savedDeletedNames = safeGetItem('els_deleted_product_names');
-      const deletedNamesList: string[] = savedDeletedNames ? JSON.parse(savedDeletedNames) : [];
-      if (found?.name) {
-        const normName = found.name.trim().toLowerCase();
-        if (!deletedNamesList.includes(normName)) {
-          deletedNamesList.push(normName);
-        }
-      }
-
-      // If this was the luxury wedding cake, also ensure default IDs and slugs are permanently barred
-      const isWeddingMatch =
-        id === 'prod-16' ||
-        found?.slug === 'luxury-wedding-cake' ||
-        (found?.name && found.name.toLowerCase().includes('luxury wedding'));
-      if (isWeddingMatch) {
-        if (!deletedList.includes('prod-16')) deletedList.push('prod-16');
-        if (!deletedSlugsList.includes('luxury-wedding-cake')) deletedSlugsList.push('luxury-wedding-cake');
-        if (!deletedNamesList.includes('luxury wedding cake')) deletedNamesList.push('luxury wedding cake');
-        safeRemoveItem('els_wedding_cake_image');
-        idbDelete('els_wedding_cake_image');
-      }
+      idbSet('els_products_full', updated);
 
       safeSetItem('els_deleted_product_ids', JSON.stringify(deletedList));
       idbSet('els_deleted_product_ids', deletedList);
@@ -1333,7 +1392,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       console.warn('Error saving deleted product state:', e);
     }
 
-    showToast('Cake Permanently Deleted', `"${found?.name || 'Item'}" was removed permanently from admin and the live website.`, 'info');
+    if (supabaseService.isAvailable()) {
+      try {
+        await supabaseService.deleteProduct(id, found?.slug, found?.name);
+      } catch (e) {
+        console.warn('Supabase delete product warning:', e);
+      }
+    }
+
+    showToast('Product Permanently Deleted', `"${found?.name || 'Item'}" was removed permanently from admin and live website.`, 'info');
+    return true;
   };
 
   const duplicateProduct = (id: string): Product | null => {
@@ -1748,12 +1816,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const deletedNames = new Set<string>(savedDeletedNames ? JSON.parse(savedDeletedNames) : []);
 
         const isDeleted = (p: { id: string; slug?: string; name?: string }) =>
-          deletedIds.has(p.id);
+          deletedIds.has(p.id) ||
+          (p.slug ? deletedSlugs.has(p.slug.toLowerCase()) : false) ||
+          (p.name ? deletedNames.has(p.name.trim().toLowerCase()) : false) ||
+          p.id === 'prod-12' ||
+          p.id === 'prod-13';
 
         const validProds = prodsRes.products.filter(
           (p) =>
             !isDeleted(p) &&
             p.id !== 'prod-10' &&
+            p.id !== 'prod-12' &&
+            p.id !== 'prod-13' &&
             p.id !== 'prod-19' &&
             p.id !== 'prod-20' &&
             p.id !== 'prod-muvrp76orxs' &&
@@ -1777,7 +1851,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           const safeImgs = (item.images || []).filter((img) => typeof img === 'string' && img.length > 0);
           deduped.push({
             ...item,
-            images: safeImgs.length > 0 ? safeImgs : ['/assets/sister-nk-cake.svg'],
+            images: safeImgs,
           });
         }
 
@@ -1785,17 +1859,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           setProducts((currentProducts) => {
             const supabaseIds = new Set(deduped.map((p) => p.id));
 
-            // Retain any locally added/created products that are not in Supabase yet
+            // Only retain truly custom local products (not seed/default products) that are not in Supabase yet and not deleted
             const localOnly = currentProducts.filter(
-              (p) => !supabaseIds.has(p.id) && !isDeleted(p)
+              (p) =>
+                !supabaseIds.has(p.id) &&
+                !isDeleted(p) &&
+                p.id.startsWith('prod-') &&
+                !p.id.match(/^prod-\d+$/) &&
+                p.id !== 'prod-christmas'
             );
-
-            // Back up any local additions to Supabase so cloud database stays synced
-            if (localOnly.length > 0 && supabaseService.isAvailable()) {
-              localOnly.forEach((localProd) => {
-                supabaseService.saveProduct(localProd).catch(console.warn);
-              });
-            }
 
             const merged = [...localOnly, ...deduped];
             safeSetItem('els_products', JSON.stringify(merged));
@@ -1808,9 +1880,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       // 2. CATEGORIES
       if (catsRes && catsRes.length > 0) {
-        setCategories(catsRes);
-        safeSetItem('els_categories', JSON.stringify(catsRes));
-        idbSet('els_categories', catsRes).catch(() => {});
+        const savedDeletedCats = safeGetItem('els_deleted_category_names');
+        const deletedCatNames = new Set<string>(savedDeletedCats ? JSON.parse(savedDeletedCats).map((n: string) => n.toLowerCase()) : []);
+        const validCats = catsRes.filter((c) => !deletedCatNames.has(c.name.toLowerCase()));
+        setCategories(validCats);
+        safeSetItem('els_categories', JSON.stringify(validCats));
+        idbSet('els_categories', validCats).catch(() => {});
       }
 
       // 3. SITE CONTENT (Including custom hero image, sweet moments gallery photos, about, faqs)
@@ -2166,11 +2241,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const deleteReview = (id: string) => {
-    setReviews((prev) => prev.filter((r) => r.id !== id));
+    setReviews((prev) => {
+      const updated = prev.filter((r) => r.id !== id);
+      safeSetItem('els_reviews', JSON.stringify(updated));
+      idbSet('els_reviews', updated);
+      return updated;
+    });
     if (supabaseService.isAvailable()) {
       supabaseService.deleteReview(id).catch(console.warn);
     }
-    showToast('Review Removed', 'Testimonial deleted.', 'info');
+    showToast('Review Removed', 'Testimonial permanently deleted.', 'info');
   };
 
   // -------------------------------------------------------------

@@ -852,15 +852,16 @@ export const AdminPage: React.FC = () => {
   };
 
   // Confirm Delete Product Permanently
-  const handleConfirmDeleteProduct = () => {
+  const handleConfirmDeleteProduct = async () => {
     if (!productToDelete) return;
-    deleteProduct(productToDelete.id);
+    const target = productToDelete;
     setIsDeleteProductModalOpen(false);
     setProductToDelete(null);
-    if (isProductModalOpen && editingProduct?.id === productToDelete.id) {
+    if (isProductModalOpen && editingProduct?.id === target.id) {
       setIsProductModalOpen(false);
       setEditingProduct(null);
     }
+    await deleteProduct(target.id);
   };
 
   // -------------------------------------------------------------
@@ -7868,7 +7869,6 @@ export const AdminPage: React.FC = () => {
                             : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
                         }`}
                       >
-                        <Cake className="w-3.5 h-3.5" />
                         <span>Presets</span>
                       </button>
                       <button
