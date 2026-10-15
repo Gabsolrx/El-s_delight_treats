@@ -114,6 +114,7 @@ import {
   DEFAULT_DELIVERY_METHODS,
   DEFAULT_DELIVERY_POLICY_NOTICE,
   POPULAR_CAKE_SWATCH_COLORS,
+  DEFAULT_COLOR_PALETTES,
 } from '../data/defaultSiteContent';
 import { SUPABASE_SQL_SCHEMA_SCRIPT } from '../data/supabaseSchemaSql';
 import { safeSetItem, safeRemoveItem, idbSet } from '../utils/safeStorage';
@@ -3828,16 +3829,22 @@ export const AdminPage: React.FC = () => {
                       <select
                         value={editingPaletteId || ''}
                         onChange={(e) => {
-                          const pal = (siteContent.customPage?.colorPalettes || []).find((p) => p.id === e.target.value);
+                          const palList: CustomColorPalette[] = (
+                            siteContent.customPage?.colorPalettes && siteContent.customPage.colorPalettes.length > 0
+                              ? siteContent.customPage.colorPalettes
+                              : DEFAULT_COLOR_PALETTES
+                          );
+                          const pal = palList.find((p: CustomColorPalette) => p.id === e.target.value);
                           if (pal) {
                             setEditingPaletteId(pal.id);
                             setNewPaletteName(pal.name);
                             setNewPaletteDesc(pal.description || '');
-                            const count = (pal.colors.length === 1 ? 1 : pal.colors.length === 3 ? 3 : 2) as 1 | 2 | 3;
+                            const colors = (pal.colors && pal.colors.length > 0) ? pal.colors.slice(0, 3) : ['#EAB308'];
+                            const count = (colors.length === 1 ? 1 : colors.length === 3 ? 3 : 2) as 1 | 2 | 3;
                             setPaletteColorCount(count);
-                            setNewPaletteColor1(pal.colors[0] || '#F472B6');
-                            setNewPaletteColor2(pal.colors[1] || '#EAB308');
-                            setNewPaletteColor3(pal.colors[2] || '#064E3B');
+                            setNewPaletteColor1(colors[0] || '#F472B6');
+                            setNewPaletteColor2(colors[1] || '#EAB308');
+                            setNewPaletteColor3(colors[2] || '#064E3B');
                             setActivePaletteSlot(1);
                           } else {
                             setEditingPaletteId(null);
@@ -3851,34 +3858,52 @@ export const AdminPage: React.FC = () => {
                         }}
                         className="w-full px-3 py-2 rounded-xl border border-purple-200 dark:border-purple-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer shadow-2xs"
                       >
-                        <option value="">-- Choose any palette from dropdown to load and edit its details --</option>
-                        <optgroup label="🌟 1-Color Palettes">
-                          {(siteContent.customPage?.colorPalettes || [])
-                            .filter((p) => p.colors.length === 1)
-                            .map((p) => (
-                              <option key={`edit-drop-${p.id}`} value={p.id}>
-                                {p.name} — (1 Color: {p.colors[0]}) {p.description ? `• ${p.description}` : ''}
-                              </option>
-                            ))}
-                        </optgroup>
-                        <optgroup label="✨ 2-Colors Palettes">
-                          {(siteContent.customPage?.colorPalettes || [])
-                            .filter((p) => p.colors.length === 2)
-                            .map((p) => (
-                              <option key={`edit-drop-${p.id}`} value={p.id}>
-                                {p.name} — (2 Colors: {p.colors.join(', ')}) {p.description ? `• ${p.description}` : ''}
-                              </option>
-                            ))}
-                        </optgroup>
-                        <optgroup label="🎨 3-Colors Palettes">
-                          {(siteContent.customPage?.colorPalettes || [])
-                            .filter((p) => p.colors.length === 3)
-                            .map((p) => (
-                              <option key={`edit-drop-${p.id}`} value={p.id}>
-                                {p.name} — (3 Colors: {p.colors.join(', ')}) {p.description ? `• ${p.description}` : ''}
-                              </option>
-                            ))}
-                        </optgroup>
+                        <option value="">-- Select an Existing Palette to Edit --</option>
+                        
+                        {(() => {
+                          const palList: CustomColorPalette[] = (
+                            siteContent.customPage?.colorPalettes && siteContent.customPage.colorPalettes.length > 0
+                              ? siteContent.customPage.colorPalettes
+                              : DEFAULT_COLOR_PALETTES
+                          ).map((p: CustomColorPalette) => ({
+                            ...p,
+                            colors: (p.colors && p.colors.length > 0) ? p.colors.slice(0, 3) : ['#EAB308'],
+                          }));
+
+                          return (
+                            <>
+                              <optgroup label="1-Color Palettes">
+                                {palList
+                                  .filter((p: CustomColorPalette) => p.colors.length === 1)
+                                  .map((p: CustomColorPalette) => (
+                                    <option key={`edit-drop-${p.id}`} value={p.id}>
+                                      {p.name} (1 Color: {p.colors[0]})
+                                    </option>
+                                  ))}
+                              </optgroup>
+
+                              <optgroup label="2-Colors Palettes">
+                                {palList
+                                  .filter((p: CustomColorPalette) => p.colors.length === 2)
+                                  .map((p: CustomColorPalette) => (
+                                    <option key={`edit-drop-${p.id}`} value={p.id}>
+                                      {p.name} (2 Colors: {p.colors.join(', ')})
+                                    </option>
+                                  ))}
+                              </optgroup>
+
+                              <optgroup label="3-Colors Palettes">
+                                {palList
+                                  .filter((p: CustomColorPalette) => p.colors.length === 3)
+                                  .map((p: CustomColorPalette) => (
+                                    <option key={`edit-drop-${p.id}`} value={p.id}>
+                                      {p.name} (3 Colors: {p.colors.join(', ')})
+                                    </option>
+                                  ))}
+                              </optgroup>
+                            </>
+                          );
+                        })()}
                       </select>
                     </div>
 

@@ -24,10 +24,15 @@ export const CustomCakeForm: React.FC = () => {
     customConfig?.flavors && customConfig.flavors.length > 0
       ? customConfig.flavors
       : DEFAULT_CUSTOM_FLAVORS;
-  const availablePalettes =
+  const rawPalettes =
     customConfig?.colorPalettes && customConfig.colorPalettes.length > 0
       ? customConfig.colorPalettes
       : DEFAULT_COLOR_PALETTES;
+
+  const availablePalettes = rawPalettes.map((p) => ({
+    ...p,
+    colors: (p.colors && p.colors.length > 0) ? p.colors.slice(0, 3) : ['#EAB308'],
+  }));
 
   const deliveryMethods: DeliveryMethodOption[] =
     businessInfo.deliveryMethods && businessInfo.deliveryMethods.length > 0
@@ -355,34 +360,34 @@ export const CustomCakeForm: React.FC = () => {
                 }}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-pink-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500 shadow-2xs cursor-pointer"
               >
-                <option value="">-- Click to choose from many color palettes (1, 2, or 3 Colors) --</option>
+                <option value="">-- Select a Color Palette (1, 2, or 3 Colors) --</option>
                 
-                <optgroup label="🌟 1 Color Palettes (Single-Tone Elegance)">
+                <optgroup label="1-Color Palettes (Single-Tone)">
                   {availablePalettes
                     .filter((p) => p.colors.length === 1)
                     .map((pal) => (
                       <option key={pal.id} value={pal.id}>
-                        {pal.name} — (1 Color: {pal.colors.join(', ')}) {pal.description ? `• ${pal.description}` : ''}
+                        {pal.name} (1 Color: {pal.colors.join(', ')})
                       </option>
                     ))}
                 </optgroup>
 
-                <optgroup label="✨ 2 Colors Palettes (Dual-Tone Harmony)">
+                <optgroup label="2-Colors Palettes (Dual-Tone)">
                   {availablePalettes
                     .filter((p) => p.colors.length === 2)
                     .map((pal) => (
                       <option key={pal.id} value={pal.id}>
-                        {pal.name} — (2 Colors: {pal.colors.join(', ')}) {pal.description ? `• ${pal.description}` : ''}
+                        {pal.name} (2 Colors: {pal.colors.join(', ')})
                       </option>
                     ))}
                 </optgroup>
 
-                <optgroup label="🎨 3 Colors Palettes (Tri-Tone Artisan Trio)">
+                <optgroup label="3-Colors Palettes (Tri-Tone)">
                   {availablePalettes
                     .filter((p) => p.colors.length === 3)
                     .map((pal) => (
                       <option key={pal.id} value={pal.id}>
-                        {pal.name} — (3 Colors: {pal.colors.join(', ')}) {pal.description ? `• ${pal.description}` : ''}
+                        {pal.name} (3 Colors: {pal.colors.join(', ')})
                       </option>
                     ))}
                 </optgroup>

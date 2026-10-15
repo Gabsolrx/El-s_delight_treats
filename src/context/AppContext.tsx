@@ -815,9 +815,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 flavors: (parsed.customPage.flavors && Array.isArray(parsed.customPage.flavors) && parsed.customPage.flavors.length > 0)
                   ? parsed.customPage.flavors
                   : DEFAULT_SITE_CONTENT.customPage!.flavors,
-                colorPalettes: (parsed.customPage.colorPalettes && Array.isArray(parsed.customPage.colorPalettes) && parsed.customPage.colorPalettes.length > 0)
-                  ? parsed.customPage.colorPalettes
-                  : DEFAULT_SITE_CONTENT.customPage!.colorPalettes,
+                colorPalettes: (() => {
+                  const stored = parsed.customPage.colorPalettes;
+                  if (Array.isArray(stored) && stored.length > 0) {
+                    const has1Color = stored.some((p: any) => p.colors && p.colors.length === 1);
+                    const has2Color = stored.some((p: any) => p.colors && p.colors.length === 2);
+                    const has3Color = stored.some((p: any) => p.colors && p.colors.length === 3);
+                    if (!has1Color || !has2Color || !has3Color) {
+                      return DEFAULT_SITE_CONTENT.customPage!.colorPalettes;
+                    }
+                    return stored.map((p: any) => ({
+                      ...p,
+                      colors: (p.colors && p.colors.length > 0) ? p.colors.slice(0, 3) : ['#EAB308'],
+                      type: p.colors?.length === 1 ? '1-color' : p.colors?.length === 3 ? '3-color' : '2-color',
+                    }));
+                  }
+                  return DEFAULT_SITE_CONTENT.customPage!.colorPalettes;
+                })(),
               }
             : DEFAULT_SITE_CONTENT.customPage,
         };
