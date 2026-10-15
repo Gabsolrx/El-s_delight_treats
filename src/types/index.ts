@@ -311,6 +311,26 @@ export interface SiteBudgetSectionContent {
   tier3: SiteBudgetTierItem;
 }
 
+export interface CustomColorPalette {
+  id: string;
+  name: string;
+  colors: string[];
+  description?: string;
+  previewImage?: string;
+}
+
+export interface CustomPageConfig {
+  badge?: string;
+  headline?: string;
+  subtitle?: string;
+  flavors: string[];
+  colorPalettes?: CustomColorPalette[];
+  cakeSizes?: string[];
+  occasions?: string[];
+  tiers?: string[];
+  budgetRanges?: string[];
+}
+
 export interface SiteContent {
   hero: SiteHeroContent;
   announcements: AnnouncementItem[];
@@ -321,6 +341,7 @@ export interface SiteContent {
   occasionsSection?: SiteOccasionsContent;
   sweetMoments?: SiteGalleryContent;
   budgetSection?: SiteBudgetSectionContent;
+  customPage?: CustomPageConfig;
 }
 
 export interface LogoSettings {

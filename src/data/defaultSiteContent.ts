@@ -1,4 +1,4 @@
-import { SiteContent, BusinessInfo, LogoSettings, DeliveryMethodOption, SiteBudgetSectionContent } from '../types';
+import { SiteContent, BusinessInfo, LogoSettings, DeliveryMethodOption, SiteBudgetSectionContent, CustomColorPalette, CustomPageConfig } from '../types';
 import { BUSINESS_INFO, TESTIMONIALS } from './products';
 import preseededData from './preseededData.json';
 
@@ -381,4 +381,101 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ],
   },
   budgetSection: DEFAULT_BUDGET_SECTION,
+  customPage: {
+    badge: 'Bespoke Cake Consultations',
+    headline: 'Design Your Custom Cake',
+    subtitle: 'Have a specific theme, photo, Pinterest moodboard, or dream wedding cake in mind? Complete the form below and continue seamlessly on WhatsApp for instant quote approval.',
+    flavors: [
+      'Rich Chocolate Ganache',
+      'Velvet Red Velvet',
+      'Madagascar Vanilla Buttercream',
+      'Fresh Strawberry Cream',
+      'Toasted Coconut & Vanilla',
+      'Spiced Carrot & Walnut',
+      'Marble Swirl (Choc + Vanilla)',
+      'Lemon Berry Drizzle',
+      'Caramel Biscoff Crunch',
+      'Lotus Biscoff & Salted Caramel',
+      'Ferrero Rocher & Hazelnut',
+      'Different flavour per tier',
+    ],
+    colorPalettes: [
+      {
+        id: 'pal-pink-gold',
+        name: 'Blush Pink & Royal Gold',
+        colors: ['#F472B6', '#FB7185', '#EAB308', '#FEF08A'],
+        description: 'Romantic, glamorous, floral celebration',
+      },
+      {
+        id: 'pal-white-silver',
+        name: 'Classic White & Pearl Silver',
+        colors: ['#FFFFFF', '#F3F4F6', '#CBD5E1', '#94A3B8'],
+        description: 'Timeless wedding, holy communion, crisp elegance',
+      },
+      {
+        id: 'pal-emerald-gold',
+        name: 'Emerald Green & Luxury Gold',
+        colors: ['#065F46', '#10B981', '#34D399', '#F59E0B'],
+        description: 'Opulent traditional wedding, milestone jubilee',
+      },
+      {
+        id: 'pal-navy-silver',
+        name: 'Midnight Navy & Silver Sparkle',
+        colors: ['#0F172A', '#1E293B', '#38BDF8', '#E2E8F0'],
+        description: 'Sleek gentleman birthday, corporate gala, modern luxury',
+      },
+      {
+        id: 'pal-lavender-lilac',
+        name: 'Lavender Dream & Soft Lilac',
+        colors: ['#7C3AED', '#A78BFA', '#DDD6FE', '#FAF5FF'],
+        description: 'Whimsical garden theme, sweet sixteen, floral fairy',
+      },
+      {
+        id: 'pal-burgundy-rose',
+        name: 'Royal Burgundy & Rose Gold',
+        colors: ['#881337', '#BE123C', '#FB7185', '#FDE047'],
+        description: 'Deep romantic anniversary, rich evening celebration',
+      },
+      {
+        id: 'pal-pastel-rainbow',
+        name: 'Pastel Rainbow Festival',
+        colors: ['#FCA5A5', '#FDE047', '#86EFAC', '#93C5FD', '#C4B5FD'],
+        description: 'Kids birthday, fun candy land, cheerful carnival',
+      },
+      {
+        id: 'pal-terracotta-sage',
+        name: 'Rustic Terracotta & Earth Sage',
+        colors: ['#C2410C', '#EA580C', '#65A30D', '#FEF3C7'],
+        description: 'Boho chic, earthy botanical, minimalist aesthetic',
+      },
+      {
+        id: 'pal-chocolate-caramel',
+        name: 'Rich Chocolate & Caramel Gold',
+        colors: ['#3E2723', '#78350F', '#D97706', '#FDE68A'],
+        description: 'Decadent foodie theme, warm tones, gold leaf accents',
+      },
+      {
+        id: 'pal-baby-blue',
+        name: 'Baby Blue & Cloud White',
+        colors: ['#60A5FA', '#93C5FD', '#DBEAFE', '#FFFFFF'],
+        description: 'Baby boy shower, sky theme, first birthday',
+      },
+      {
+        id: 'pal-sunshine-ivory',
+        name: 'Sunshine Yellow & Ivory White',
+        colors: ['#EAB308', '#FACC15', '#FEF08A', '#FFFFF0'],
+        description: 'Vibrant summer vibes, citrus cheer, daisy floral',
+      },
+      {
+        id: 'pal-black-gold',
+        name: 'All-Black Velvet & 24K Gold',
+        colors: ['#18181B', '#27272A', '#CA8A04', '#FEF08A'],
+        description: 'Dramatic black-tie, VIP milestone celebration',
+      },
+    ],
+  },
 };
+
+export const DEFAULT_CUSTOM_FLAVORS: string[] = DEFAULT_SITE_CONTENT.customPage!.flavors;
+export const DEFAULT_COLOR_PALETTES: CustomColorPalette[] = DEFAULT_SITE_CONTENT.customPage!.colorPalettes!;
+export const DEFAULT_CUSTOM_PAGE_CONFIG: CustomPageConfig = DEFAULT_SITE_CONTENT.customPage!;

@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
-import { Send, CheckCircle2, Calendar, Palette, Layers, DollarSign, ShieldCheck, Building, User, Hash, ArrowRight, AlertCircle, Truck, Store } from 'lucide-react';
+import { Send, CheckCircle2, Calendar, Palette, Layers, DollarSign, ShieldCheck, Building, User, Hash, ArrowRight, AlertCircle, Truck, Store, Check } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { CustomCakeFormData, DeliveryMethodOption, StoredOrder } from '../types';
 import { generateCustomCakeWhatsAppUrl, formatNaira } from '../utils/format';
 import { useApp } from '../context/AppContext';
 import { CopyAccountButton } from './CopyAccountButton';
-import { DEFAULT_DELIVERY_METHODS } from '../data/defaultSiteContent';
+import { DEFAULT_DELIVERY_METHODS, DEFAULT_CUSTOM_FLAVORS, DEFAULT_COLOR_PALETTES } from '../data/defaultSiteContent';
 
 export const CustomCakeForm: React.FC = () => {
-  const { showToast, addCustomInquiry, businessInfo, saveOrder, setCurrentOrder } = useApp();
+  const { showToast, addCustomInquiry, businessInfo, saveOrder, setCurrentOrder, siteContent } = useApp();
   const [submitted, setSubmitted] = useState(false);
   const [hasMadePayment, setHasMadePayment] = useState(false);
   const [depositAmount, setDepositAmount] = useState<number>(20000);
   const [customDepositInput, setCustomDepositInput] = useState('');
+
+  const customConfig = siteContent?.customPage;
+  const availableFlavors =
+    customConfig?.flavors && customConfig.flavors.length > 0
+      ? customConfig.flavors
+      : DEFAULT_CUSTOM_FLAVORS;
+  const availablePalettes =
+    customConfig?.colorPalettes && customConfig.colorPalettes.length > 0
+      ? customConfig.colorPalettes
+      : DEFAULT_COLOR_PALETTES;
 
   const deliveryMethods: DeliveryMethodOption[] =
     businessInfo.deliveryMethods && businessInfo.deliveryMethods.length > 0
@@ -27,8 +37,8 @@ export const CustomCakeForm: React.FC = () => {
     email: '',
     occasion: 'Birthday Celebration',
     cakeSize: '8 inch (12–16 servings)',
-    flavour: 'Rich Chocolate Ganache',
-    colourTheme: 'Blush Pink & Gold',
+    flavour: availableFlavors[0] || 'Rich Chocolate Ganache',
+    colourTheme: availablePalettes[0]?.name || 'Blush Pink & Royal Gold',
     themeDescription: '',
     tiers: '1 Tier',
     cakeMessage: '',
@@ -257,42 +267,141 @@ export const CustomCakeForm: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                3. Preferred Flavour
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300">
+                  3. Preferred Flavour *
+                </label>
+                <span className="text-[10px] text-pink-600 dark:text-pink-400 font-medium">
+                  {availableFlavors.length} flavours available
+                </span>
+              </div>
               <select
                 name="flavour"
                 value={formData.flavour}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 font-medium"
               >
-                <option value="Rich Chocolate Ganache">Rich Chocolate Ganache</option>
-                <option value="Velvet Red Velvet">Velvet Red Velvet</option>
-                <option value="Madagascar Vanilla Buttercream">Madagascar Vanilla Buttercream</option>
-                <option value="Fresh Strawberry Cream">Fresh Strawberry Cream</option>
-                <option value="Toasted Coconut & Vanilla">Toasted Coconut & Vanilla</option>
-                <option value="Spiced Carrot & Walnut">Spiced Carrot & Walnut</option>
-                <option value="Marble Swirl (Choc + Vanilla)">Marble Swirl (Choc + Vanilla)</option>
-                <option value="Different flavour per tier">Different flavour per tier</option>
+                {availableFlavors.map((flavorOption) => (
+                  <option key={flavorOption} value={flavorOption}>
+                    {flavorOption}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                4. Colour Palette
-              </label>
-              <input
-                type="text"
-                name="colourTheme"
-                value={formData.colourTheme}
-                onChange={handleChange}
-                placeholder="e.g. Blush Pink, Champagne Gold, Navy"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
-              />
+          {/* 4. Visual Color Palette Picker & Custom Color Input */}
+          <div className="space-y-3 pt-3 border-t border-rose-100/70 dark:border-stone-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <div>
+                <label className="block text-xs font-bold text-stone-900 dark:text-stone-100">
+                  4. Celebration Colour Palette & Theme *
+                </label>
+                <p className="text-[11px] text-stone-500">
+                  Select a curated palette below or type your dream color combination if you don't see it in the list.
+                </p>
+              </div>
+
+              {formData.colourTheme && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 text-xs font-bold border border-pink-200 dark:border-pink-900 self-start sm:self-auto shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
+                  <span>Selected: {formData.colourTheme}</span>
+                </span>
+              )}
             </div>
 
+            {/* Visual Palettes Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-72 overflow-y-auto p-1 bg-stone-50/50 dark:bg-stone-900/40 rounded-2xl border border-stone-200/80 dark:border-stone-800">
+              {availablePalettes.map((palette) => {
+                const isSelected = formData.colourTheme.trim().toLowerCase() === palette.name.trim().toLowerCase();
+                return (
+                  <button
+                    key={palette.id}
+                    type="button"
+                    onClick={() => {
+                      setFormData((prev) => ({ ...prev, colourTheme: palette.name }));
+                    }}
+                    className={`flex items-center gap-3 p-2.5 rounded-xl border text-left transition-all ${
+                      isSelected
+                        ? 'border-pink-500 bg-pink-50 dark:bg-pink-950/60 ring-2 ring-pink-500/25 shadow-xs'
+                        : 'border-stone-200 dark:border-stone-800 bg-white dark:bg-[#1E1E24] hover:border-pink-300 dark:hover:border-stone-700'
+                    }`}
+                  >
+                    {/* Visual Color Swatch Preview Disk/Image */}
+                    <div className="relative shrink-0 w-10 h-10 rounded-xl bg-stone-100 dark:bg-stone-800 p-0.5 flex items-center justify-center border border-stone-200/80 dark:border-stone-700 shadow-2xs">
+                      <div className="grid grid-cols-2 gap-0.5 w-full h-full rounded-lg overflow-hidden">
+                        {palette.colors.slice(0, 4).map((c, idx) => (
+                          <div
+                            key={idx}
+                            style={{ backgroundColor: c }}
+                            className="w-full h-full border border-black/5"
+                            title={c}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Palette Name & Info beside it */}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className={`text-xs font-bold truncate ${isSelected ? 'text-pink-900 dark:text-pink-200' : 'text-stone-900 dark:text-stone-100'}`}>
+                          {palette.name}
+                        </span>
+                        {isSelected && (
+                          <Check className="w-4 h-4 text-pink-600 shrink-0" />
+                        )}
+                      </div>
+                      {palette.description && (
+                        <p className="text-[10px] text-stone-500 dark:text-stone-400 truncate mt-0.5">
+                          {palette.description}
+                        </p>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Custom Color Input for users who don't see their color in the palette */}
+            <div className="p-3.5 rounded-2xl bg-white dark:bg-[#1E1E24] border border-stone-200 dark:border-stone-800 space-y-2 shadow-2xs">
+              <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300">
+                Can't see your color in the palette above? Type your custom color here:
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  name="colourTheme"
+                  value={formData.colourTheme}
+                  onChange={handleChange}
+                  placeholder="e.g. Sage green, dusty rose, burnt orange & gold leaf"
+                  className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                />
+                <label
+                  className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer text-xs font-semibold text-stone-700 dark:text-stone-300 transition-colors shrink-0 shadow-2xs"
+                  title="Choose exact custom color shade"
+                >
+                  <Palette className="w-4 h-4 text-pink-500" />
+                  <span className="hidden sm:inline">Color Tool</span>
+                  <input
+                    type="color"
+                    onChange={(e) => {
+                      const hex = e.target.value;
+                      setFormData((prev) => ({
+                        ...prev,
+                        colourTheme: prev.colourTheme ? `${prev.colourTheme}, ${hex}` : hex,
+                      }));
+                    }}
+                    className="w-0 h-0 opacity-0 absolute pointer-events-none"
+                  />
+                </label>
+              </div>
+              <p className="text-[11px] text-stone-500 dark:text-stone-400">
+                Type any custom tone, bridesmaid dress theme, or shade name — our bakers and cake artists will precisely blend matching fondant, ganache, and edible florals.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
             <div>
               <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
                 5. Number of Tiers

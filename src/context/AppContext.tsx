@@ -15,6 +15,8 @@ import {
   FaqItem,
   LogoSettings,
   CategoryItem,
+  CustomColorPalette,
+  CustomPageConfig,
 } from '../types';
 import { PRODUCTS, TESTIMONIALS, CATEGORIES_LIST } from '../data/products';
 import {
@@ -23,6 +25,9 @@ import {
   DEFAULT_LOGO_SETTINGS,
   DEFAULT_DELIVERY_METHODS,
   DEFAULT_DELIVERY_POLICY_NOTICE,
+  DEFAULT_CUSTOM_FLAVORS,
+  DEFAULT_COLOR_PALETTES,
+  DEFAULT_CUSTOM_PAGE_CONFIG,
 } from '../data/defaultSiteContent';
 import { INITIAL_DEMO_ORDERS, INITIAL_DEMO_INQUIRIES } from '../data/defaultAdminData';
 import { supabaseService } from '../services/supabaseService';
@@ -92,6 +97,15 @@ interface AppContextType {
   addFaq: (faq: Omit<FaqItem, 'id'>) => void;
   updateFaq: (id: string, updates: Partial<FaqItem>) => void;
   deleteFaq: (id: string) => void;
+
+  // Custom Bespoke Cake Page & Flavors
+  addCustomFlavor: (flavor: string) => void;
+  deleteCustomFlavor: (flavor: string) => void;
+  resetCustomFlavors: () => void;
+  addCustomColorPalette: (palette: CustomColorPalette) => void;
+  deleteCustomColorPalette: (paletteId: string) => void;
+  resetCustomColorPalettes: () => void;
+  updateCustomPageConfig: (updates: Partial<CustomPageConfig>) => void;
 
   // Orders Management
   saveOrder: (order: StoredOrder) => void;
@@ -793,6 +807,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 tier3: { ...DEFAULT_SITE_CONTENT.budgetSection!.tier3, ...(parsed.budgetSection.tier3 || {}) },
               }
             : DEFAULT_SITE_CONTENT.budgetSection,
+          customPage: parsed.customPage
+            ? {
+                ...DEFAULT_SITE_CONTENT.customPage!,
+                ...parsed.customPage,
+                flavors: (parsed.customPage.flavors && Array.isArray(parsed.customPage.flavors) && parsed.customPage.flavors.length > 0)
+                  ? parsed.customPage.flavors
+                  : DEFAULT_SITE_CONTENT.customPage!.flavors,
+                colorPalettes: (parsed.customPage.colorPalettes && Array.isArray(parsed.customPage.colorPalettes) && parsed.customPage.colorPalettes.length > 0)
+                  ? parsed.customPage.colorPalettes
+                  : DEFAULT_SITE_CONTENT.customPage!.colorPalettes,
+              }
+            : DEFAULT_SITE_CONTENT.customPage,
         };
       }
     } catch (e) {
@@ -1375,6 +1401,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         brandPromises: updates.brandPromises !== undefined ? updates.brandPromises : prev.brandPromises,
         occasionsSection: updates.occasionsSection ? { ...(prev.occasionsSection || {}), ...updates.occasionsSection } : prev.occasionsSection,
         sweetMoments: updates.sweetMoments ? { ...(prev.sweetMoments || {}), ...updates.sweetMoments } : prev.sweetMoments,
+        customPage: updates.customPage ? { ...(prev.customPage || {}), ...updates.customPage } : prev.customPage,
       };
 
       if (supabaseService.isAvailable()) {
@@ -1471,6 +1498,140 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return merged;
     });
     showToast('FAQ Deleted', 'Question removed from FAQ page.');
+  };
+
+  // -------------------------------------------------------------
+  // 10b. CUSTOM BESPOKE CAKE PAGE & FLAVORS
+  // -------------------------------------------------------------
+  const addCustomFlavor = (flavor: string) => {
+    const trimmed = flavor.trim();
+    if (!trimmed) return;
+    setSiteContent((prev) => {
+      const currentFlavors = prev.customPage?.flavors || DEFAULT_CUSTOM_FLAVORS;
+      if (currentFlavors.some((f) => f.toLowerCase() === trimmed.toLowerCase())) {
+        showToast('Flavor Already Exists', `"${trimmed}" is already in the flavor dropdown.`, 'info');
+        return prev;
+      }
+      const updated = {
+        ...prev,
+        customPage: {
+          ...(prev.customPage || DEFAULT_CUSTOM_PAGE_CONFIG),
+          flavors: [...currentFlavors, trimmed],
+        },
+      };
+      if (supabaseService.isAvailable()) {
+        supabaseService.saveSiteContent(updated).catch(console.warn);
+      }
+      return updated;
+    });
+    showToast('Flavor Added! 🎂', `"${trimmed}" was added to the custom cake flavor dropdown.`, 'success');
+  };
+
+  const deleteCustomFlavor = (flavorToDelete: string) => {
+    setSiteContent((prev) => {
+      const currentFlavors = prev.customPage?.flavors || DEFAULT_CUSTOM_FLAVORS;
+      const filtered = currentFlavors.filter((f) => f !== flavorToDelete);
+      const updated = {
+        ...prev,
+        customPage: {
+          ...(prev.customPage || DEFAULT_CUSTOM_PAGE_CONFIG),
+          flavors: filtered,
+        },
+      };
+      if (supabaseService.isAvailable()) {
+        supabaseService.saveSiteContent(updated).catch(console.warn);
+      }
+      return updated;
+    });
+    showToast('Flavor Removed', `"${flavorToDelete}" was removed from the flavor dropdown.`);
+  };
+
+  const resetCustomFlavors = () => {
+    setSiteContent((prev) => {
+      const updated = {
+        ...prev,
+        customPage: {
+          ...(prev.customPage || DEFAULT_CUSTOM_PAGE_CONFIG),
+          flavors: DEFAULT_CUSTOM_FLAVORS,
+        },
+      };
+      if (supabaseService.isAvailable()) {
+        supabaseService.saveSiteContent(updated).catch(console.warn);
+      }
+      return updated;
+    });
+    showToast('Flavors Restored', 'Custom cake flavors have been reset to defaults.');
+  };
+
+  const addCustomColorPalette = (newPalette: CustomColorPalette) => {
+    setSiteContent((prev) => {
+      const current = prev.customPage?.colorPalettes || DEFAULT_COLOR_PALETTES;
+      const updated = {
+        ...prev,
+        customPage: {
+          ...(prev.customPage || DEFAULT_CUSTOM_PAGE_CONFIG),
+          colorPalettes: [...current, newPalette],
+        },
+      };
+      if (supabaseService.isAvailable()) {
+        supabaseService.saveSiteContent(updated).catch(console.warn);
+      }
+      return updated;
+    });
+    showToast('Palette Added! 🎨', `"${newPalette.name}" was added to the custom color palettes.`, 'success');
+  };
+
+  const deleteCustomColorPalette = (paletteId: string) => {
+    setSiteContent((prev) => {
+      const current = prev.customPage?.colorPalettes || DEFAULT_COLOR_PALETTES;
+      const filtered = current.filter((p) => p.id !== paletteId);
+      const updated = {
+        ...prev,
+        customPage: {
+          ...(prev.customPage || DEFAULT_CUSTOM_PAGE_CONFIG),
+          colorPalettes: filtered,
+        },
+      };
+      if (supabaseService.isAvailable()) {
+        supabaseService.saveSiteContent(updated).catch(console.warn);
+      }
+      return updated;
+    });
+    showToast('Palette Removed', 'Color palette was deleted.');
+  };
+
+  const resetCustomColorPalettes = () => {
+    setSiteContent((prev) => {
+      const updated = {
+        ...prev,
+        customPage: {
+          ...(prev.customPage || DEFAULT_CUSTOM_PAGE_CONFIG),
+          colorPalettes: DEFAULT_COLOR_PALETTES,
+        },
+      };
+      if (supabaseService.isAvailable()) {
+        supabaseService.saveSiteContent(updated).catch(console.warn);
+      }
+      return updated;
+    });
+    showToast('Palettes Restored', 'Color palettes have been reset to defaults.');
+  };
+
+  const updateCustomPageConfig = (updates: Partial<CustomPageConfig>) => {
+    setSiteContent((prev) => {
+      const updated = {
+        ...prev,
+        customPage: {
+          ...(prev.customPage || DEFAULT_CUSTOM_PAGE_CONFIG),
+          ...updates,
+        },
+      };
+      if (supabaseService.isAvailable()) {
+        supabaseService.saveSiteContent(updated).catch(console.warn);
+      }
+      return updated;
+    });
+    showToast('Custom Page Updated', 'Custom page configuration saved.');
   };
 
   // -------------------------------------------------------------
@@ -1727,6 +1888,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             budgetSection: contentRes.budgetSection
               ? { ...prev.budgetSection, ...contentRes.budgetSection }
               : prev.budgetSection,
+            customPage: contentRes.customPage
+              ? { ...(prev.customPage || {}), ...contentRes.customPage }
+              : prev.customPage,
           };
           safeSetItem('els_site_content', JSON.stringify(merged));
           idbSet('els_site_content', merged).catch(() => {});
@@ -2438,6 +2602,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addFaq,
         updateFaq,
         deleteFaq,
+
+        // Custom Cake Page & Flavors
+        addCustomFlavor,
+        deleteCustomFlavor,
+        resetCustomFlavors,
+        addCustomColorPalette,
+        deleteCustomColorPalette,
+        resetCustomColorPalettes,
+        updateCustomPageConfig,
 
         // Orders
         saveOrder,

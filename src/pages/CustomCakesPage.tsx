@@ -3,19 +3,22 @@ import { CustomCakeForm } from '../components/CustomCakeForm';
 import { useApp } from '../context/AppContext';
 
 export const CustomCakesPage: React.FC = () => {
-  const { businessInfo } = useApp();
+  const { businessInfo, siteContent } = useApp();
+  const customConfig = siteContent?.customPage;
+
   return (
     <div className="py-12 bg-[#FAFAFA] dark:bg-[#0F0F12] min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-100 dark:bg-rose-950/60 text-pink-700 dark:text-pink-300 text-xs font-semibold">
-            <span>Bespoke Cake Consultations</span>
+            <span>{customConfig?.badge || 'Bespoke Cake Consultations'}</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-5xl font-bold text-stone-900 dark:text-stone-100">
-            Design Your Custom Cake
+            {customConfig?.headline || 'Design Your Custom Cake'}
           </h1>
           <p className="text-stone-600 dark:text-stone-400 text-sm sm:text-base leading-relaxed">
-            Have a specific theme, photo, Pinterest moodboard, or dream wedding cake in mind? Complete the form below and continue seamlessly on WhatsApp for instant quote approval.
+            {customConfig?.subtitle ||
+              'Have a specific theme, photo, Pinterest moodboard, or dream wedding cake in mind? Complete the form below and continue seamlessly on WhatsApp for instant quote approval.'}
           </p>
         </div>
 

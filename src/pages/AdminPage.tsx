@@ -101,6 +101,7 @@ import {
   DeliveryMethodOption,
   SiteBudgetSectionContent,
   SiteBudgetTierItem,
+  CustomColorPalette,
 } from '../types';
 import { formatNaira } from '../utils/format';
 import { ElsDelightLogo, ElsDelightVectorLogo } from '../components/ElsDelightLogo';
@@ -217,6 +218,13 @@ export const AdminPage: React.FC = () => {
     addFaq,
     updateFaq,
     deleteFaq,
+    addCustomFlavor,
+    deleteCustomFlavor,
+    resetCustomFlavors,
+    addCustomColorPalette,
+    deleteCustomColorPalette,
+    resetCustomColorPalettes,
+    updateCustomPageConfig,
     updateOrderStatus,
     deleteOrder,
     clearAllOrders,
@@ -377,8 +385,25 @@ export const AdminPage: React.FC = () => {
 
   // Site Content Form State
   const [contentSubTab, setContentSubTab] = useState<
-    'hero' | 'budget' | 'occasions' | 'moments' | 'announcements' | 'about' | 'promises' | 'faqs' | 'corporate'
+    'hero' | 'customPage' | 'budget' | 'occasions' | 'moments' | 'announcements' | 'about' | 'promises' | 'faqs' | 'corporate'
   >('hero');
+  const [newFlavorInput, setNewFlavorInput] = useState('');
+  const [flavorSearch, setFlavorSearch] = useState('');
+  const [newPaletteName, setNewPaletteName] = useState('');
+  const [newPaletteColor1, setNewPaletteColor1] = useState('#F472B6');
+  const [newPaletteColor2, setNewPaletteColor2] = useState('#EAB308');
+  const [newPaletteColor3, setNewPaletteColor3] = useState('#FFFFFF');
+  const [newPaletteDesc, setNewPaletteDesc] = useState('');
+  const [customPageBadge, setCustomPageBadge] = useState(
+    siteContent.customPage?.badge || 'Bespoke Cake Consultations'
+  );
+  const [customPageHeadline, setCustomPageHeadline] = useState(
+    siteContent.customPage?.headline || 'Design Your Custom Cake'
+  );
+  const [customPageSubtitle, setCustomPageSubtitle] = useState(
+    siteContent.customPage?.subtitle ||
+      'Have a specific theme, photo, Pinterest moodboard, or dream wedding cake in mind? Complete the form below and continue seamlessly on WhatsApp for instant quote approval.'
+  );
   const [budgetForm, setBudgetForm] = useState<SiteBudgetSectionContent>(
     siteContent.budgetSection || DEFAULT_BUDGET_SECTION
   );
@@ -1448,9 +1473,8 @@ export const AdminPage: React.FC = () => {
                     setIsSavingOrdersSupabase(false);
                     setIsSavingSettingsSupabase(false);
                   }}
-                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center justify-center transition-colors shadow-xs"
                 >
-                  <Sparkles className={`w-3.5 h-3.5 ${isSavingProductsSupabase ? 'animate-spin' : ''}`} />
                   <span>{isSavingProductsSupabase ? 'Syncing Everything...' : 'Sync Everything to Supabase'}</span>
                 </button>
                 <button
@@ -1483,10 +1507,13 @@ export const AdminPage: React.FC = () => {
                   <span>Categories ({categories.length})</span>
                 </button>
                 <button
-                  onClick={() => setActiveTab('content')}
-                  className="p-4 rounded-2xl bg-pink-50/50 dark:bg-stone-900 hover:bg-stone-100 text-stone-800 dark:text-stone-200 border border-stone-200 dark:border-stone-800 text-left font-semibold text-xs transition-colors flex flex-col gap-2"
+                  onClick={() => {
+                    setActiveTab('content');
+                    setContentSubTab('customPage');
+                  }}
+                  className="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-800 dark:text-purple-200 border border-purple-200 dark:border-purple-900 text-left font-semibold text-xs transition-colors flex flex-col gap-2"
                 >
-                  <span>Hero Featured Cake</span>
+                  <span>Custom Cake & Flavors</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('orders')}
@@ -2624,6 +2651,11 @@ export const AdminPage: React.FC = () => {
             <div className="flex flex-wrap gap-2 border-b border-rose-100 dark:border-stone-800 pb-3">
               {[
                 { id: 'hero', label: 'Hero Banner', icon: Cake },
+                {
+                  id: 'customPage',
+                  label: `Custom Cake Page & Flavors (${(siteContent.customPage?.flavors || []).length})`,
+                  icon: Palette,
+                },
                 { id: 'budget', label: 'Budget & Celebration Tiers' },
                 { id: 'occasions', label: `Occasions (${(occasionsForm.items || []).length})`, icon: Calendar },
                 { id: 'moments', label: `Sweet Moments (${(sweetMomentsForm.items || []).length})`, icon: Instagram },
@@ -3379,6 +3411,371 @@ export const AdminPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* SUBTAB: CUSTOM CAKE PAGE & FLAVORS */}
+            {contentSubTab === 'customPage' && (
+              <div className="bg-white dark:bg-[#16161A] p-6 sm:p-8 rounded-3xl border border-rose-100 dark:border-stone-800 shadow-xs space-y-8">
+                {/* Header banner */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-4 gap-3">
+                  <div>
+                    <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                      <Palette className="w-5 h-5 text-pink-600" />
+                      <span>Custom Cake Page & Flavors Configuration</span>
+                    </h4>
+                    <p className="text-xs text-stone-500 mt-0.5">
+                      Manage preference flavors for the bespoke cake dropdown, color palette options, and custom consultation copy.
+                    </p>
+                  </div>
+                  <Link
+                    to="/custom-cakes"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-pink-50 dark:bg-pink-950/40 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-900 hover:bg-pink-100 text-xs font-semibold transition-colors shrink-0"
+                  >
+                    <span>View Live Custom Page</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+
+                {/* 1. PREFERRED FLAVOR DROPDOWN MANAGER */}
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-pink-50/60 via-white to-amber-50/30 dark:from-stone-900 dark:via-stone-900 dark:to-stone-900 border border-pink-100 dark:border-stone-800 space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h5 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                          <Cake className="w-4 h-4 text-pink-600" />
+                          <span>Custom Cake Preference Flavors</span>
+                        </h5>
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-pink-100 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-900">
+                          {(siteContent.customPage?.flavors || []).length} Flavors Active
+                        </span>
+                      </div>
+                      <p className="text-xs text-stone-500 mt-1">
+                        These flavors populate the <strong>"3. Preferred Flavour"</strong> dropdown on the bespoke custom cake order form. Add new signature flavors or delete existing ones below.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (confirm('Reset custom cake flavors to the default handcrafted selection?')) {
+                          resetCustomFlavors();
+                        }
+                      }}
+                      className="px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 font-semibold text-xs flex items-center gap-1.5 transition-all self-start sm:self-auto"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 text-stone-500" />
+                      <span>Restore Default Flavors</span>
+                    </button>
+                  </div>
+
+                  {/* Add Flavor Input */}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!newFlavorInput.trim()) return;
+                      addCustomFlavor(newFlavorInput);
+                      setNewFlavorInput('');
+                    }}
+                    className="flex flex-col sm:flex-row gap-2 max-w-xl"
+                  >
+                    <input
+                      type="text"
+                      value={newFlavorInput}
+                      onChange={(e) => setNewFlavorInput(e.target.value)}
+                      placeholder="e.g. Salted Caramel Biscoff, White Choc Raspberry..."
+                      className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!newFlavorInput.trim()}
+                      className="px-4 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs shrink-0"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Add Flavor to Dropdown</span>
+                    </button>
+                  </form>
+
+                  {/* Search / Filter Flavors */}
+                  {(siteContent.customPage?.flavors || []).length > 6 && (
+                    <div className="relative max-w-xs">
+                      <Search className="w-3.5 h-3.5 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        value={flavorSearch}
+                        onChange={(e) => setFlavorSearch(e.target.value)}
+                        placeholder="Search existing flavors..."
+                        className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 text-xs"
+                      />
+                    </div>
+                  )}
+
+                  {/* Existing Flavors List */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 pt-2">
+                    {(siteContent.customPage?.flavors || [])
+                      .filter((f) => !flavorSearch || f.toLowerCase().includes(flavorSearch.toLowerCase()))
+                      .map((flavor, index) => (
+                        <div
+                          key={flavor}
+                          className="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-[#1E1E24] border border-stone-200 dark:border-stone-800 hover:border-pink-200 dark:hover:border-stone-700 transition-all shadow-2xs group"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span className="w-6 h-6 rounded-lg bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 text-[10px] font-bold flex items-center justify-center shrink-0">
+                              {index + 1}
+                            </span>
+                            <span className="text-xs font-semibold text-stone-900 dark:text-stone-100 truncate">
+                              {flavor}
+                            </span>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (confirm(`Remove "${flavor}" from custom cake dropdown?`)) {
+                                deleteCustomFlavor(flavor);
+                              }
+                            }}
+                            title={`Delete ${flavor}`}
+                            className="p-1.5 text-stone-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors ml-2 shrink-0"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+
+                  {(siteContent.customPage?.flavors || []).length === 0 && (
+                    <div className="text-center py-6 border border-dashed border-stone-200 dark:border-stone-800 rounded-xl">
+                      <p className="text-xs text-stone-500">No flavors currently in dropdown.</p>
+                      <button
+                        type="button"
+                        onClick={resetCustomFlavors}
+                        className="mt-2 text-xs font-bold text-pink-600 hover:underline"
+                      >
+                        Restore Standard Flavors
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. COLOR PALETTES MANAGER */}
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-purple-50/60 via-white to-pink-50/30 dark:from-stone-900 dark:via-stone-900 dark:to-stone-900 border border-purple-100 dark:border-stone-800 space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h5 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                          <Palette className="w-4 h-4 text-purple-600" />
+                          <span>Custom Cake Visual Color Palettes</span>
+                        </h5>
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-900">
+                          {(siteContent.customPage?.colorPalettes || []).length} Palettes Available
+                        </span>
+                      </div>
+                      <p className="text-xs text-stone-500 mt-1">
+                        These palettes appear on the custom cake page with visual color swatch bars and names for customers to pick from. Customers can also type custom color combinations.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (confirm('Reset color palettes to the default artisan collection?')) {
+                          resetCustomColorPalettes();
+                        }
+                      }}
+                      className="px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 font-semibold text-xs flex items-center gap-1.5 transition-all self-start sm:self-auto"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 text-stone-500" />
+                      <span>Restore Default Palettes</span>
+                    </button>
+                  </div>
+
+                  {/* Add New Palette Form */}
+                  <div className="p-4 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 space-y-3">
+                    <p className="text-xs font-bold text-stone-900 dark:text-stone-100">
+                      Add New Color Palette
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                          Palette Name
+                        </label>
+                        <input
+                          type="text"
+                          value={newPaletteName}
+                          onChange={(e) => setNewPaletteName(e.target.value)}
+                          placeholder="e.g. Royal Mauve & Gold"
+                          className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                          Tone Note / Description
+                        </label>
+                        <input
+                          type="text"
+                          value={newPaletteDesc}
+                          onChange={(e) => setNewPaletteDesc(e.target.value)}
+                          placeholder="e.g. Regal wedding theme"
+                          className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                          Swatch Colors
+                        </label>
+                        <div className="flex items-center gap-2 pt-0.5">
+                          <input
+                            type="color"
+                            value={newPaletteColor1}
+                            onChange={(e) => setNewPaletteColor1(e.target.value)}
+                            className="w-8 h-8 rounded-lg cursor-pointer border border-stone-200 dark:border-stone-700"
+                            title="Primary Color"
+                          />
+                          <input
+                            type="color"
+                            value={newPaletteColor2}
+                            onChange={(e) => setNewPaletteColor2(e.target.value)}
+                            className="w-8 h-8 rounded-lg cursor-pointer border border-stone-200 dark:border-stone-700"
+                            title="Secondary Color"
+                          />
+                          <input
+                            type="color"
+                            value={newPaletteColor3}
+                            onChange={(e) => setNewPaletteColor3(e.target.value)}
+                            className="w-8 h-8 rounded-lg cursor-pointer border border-stone-200 dark:border-stone-700"
+                            title="Accent Color"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-end">
+                        <button
+                          type="button"
+                          disabled={!newPaletteName.trim()}
+                          onClick={() => {
+                            if (!newPaletteName.trim()) return;
+                            const newPal: CustomColorPalette = {
+                              id: 'pal-' + Date.now().toString(36),
+                              name: newPaletteName.trim(),
+                              colors: [newPaletteColor1, newPaletteColor2, newPaletteColor3],
+                              description: newPaletteDesc.trim() || undefined,
+                            };
+                            addCustomColorPalette(newPal);
+                            setNewPaletteName('');
+                            setNewPaletteDesc('');
+                          }}
+                          className="w-full px-3 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add Palette</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Existing Color Palettes Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                    {(siteContent.customPage?.colorPalettes || []).map((palette) => (
+                      <div
+                        key={palette.id}
+                        className="p-3.5 rounded-xl bg-white dark:bg-[#1E1E24] border border-stone-200 dark:border-stone-800 space-y-2 relative group"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            {palette.colors.map((c, i) => (
+                              <span
+                                key={i}
+                                style={{ backgroundColor: c }}
+                                className="w-5 h-5 rounded-full border border-black/10 dark:border-white/10 shadow-2xs inline-block"
+                                title={c}
+                              />
+                            ))}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (confirm(`Delete palette "${palette.name}"?`)) {
+                                deleteCustomColorPalette(palette.id);
+                              }
+                            }}
+                            className="p-1 text-stone-400 hover:text-rose-600 transition-colors"
+                            title="Delete palette"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-stone-900 dark:text-stone-100">
+                            {palette.name}
+                          </p>
+                          {palette.description && (
+                            <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">
+                              {palette.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3. CUSTOM CAKE PAGE COPY & INTRO */}
+                <div className="p-6 rounded-2xl bg-white dark:bg-[#16161A] border border-stone-200 dark:border-stone-800 space-y-4">
+                  <h5 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100">
+                    Custom Cake Page Headline & Instructions
+                  </h5>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                        Top Badge
+                      </label>
+                      <input
+                        type="text"
+                        value={customPageBadge}
+                        onChange={(e) => setCustomPageBadge(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                        Page Headline
+                      </label>
+                      <input
+                        type="text"
+                        value={customPageHeadline}
+                        onChange={(e) => setCustomPageHeadline(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Intro Paragraph
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={customPageSubtitle}
+                      onChange={(e) => setCustomPageSubtitle(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      updateCustomPageConfig({
+                        badge: customPageBadge,
+                        headline: customPageHeadline,
+                        subtitle: customPageSubtitle,
+                      });
+                    }}
+                    className="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-xs"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Save Page Copy</span>
+                  </button>
                 </div>
               </div>
             )}
@@ -7045,9 +7442,8 @@ export const AdminPage: React.FC = () => {
                         setIsPurgingSupabase(false);
                         refreshLiveCounts();
                       }}
-                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-xs transition-colors shrink-0"
+                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl flex items-center shadow-xs transition-colors shrink-0"
                     >
-                      <Sparkles className={`w-3.5 h-3.5 ${isSavingProductsSupabase ? 'animate-spin' : ''}`} />
                       <span>{isSavingProductsSupabase ? 'Syncing...' : 'Sync Everything (All Tables)'}</span>
                     </button>
                   </div>
@@ -7386,9 +7782,8 @@ export const AdminPage: React.FC = () => {
                     setIsPurgingSupabase(false);
                     refreshLiveCounts();
                   }}
-                  className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-xs"
+                  className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center transition-colors shadow-xs"
                 >
-                  <Sparkles className={`w-3.5 h-3.5 text-white ${isSavingProductsSupabase ? 'animate-spin' : ''}`} />
                   <span>{isSavingProductsSupabase ? 'Syncing Full Database...' : 'Sync Everything to Supabase (Full Database Sync)'}</span>
                 </button>
 
