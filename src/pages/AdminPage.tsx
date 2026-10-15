@@ -113,6 +113,7 @@ import {
   DEFAULT_BUDGET_SECTION,
   DEFAULT_DELIVERY_METHODS,
   DEFAULT_DELIVERY_POLICY_NOTICE,
+  POPULAR_CAKE_SWATCH_COLORS,
 } from '../data/defaultSiteContent';
 import { SUPABASE_SQL_SCHEMA_SCRIPT } from '../data/supabaseSchemaSql';
 import { safeSetItem, safeRemoveItem, idbSet } from '../utils/safeStorage';
@@ -185,97 +186,132 @@ const PRESET_CAKE_IMAGES = [
   { label: 'Vanilla Floral', url: 'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=800&q=80' },
 ];
 
-// Curated image color palettes for the bespoke custom cake page & admin swatch builder
-const CURATED_IMAGE_PALETTES = [
+// Curated image color palettes for the bespoke custom cake page & admin swatch builder (1, 2, or 3 colors)
+const CURATED_IMAGE_PALETTES: { name: string; desc: string; colors: string[] }[] = [
+  // 1-COLOR PRESETS
   {
-    name: 'Blush Pink & Royal Gold',
-    desc: 'Romantic, glamorous, floral celebration',
-    colors: ['#F472B6', '#FB7185', '#EAB308', '#FEF08A'],
+    name: 'Pure Pristine White',
+    desc: 'Timeless monochrome wedding, holy communion, crisp purity',
+    colors: ['#FFFFFF'],
   },
   {
-    name: 'Sage Green & Warm Ivory',
-    desc: 'Botanical, rustic outdoor wedding, organic chic',
-    colors: ['#84A98C', '#CAD2C5', '#FDFBF7', '#D4A373'],
+    name: 'Royal 24K Gold',
+    desc: 'Opulent regal celebration, gold leaf, jubilee milestone',
+    colors: ['#EAB308'],
+  },
+  {
+    name: 'Sweet Blush Pink',
+    desc: 'Soft romantic monochrome, baby girl celebration',
+    colors: ['#F472B6'],
+  },
+  {
+    name: 'Velvet Burgundy',
+    desc: 'Deep moody wine monochrome, dramatic anniversary',
+    colors: ['#881337'],
+  },
+  {
+    name: 'Midnight Onyx Black',
+    desc: 'Ultra-modern black velvet, gothic luxury',
+    colors: ['#18181B'],
+  },
+  {
+    name: 'Sage Botanical',
+    desc: 'Clean organic botanical, rustic olive, gentle earthy green',
+    colors: ['#84A98C'],
+  },
+
+  // 2-COLORS PRESETS
+  {
+    name: 'Blush Pink & Royal Gold',
+    desc: 'Romantic floral celebration with glistening gold accents',
+    colors: ['#F472B6', '#EAB308'],
+  },
+  {
+    name: 'Classic White & Pearl Silver',
+    desc: 'Timeless crisp white with delicate silver sheen',
+    colors: ['#FFFFFF', '#CBD5E1'],
   },
   {
     name: 'Midnight Navy & Champagne Gold',
     desc: 'Sleek gentleman birthday, corporate gala, modern luxury',
-    colors: ['#0F172A', '#1E293B', '#D4AF37', '#FDE047'],
-  },
-  {
-    name: 'Classic White & Pearl Silver',
-    desc: 'Timeless wedding, holy communion, crisp elegance',
-    colors: ['#FFFFFF', '#F1F5F9', '#CBD5E1', '#94A3B8'],
+    colors: ['#0F172A', '#EAB308'],
   },
   {
     name: 'Emerald Green & Luxury Gold',
     desc: 'Opulent traditional wedding, milestone jubilee',
-    colors: ['#064E3B', '#10B981', '#F59E0B', '#FEF08A'],
-  },
-  {
-    name: 'Terracotta, Peach & Coral',
-    desc: 'Warm sunset tones, boho chic, desert warmth',
-    colors: ['#C2410C', '#FB923C', '#FDBA74', '#FFF7ED'],
+    colors: ['#064E3B', '#EAB308'],
   },
   {
     name: 'Deep Burgundy & Dusty Rose',
-    desc: 'Moody romance, autumn & winter anniversary',
-    colors: ['#881337', '#BE123C', '#FDA4AF', '#FFE4E6'],
+    desc: 'Moody romance, autumn & winter wedding',
+    colors: ['#881337', '#FB7185'],
   },
   {
-    name: 'Royal Purple & Lilac Dream',
+    name: 'Sage Green & Warm Ivory',
+    desc: 'Botanical rustic chic, outdoor garden party',
+    colors: ['#84A98C', '#FDFBF7'],
+  },
+  {
+    name: 'Lavender Dream & Soft Lilac',
+    desc: 'Whimsical garden theme, sweet sixteen, floral fairy',
+    colors: ['#7C3AED', '#DDD6FE'],
+  },
+  {
+    name: 'Terracotta & Warm Peach',
+    desc: 'Warm sunset tones, boho chic, desert warmth',
+    colors: ['#C2410C', '#FDBA74'],
+  },
+  {
+    name: 'Baby Blue & Cloud White',
+    desc: 'Baby boy shower, sky theme, first birthday',
+    colors: ['#60A5FA', '#FFFFFF'],
+  },
+
+  // 3-COLORS PRESETS
+  {
+    name: 'Blush Pink, Coral & Royal Gold',
+    desc: 'Romantic, glamorous, multi-tone floral celebration',
+    colors: ['#F472B6', '#FB7185', '#EAB308'],
+  },
+  {
+    name: 'Emerald, Mint & Champagne Gold',
+    desc: 'Lush botanical splendor, rich emerald depth with gold shimmer',
+    colors: ['#064E3B', '#34D399', '#EAB308'],
+  },
+  {
+    name: 'Midnight Navy, Sky Blue & Silver',
+    desc: 'Starlit midnight sky, galaxy glamour, executive luxury',
+    colors: ['#0F172A', '#38BDF8', '#E2E8F0'],
+  },
+  {
+    name: 'Terracotta, Coral & Warm Ivory',
+    desc: 'Warm sunset boho palette, dried floral aesthetic',
+    colors: ['#C2410C', '#FB923C', '#FDFBF7'],
+  },
+  {
+    name: 'Royal Purple, Lilac & Pearl White',
     desc: 'Majestic royalty, quinceañera, delicate blooms',
-    colors: ['#581C87', '#9333EA', '#C084FC', '#FAF5FF'],
+    colors: ['#581C87', '#C084FC', '#FFFFFF'],
   },
   {
-    name: 'Tiffany Aqua & Pearl White',
-    desc: 'Fresh turquoise sparkle, beachside glam',
-    colors: ['#0D9488', '#2DD4BF', '#99F6E4', '#FFFFFF'],
-  },
-  {
-    name: 'Chocolate Mocha & Salted Caramel',
+    name: 'Chocolate Mocha, Caramel & Cream',
     desc: 'Rich gourmet dessert tones, warm chocolate lover',
-    colors: ['#3E2723', '#795548', '#D7CCC8', '#E65100'],
+    colors: ['#3E2723', '#D97706', '#FDFBF7'],
   },
   {
-    name: 'Pastel Rainbow Celebration',
+    name: 'Pastel Rainbow Trio (Pink, Lemon, Mint)',
     desc: 'Vibrant kids birthday, sweet carnival theme',
-    colors: ['#F472B6', '#FBBF24', '#34D399', '#60A5FA'],
+    colors: ['#F472B6', '#FDE047', '#86EFAC'],
   },
   {
-    name: 'Champagne, Nude & Ivory',
-    desc: 'Sophisticated neutrals, bridal shower, effortless luxury',
-    colors: ['#E7D7C1', '#D4AF37', '#F3E8E2', '#FFFFFF'],
+    name: 'Tiffany Aqua, Mint & Pure White',
+    desc: 'Fresh turquoise sparkle, beachside glam',
+    colors: ['#0D9488', '#2DD4BF', '#FFFFFF'],
   },
   {
-    name: 'Sunset Coral & Sunshine Canary',
+    name: 'Sunset Coral, Rose & Champagne',
     desc: 'Summer garden party, lively tropical vibrancy',
-    colors: ['#F43F5E', '#FB7185', '#FBBF24', '#FEF3C7'],
-  },
-  {
-    name: 'Forest Pine & Antique Brass',
-    desc: 'Woodland charm, deep emerald elegance',
-    colors: ['#14532D', '#22C55E', '#B45309', '#FDE68A'],
-  },
-  {
-    name: 'Berry Velvet & Sweet Plum',
-    desc: 'Rich jewel tones, berry celebration, sultry chic',
-    colors: ['#4C1D95', '#A21CAF', '#E879F9', '#FDF4FF'],
-  },
-  {
-    name: 'Charcoal Noir & Liquid Gold',
-    desc: 'Ultra-modern dramatic luxury, Gatsby soirée',
-    colors: ['#18181B', '#27272A', '#EAB308', '#FEF08A'],
-  },
-  {
-    name: 'Lemon Zest & Fresh Mint',
-    desc: 'Crisp citrus burst, springtime garden gathering',
-    colors: ['#FACC15', '#FEF08A', '#4ADE80', '#F0FDF4'],
-  },
-  {
-    name: 'Lavender Fields & Soft Violet',
-    desc: 'Calming floral fantasy, pastel afternoon tea',
-    colors: ['#7C3AED', '#A78BFA', '#DDD6FE', '#FAF5FF'],
+    colors: ['#F43F5E', '#FB7185', '#FBBF24'],
   },
 ];
 
@@ -343,6 +379,7 @@ export const AdminPage: React.FC = () => {
     deleteCustomFlavor,
     resetCustomFlavors,
     addCustomColorPalette,
+    updateCustomColorPalette,
     deleteCustomColorPalette,
     resetCustomColorPalettes,
     updateCustomPageConfig,
@@ -511,12 +548,15 @@ export const AdminPage: React.FC = () => {
   const [newFlavorInput, setNewFlavorInput] = useState('');
   const [flavorSearch, setFlavorSearch] = useState('');
   const [newPaletteName, setNewPaletteName] = useState('');
+  const [paletteColorCount, setPaletteColorCount] = useState<1 | 2 | 3>(2);
   const [newPaletteColor1, setNewPaletteColor1] = useState('#F472B6');
   const [newPaletteColor2, setNewPaletteColor2] = useState('#EAB308');
-  const [newPaletteColor3, setNewPaletteColor3] = useState('#FFFFFF');
-  const [newPaletteColor4, setNewPaletteColor4] = useState('#FB7185');
-  const [activePaletteSlot, setActivePaletteSlot] = useState<1 | 2 | 3 | 4>(1);
+  const [newPaletteColor3, setNewPaletteColor3] = useState('#064E3B');
+  const [activePaletteSlot, setActivePaletteSlot] = useState<1 | 2 | 3>(1);
   const [newPaletteDesc, setNewPaletteDesc] = useState('');
+  const [editingPaletteId, setEditingPaletteId] = useState<string | null>(null);
+  const [adminPaletteFilter, setAdminPaletteFilter] = useState<'all' | '1' | '2' | '3'>('all');
+  const [curatedPresetFilter, setCuratedPresetFilter] = useState<'all' | '1' | '2' | '3'>('all');
   const [customPageBadge, setCustomPageBadge] = useState(
     siteContent.customPage?.badge || 'Bespoke Cake Consultations'
   );
@@ -3710,54 +3750,175 @@ export const AdminPage: React.FC = () => {
                     </button>
                   </div>
 
-                  {/* Add New Palette Form & Curated Image Palette Picker */}
-                  <div className="p-5 rounded-2xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 space-y-5 shadow-xs">
+                  {/* Add / Edit Palette Form & Curated Image Palette Picker */}
+                  <div
+                    id="palette-builder-form"
+                    className="p-5 rounded-2xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 space-y-5 shadow-xs"
+                  >
+                    {/* Active Edit Mode Banner */}
+                    {editingPaletteId && (
+                      <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 flex items-center justify-between gap-3 animate-fadeIn">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-purple-600 animate-pulse" />
+                          <p className="text-xs font-bold text-purple-900 dark:text-purple-200">
+                            Editing Palette: <span className="underline">{newPaletteName || 'Selected Palette'}</span>
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingPaletteId(null);
+                            setNewPaletteName('');
+                            setNewPaletteDesc('');
+                            setPaletteColorCount(2);
+                            setNewPaletteColor1('#F472B6');
+                            setNewPaletteColor2('#EAB308');
+                            setNewPaletteColor3('#064E3B');
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:bg-stone-100 text-[11px] font-semibold transition-colors"
+                        >
+                          Cancel Editing
+                        </button>
+                      </div>
+                    )}
+
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-stone-200/80 dark:border-stone-700/80 gap-2">
                       <div>
                         <p className="text-xs font-bold text-stone-900 dark:text-stone-100">
-                          Add New Color Palette
+                          {editingPaletteId ? 'Edit Color Palette' : 'Add New Color Palette'}
                         </p>
                         <p className="text-[11px] text-stone-500">
-                          Select from the image color palettes below, pick individual cake swatches, or mix your custom HEX tones.
+                          Create or edit 1-color, 2-colors, or 3-colors palettes for customers to pick for their bespoke cakes.
                         </p>
                       </div>
 
-                      {/* Live Preview Pill */}
-                      <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 shrink-0">
-                        <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Preview:</span>
-                        <div className="flex items-center gap-1">
-                          {[newPaletteColor1, newPaletteColor2, newPaletteColor3, newPaletteColor4].map((c, i) => (
-                            <span
-                              key={i}
-                              style={{ backgroundColor: c }}
-                              className="w-4 h-4 rounded-full border border-black/10 dark:border-white/10 shadow-2xs"
-                              title={`Color ${i + 1}: ${c}`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-[11px] font-bold text-stone-800 dark:text-stone-200 truncate max-w-[120px]">
-                          {newPaletteName || 'Untitled'}
+                      {/* Palette Color Count Switcher (1, 2, or 3 Colors - No 4 colors) */}
+                      <div className="flex items-center gap-1 p-1 rounded-xl bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 self-start sm:self-auto">
+                        <span className="text-[10px] font-bold text-stone-500 px-1.5 uppercase">Colors:</span>
+                        {([1, 2, 3] as const).map((count) => (
+                          <button
+                            key={count}
+                            type="button"
+                            onClick={() => {
+                              setPaletteColorCount(count);
+                              if (activePaletteSlot > count) setActivePaletteSlot(1);
+                            }}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                              paletteColorCount === count
+                                ? 'bg-purple-600 text-white shadow-xs'
+                                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                            }`}
+                          >
+                            {count} {count === 1 ? 'Color' : 'Colors'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Quick Palette Selector Dropdown for Editing */}
+                    <div className="p-3.5 rounded-xl bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/80 space-y-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                        <label className="block text-xs font-bold text-purple-950 dark:text-purple-200">
+                          Select an Existing Palette from Dropdown to Edit:
+                        </label>
+                        <span className="text-[10px] font-semibold text-purple-700 dark:text-purple-300">
+                          {(siteContent.customPage?.colorPalettes || []).length} Palettes in Catalog
                         </span>
                       </div>
+                      <select
+                        value={editingPaletteId || ''}
+                        onChange={(e) => {
+                          const pal = (siteContent.customPage?.colorPalettes || []).find((p) => p.id === e.target.value);
+                          if (pal) {
+                            setEditingPaletteId(pal.id);
+                            setNewPaletteName(pal.name);
+                            setNewPaletteDesc(pal.description || '');
+                            const count = (pal.colors.length === 1 ? 1 : pal.colors.length === 3 ? 3 : 2) as 1 | 2 | 3;
+                            setPaletteColorCount(count);
+                            setNewPaletteColor1(pal.colors[0] || '#F472B6');
+                            setNewPaletteColor2(pal.colors[1] || '#EAB308');
+                            setNewPaletteColor3(pal.colors[2] || '#064E3B');
+                            setActivePaletteSlot(1);
+                          } else {
+                            setEditingPaletteId(null);
+                            setNewPaletteName('');
+                            setNewPaletteDesc('');
+                            setPaletteColorCount(2);
+                            setNewPaletteColor1('#F472B6');
+                            setNewPaletteColor2('#EAB308');
+                            setNewPaletteColor3('#064E3B');
+                          }
+                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-purple-200 dark:border-purple-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer shadow-2xs"
+                      >
+                        <option value="">-- Choose any palette from dropdown to load and edit its details --</option>
+                        <optgroup label="🌟 1-Color Palettes">
+                          {(siteContent.customPage?.colorPalettes || [])
+                            .filter((p) => p.colors.length === 1)
+                            .map((p) => (
+                              <option key={`edit-drop-${p.id}`} value={p.id}>
+                                {p.name} — (1 Color: {p.colors[0]}) {p.description ? `• ${p.description}` : ''}
+                              </option>
+                            ))}
+                        </optgroup>
+                        <optgroup label="✨ 2-Colors Palettes">
+                          {(siteContent.customPage?.colorPalettes || [])
+                            .filter((p) => p.colors.length === 2)
+                            .map((p) => (
+                              <option key={`edit-drop-${p.id}`} value={p.id}>
+                                {p.name} — (2 Colors: {p.colors.join(', ')}) {p.description ? `• ${p.description}` : ''}
+                              </option>
+                            ))}
+                        </optgroup>
+                        <optgroup label="🎨 3-Colors Palettes">
+                          {(siteContent.customPage?.colorPalettes || [])
+                            .filter((p) => p.colors.length === 3)
+                            .map((p) => (
+                              <option key={`edit-drop-${p.id}`} value={p.id}>
+                                {p.name} — (3 Colors: {p.colors.join(', ')}) {p.description ? `• ${p.description}` : ''}
+                              </option>
+                            ))}
+                        </optgroup>
+                      </select>
                     </div>
 
                     {/* SECTION A: Select from Curated Image Color Palettes */}
                     <div className="space-y-2.5">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <label className="block text-[11px] font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider">
                           Select from Curated Image Color Palettes (Click to auto-fill)
                         </label>
-                        <span className="text-[10px] text-purple-600 dark:text-purple-400 font-semibold">
-                          {CURATED_IMAGE_PALETTES.length} Curated Combinations
-                        </span>
+
+                        {/* Presets Filter (All, 1 Color, 2 Colors, 3 Colors) */}
+                        <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-900 p-0.5 rounded-lg border border-stone-200/80 dark:border-stone-700 text-[10px] font-semibold">
+                          {(['all', '1', '2', '3'] as const).map((f) => (
+                            <button
+                              key={f}
+                              type="button"
+                              onClick={() => setCuratedPresetFilter(f)}
+                              className={`px-2 py-0.5 rounded-md transition-all ${
+                                curatedPresetFilter === f
+                                  ? 'bg-white dark:bg-stone-800 text-purple-700 dark:text-purple-300 shadow-2xs'
+                                  : 'text-stone-500 hover:text-stone-900'
+                              }`}
+                            >
+                              {f === 'all' ? 'All Presets' : `${f} ${f === '1' ? 'Color' : 'Colors'}`}
+                            </button>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 max-h-56 overflow-y-auto p-1.5 rounded-xl bg-stone-50/70 dark:bg-stone-900/50 border border-stone-200/80 dark:border-stone-700/80">
-                        {CURATED_IMAGE_PALETTES.map((preset) => {
+                        {CURATED_IMAGE_PALETTES.filter((preset) => {
+                          if (curatedPresetFilter === '1') return preset.colors.length === 1;
+                          if (curatedPresetFilter === '2') return preset.colors.length === 2;
+                          if (curatedPresetFilter === '3') return preset.colors.length === 3;
+                          return true;
+                        }).map((preset) => {
                           const isMatch =
                             newPaletteName === preset.name &&
-                            newPaletteColor1 === preset.colors[0] &&
-                            newPaletteColor2 === preset.colors[1];
+                            newPaletteColor1 === preset.colors[0];
+                          const pCount = preset.colors.length;
                           return (
                             <button
                               key={preset.name}
@@ -3765,10 +3926,11 @@ export const AdminPage: React.FC = () => {
                               onClick={() => {
                                 setNewPaletteName(preset.name);
                                 setNewPaletteDesc(preset.desc);
+                                setPaletteColorCount(pCount as 1 | 2 | 3);
                                 setNewPaletteColor1(preset.colors[0] || '#FFFFFF');
-                                setNewPaletteColor2(preset.colors[1] || '#FFFFFF');
-                                setNewPaletteColor3(preset.colors[2] || '#FFFFFF');
-                                setNewPaletteColor4(preset.colors[3] || preset.colors[0] || '#FFFFFF');
+                                if (pCount >= 2) setNewPaletteColor2(preset.colors[1] || '#FFFFFF');
+                                if (pCount >= 3) setNewPaletteColor3(preset.colors[2] || '#FFFFFF');
+                                setActivePaletteSlot(1);
                               }}
                               className={`p-2 rounded-xl text-left transition-all border group relative ${
                                 isMatch
@@ -3776,7 +3938,7 @@ export const AdminPage: React.FC = () => {
                                   : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-purple-300 dark:hover:border-stone-600 hover:shadow-2xs'
                               }`}
                             >
-                              {/* Multi-tone image color swatch bar */}
+                              {/* Multi-tone image color swatch bar (1, 2, or 3 colors) */}
                               <div className="h-6 w-full rounded-lg overflow-hidden flex border border-black/10 dark:border-white/10 mb-1.5 shadow-2xs">
                                 {preset.colors.map((c, idx) => (
                                   <div
@@ -3787,9 +3949,14 @@ export const AdminPage: React.FC = () => {
                                   />
                                 ))}
                               </div>
-                              <p className="text-[11px] font-bold text-stone-900 dark:text-stone-100 truncate leading-tight">
-                                {preset.name}
-                              </p>
+                              <div className="flex items-center justify-between gap-1">
+                                <p className="text-[11px] font-bold text-stone-900 dark:text-stone-100 truncate leading-tight">
+                                  {preset.name}
+                                </p>
+                                <span className="text-[8px] font-bold px-1 rounded-sm bg-stone-100 dark:bg-stone-700 text-stone-500 shrink-0">
+                                  {pCount}C
+                                </span>
+                              </div>
                               <p className="text-[9px] text-stone-500 dark:text-stone-400 truncate mt-0.5">
                                 {preset.desc}
                               </p>
@@ -3799,7 +3966,7 @@ export const AdminPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* SECTION B: Individual Swatch Color Pickers & Popular Tones */}
+                    {/* SECTION B: Form Inputs & Swatch Controls */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-1">
                       {/* Name & Tone Inputs */}
                       <div className="lg:col-span-4 space-y-3">
@@ -3811,7 +3978,13 @@ export const AdminPage: React.FC = () => {
                             type="text"
                             value={newPaletteName}
                             onChange={(e) => setNewPaletteName(e.target.value)}
-                            placeholder="e.g. Royal Mauve & 24k Gold"
+                            placeholder={
+                              paletteColorCount === 1
+                                ? 'e.g. Royal 24K Gold'
+                                : paletteColorCount === 2
+                                ? 'e.g. Blush Pink & Royal Gold'
+                                : 'e.g. Emerald, Mint & Champagne'
+                            }
                             className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
                           />
                         </div>
@@ -3827,56 +4000,120 @@ export const AdminPage: React.FC = () => {
                             className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
                           />
                         </div>
+
+                        {/* Live Customer Preview Disk */}
+                        <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-900/60 border border-stone-200 dark:border-stone-700 space-y-1.5">
+                          <p className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">
+                            Live Frontend Swatch Preview
+                          </p>
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-white dark:bg-stone-800 p-0.5 border border-stone-200 dark:border-stone-700 shadow-2xs overflow-hidden shrink-0">
+                              {paletteColorCount === 1 ? (
+                                <div
+                                  style={{ backgroundColor: newPaletteColor1 }}
+                                  className="w-full h-full rounded-lg border border-black/10"
+                                />
+                              ) : paletteColorCount === 2 ? (
+                                <div className="flex w-full h-full rounded-lg overflow-hidden border border-black/10">
+                                  <div style={{ backgroundColor: newPaletteColor1 }} className="w-1/2 h-full" />
+                                  <div style={{ backgroundColor: newPaletteColor2 }} className="w-1/2 h-full" />
+                                </div>
+                              ) : (
+                                <div className="flex w-full h-full rounded-lg overflow-hidden border border-black/10">
+                                  <div style={{ backgroundColor: newPaletteColor1 }} className="w-1/3 h-full" />
+                                  <div style={{ backgroundColor: newPaletteColor2 }} className="w-1/3 h-full" />
+                                  <div style={{ backgroundColor: newPaletteColor3 }} className="w-1/3 h-full" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold text-stone-900 dark:text-stone-100 truncate">
+                                {newPaletteName || 'Untitled Palette'}
+                              </p>
+                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
+                                {paletteColorCount} {paletteColorCount === 1 ? 'Color' : 'Colors'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Swatch Color Slot Controls */}
                       <div className="lg:col-span-8 space-y-3">
                         <div className="flex items-center justify-between">
                           <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400">
-                            Swatch Colors (4-Tone Palette Slots)
+                            Swatch Colors ({paletteColorCount} {paletteColorCount === 1 ? 'Color' : 'Colors'} Active)
                           </label>
-                          <span className="text-[10px] text-stone-400">
+                          <span className="text-[10px] text-purple-600 dark:text-purple-400 font-bold">
                             Active Slot: Color {activePaletteSlot}
                           </span>
                         </div>
 
-                        {/* 4 Swatch Slots */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {/* 1, 2, or 3 Swatch Slots */}
+                        <div className={`grid gap-2 ${paletteColorCount === 1 ? 'grid-cols-1 max-w-xs' : paletteColorCount === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
                           {[
-                            { slot: 1, label: 'Primary Base', color: newPaletteColor1, setter: setNewPaletteColor1 },
-                            { slot: 2, label: 'Secondary', color: newPaletteColor2, setter: setNewPaletteColor2 },
-                            { slot: 3, label: 'Accent 1', color: newPaletteColor3, setter: setNewPaletteColor3 },
-                            { slot: 4, label: 'Accent 2 / Gold', color: newPaletteColor4, setter: setNewPaletteColor4 },
+                            { slot: 1, label: 'Color 1 (Primary Base)', color: newPaletteColor1, setter: setNewPaletteColor1 },
+                            ...(paletteColorCount >= 2
+                              ? [{ slot: 2, label: 'Color 2 (Secondary)', color: newPaletteColor2, setter: setNewPaletteColor2 }]
+                              : []),
+                            ...(paletteColorCount >= 3
+                              ? [{ slot: 3, label: 'Color 3 (Accent)', color: newPaletteColor3, setter: setNewPaletteColor3 }]
+                              : []),
                           ].map((item) => {
                             const isSlotActive = activePaletteSlot === item.slot;
                             return (
                               <div
                                 key={item.slot}
                                 onClick={() => setActivePaletteSlot(item.slot as any)}
-                                className={`p-2 rounded-xl border cursor-pointer transition-all flex items-center gap-2 ${
+                                className={`p-2.5 rounded-xl border cursor-pointer transition-all space-y-2 ${
                                   isSlotActive
-                                    ? 'bg-purple-50 dark:bg-purple-950/40 border-purple-500 ring-2 ring-purple-400/20'
+                                    ? 'bg-purple-50 dark:bg-purple-950/40 border-purple-500 ring-2 ring-purple-400/20 shadow-2xs'
                                     : 'bg-stone-50 dark:bg-stone-900/60 border-stone-200 dark:border-stone-700 hover:border-purple-300'
                                 }`}
                               >
-                                <input
-                                  type="color"
-                                  value={item.color}
-                                  onChange={(e) => {
-                                    item.setter(e.target.value);
-                                    setActivePaletteSlot(item.slot as any);
-                                  }}
-                                  className="w-7 h-7 rounded-lg cursor-pointer border border-stone-300 dark:border-stone-600 shrink-0"
-                                  title={`Change ${item.label}`}
-                                />
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-[10px] font-bold text-stone-800 dark:text-stone-200 truncate">
-                                    {item.label}
-                                  </p>
-                                  <p className="text-[9px] font-mono text-stone-500 truncate uppercase">
-                                    {item.color}
-                                  </p>
+                                <div className="flex items-center gap-2.5">
+                                  <input
+                                    type="color"
+                                    value={item.color}
+                                    onChange={(e) => {
+                                      item.setter(e.target.value);
+                                      setActivePaletteSlot(item.slot as any);
+                                    }}
+                                    className="w-8 h-8 rounded-lg cursor-pointer border border-stone-300 dark:border-stone-600 shrink-0"
+                                    title={`Change ${item.label}`}
+                                  />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-[11px] font-bold text-stone-800 dark:text-stone-200 truncate">
+                                      {item.label}
+                                    </p>
+                                    <p className="text-[10px] font-mono text-stone-500 truncate uppercase">
+                                      {item.color}
+                                    </p>
+                                  </div>
                                 </div>
+
+                                {/* Dropdown of Frosting Colors for this slot in Admin */}
+                                <select
+                                  value={
+                                    POPULAR_CAKE_SWATCH_COLORS.find(
+                                      (c) => c.hex.toLowerCase() === item.color.toLowerCase()
+                                    )?.hex || ''
+                                  }
+                                  onChange={(e) => {
+                                    if (e.target.value) {
+                                      item.setter(e.target.value);
+                                      setActivePaletteSlot(item.slot as any);
+                                    }
+                                  }}
+                                  className="w-full px-2 py-1 text-[10px] font-medium rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 cursor-pointer"
+                                >
+                                  <option value="">-- Select from Cake Colors Dropdown --</option>
+                                  {POPULAR_CAKE_SWATCH_COLORS.map((swatch) => (
+                                    <option key={`admin-slot-${item.slot}-${swatch.name}`} value={swatch.hex}>
+                                      {swatch.name} ({swatch.hex})
+                                    </option>
+                                  ))}
+                                </select>
                               </div>
                             );
                           })}
@@ -3896,7 +4133,6 @@ export const AdminPage: React.FC = () => {
                                   if (activePaletteSlot === 1) setNewPaletteColor1(swatch.hex);
                                   else if (activePaletteSlot === 2) setNewPaletteColor2(swatch.hex);
                                   else if (activePaletteSlot === 3) setNewPaletteColor3(swatch.hex);
-                                  else if (activePaletteSlot === 4) setNewPaletteColor4(swatch.hex);
                                 }}
                                 style={{ backgroundColor: swatch.hex }}
                                 className="w-5 h-5 rounded-md border border-black/15 dark:border-white/20 shadow-2xs hover:scale-110 transition-transform shrink-0"
@@ -3906,80 +4142,261 @@ export const AdminPage: React.FC = () => {
                           </div>
                         </div>
 
-                        {/* Submit Button */}
-                        <div className="pt-2 flex justify-end">
+                        {/* Submit & Cancel Buttons */}
+                        <div className="pt-2 flex items-center justify-end gap-2">
+                          {editingPaletteId && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingPaletteId(null);
+                                setNewPaletteName('');
+                                setNewPaletteDesc('');
+                                setPaletteColorCount(2);
+                                setNewPaletteColor1('#F472B6');
+                                setNewPaletteColor2('#EAB308');
+                                setNewPaletteColor3('#064E3B');
+                              }}
+                              className="px-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 font-bold text-xs transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          )}
+
                           <button
                             type="button"
                             disabled={!newPaletteName.trim()}
                             onClick={() => {
                               if (!newPaletteName.trim()) return;
-                              const colors = [newPaletteColor1, newPaletteColor2, newPaletteColor3];
-                              if (newPaletteColor4) {
-                                colors.push(newPaletteColor4);
+                              const colors =
+                                paletteColorCount === 1
+                                  ? [newPaletteColor1]
+                                  : paletteColorCount === 2
+                                  ? [newPaletteColor1, newPaletteColor2]
+                                  : [newPaletteColor1, newPaletteColor2, newPaletteColor3];
+
+                              if (editingPaletteId) {
+                                updateCustomColorPalette(editingPaletteId, {
+                                  name: newPaletteName.trim(),
+                                  colors,
+                                  type: `${paletteColorCount}-color` as any,
+                                  description: newPaletteDesc.trim() || undefined,
+                                });
+                                setEditingPaletteId(null);
+                              } else {
+                                const newPal: CustomColorPalette = {
+                                  id: 'pal-' + Date.now().toString(36),
+                                  name: newPaletteName.trim(),
+                                  colors,
+                                  type: `${paletteColorCount}-color` as any,
+                                  description: newPaletteDesc.trim() || undefined,
+                                };
+                                addCustomColorPalette(newPal);
                               }
-                              const newPal: CustomColorPalette = {
-                                id: 'pal-' + Date.now().toString(36),
-                                name: newPaletteName.trim(),
-                                colors,
-                                description: newPaletteDesc.trim() || undefined,
-                              };
-                              addCustomColorPalette(newPal);
                               setNewPaletteName('');
                               setNewPaletteDesc('');
                             }}
                             className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs shrink-0"
                           >
-                            <Plus className="w-3.5 h-3.5" />
-                            <span>Add Palette to Custom Page</span>
+                            {editingPaletteId ? (
+                              <>
+                                <Save className="w-3.5 h-3.5" />
+                                <span>Save Palette Changes</span>
+                              </>
+                            ) : (
+                              <>
+                                <Plus className="w-3.5 h-3.5" />
+                                <span>Add {paletteColorCount}-Color Palette</span>
+                              </>
+                            )}
                           </button>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Existing Color Palettes Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
-                    {(siteContent.customPage?.colorPalettes || []).map((palette) => (
-                      <div
-                        key={palette.id}
-                        className="p-3.5 rounded-xl bg-white dark:bg-[#1E1E24] border border-stone-200 dark:border-stone-800 space-y-2 relative group"
+                  {/* Existing Color Palettes Filter Ribbon */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+                    <div>
+                      <h6 className="font-serif text-sm font-bold text-stone-900 dark:text-stone-100">
+                        Existing Custom Color Palettes
+                      </h6>
+                      <p className="text-[11px] text-stone-500">
+                        Click "Edit" on any 1-color, 2-colors, or 3-colors palette below to modify its shades or name.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-stone-100 dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => setAdminPaletteFilter('all')}
+                        className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                          adminPaletteFilter === 'all'
+                            ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-white shadow-2xs'
+                            : 'text-stone-500 hover:text-stone-900'
+                        }`}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5">
-                            {palette.colors.map((c, i) => (
-                              <span
-                                key={i}
-                                style={{ backgroundColor: c }}
-                                className="w-5 h-5 rounded-full border border-black/10 dark:border-white/10 shadow-2xs inline-block"
-                                title={c}
-                              />
-                            ))}
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (confirm(`Delete palette "${palette.name}"?`)) {
-                                deleteCustomColorPalette(palette.id);
-                              }
-                            }}
-                            className="p-1 text-stone-400 hover:text-rose-600 transition-colors"
-                            title="Delete palette"
+                        All ({(siteContent.customPage?.colorPalettes || []).length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAdminPaletteFilter('1')}
+                        className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                          adminPaletteFilter === '1'
+                            ? 'bg-white dark:bg-stone-700 text-purple-600 dark:text-purple-400 shadow-2xs'
+                            : 'text-stone-500 hover:text-stone-900'
+                        }`}
+                      >
+                        1 Color ({(siteContent.customPage?.colorPalettes || []).filter((p) => p.colors.length === 1).length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAdminPaletteFilter('2')}
+                        className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                          adminPaletteFilter === '2'
+                            ? 'bg-white dark:bg-stone-700 text-purple-600 dark:text-purple-400 shadow-2xs'
+                            : 'text-stone-500 hover:text-stone-900'
+                        }`}
+                      >
+                        2 Colors ({(siteContent.customPage?.colorPalettes || []).filter((p) => p.colors.length === 2).length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAdminPaletteFilter('3')}
+                        className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                          adminPaletteFilter === '3'
+                            ? 'bg-white dark:bg-stone-700 text-purple-600 dark:text-purple-400 shadow-2xs'
+                            : 'text-stone-500 hover:text-stone-900'
+                        }`}
+                      >
+                        3 Colors ({(siteContent.customPage?.colorPalettes || []).filter((p) => p.colors.length === 3).length})
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Existing Color Palettes Grid (Editable & Filterable) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {(siteContent.customPage?.colorPalettes || [])
+                      .filter((p) => {
+                        if (adminPaletteFilter === '1') return p.colors.length === 1;
+                        if (adminPaletteFilter === '2') return p.colors.length === 2;
+                        if (adminPaletteFilter === '3') return p.colors.length === 3;
+                        return true;
+                      })
+                      .map((palette) => {
+                        const isBeingEdited = editingPaletteId === palette.id;
+                        const cCount = palette.colors.length;
+                        return (
+                          <div
+                            key={palette.id}
+                            className={`p-3.5 rounded-2xl bg-white dark:bg-[#1E1E24] border transition-all space-y-3 relative group ${
+                              isBeingEdited
+                                ? 'border-purple-500 ring-2 ring-purple-500/30 bg-purple-50/20 shadow-md'
+                                : 'border-stone-200 dark:border-stone-800 hover:border-purple-300 dark:hover:border-stone-700'
+                            }`}
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-stone-900 dark:text-stone-100">
-                            {palette.name}
-                          </p>
-                          {palette.description && (
-                            <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">
-                              {palette.description}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                            <div className="flex items-center justify-between">
+                              {/* Multi-tone visual disk (1 solid, 2 split, 3 split) */}
+                              <div className="w-10 h-10 rounded-xl bg-stone-100 dark:bg-stone-800 p-0.5 border border-stone-200 dark:border-stone-700 shadow-2xs overflow-hidden shrink-0">
+                                {cCount === 1 ? (
+                                  <div
+                                    style={{ backgroundColor: palette.colors[0] }}
+                                    className="w-full h-full rounded-lg border border-black/10"
+                                    title={palette.colors[0]}
+                                  />
+                                ) : cCount === 2 ? (
+                                  <div className="flex w-full h-full rounded-lg overflow-hidden border border-black/10">
+                                    <div
+                                      style={{ backgroundColor: palette.colors[0] }}
+                                      className="w-1/2 h-full"
+                                      title={palette.colors[0]}
+                                    />
+                                    <div
+                                      style={{ backgroundColor: palette.colors[1] }}
+                                      className="w-1/2 h-full"
+                                      title={palette.colors[1]}
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="flex w-full h-full rounded-lg overflow-hidden border border-black/10">
+                                    <div
+                                      style={{ backgroundColor: palette.colors[0] }}
+                                      className="w-1/3 h-full"
+                                      title={palette.colors[0]}
+                                    />
+                                    <div
+                                      style={{ backgroundColor: palette.colors[1] }}
+                                      className="w-1/3 h-full"
+                                      title={palette.colors[1]}
+                                    />
+                                    <div
+                                      style={{ backgroundColor: palette.colors[2] }}
+                                      className="w-1/3 h-full"
+                                      title={palette.colors[2]}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Action Buttons: Edit & Delete */}
+                              <div className="flex items-center gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingPaletteId(palette.id);
+                                    setNewPaletteName(palette.name);
+                                    setNewPaletteDesc(palette.description || '');
+                                    const count = (palette.colors.length === 1 ? 1 : palette.colors.length === 3 ? 3 : 2) as 1 | 2 | 3;
+                                    setPaletteColorCount(count);
+                                    setNewPaletteColor1(palette.colors[0] || '#F472B6');
+                                    setNewPaletteColor2(palette.colors[1] || '#EAB308');
+                                    setNewPaletteColor3(palette.colors[2] || '#064E3B');
+                                    setActivePaletteSlot(1);
+                                    const formEl = document.getElementById('palette-builder-form');
+                                    if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+                                  }}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 transition-colors"
+                                  title="Edit this palette"
+                                >
+                                  <Edit2 className="w-3 h-3" />
+                                  <span>Edit</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (confirm(`Delete palette "${palette.name}"?`)) {
+                                      deleteCustomColorPalette(palette.id);
+                                      if (editingPaletteId === palette.id) {
+                                        setEditingPaletteId(null);
+                                      }
+                                    }
+                                  }}
+                                  className="p-1.5 text-stone-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors"
+                                  title="Delete palette"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+
+                            <div>
+                              <div className="flex items-center gap-1.5">
+                                <p className="text-xs font-bold text-stone-900 dark:text-stone-100 truncate">
+                                  {palette.name}
+                                </p>
+                                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 shrink-0">
+                                  {cCount} {cCount === 1 ? 'Color' : 'Colors'}
+                                </span>
+                              </div>
+                              {palette.description && (
+                                <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate mt-0.5">
+                                  {palette.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
 

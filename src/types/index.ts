@@ -314,7 +314,8 @@ export interface SiteBudgetSectionContent {
 export interface CustomColorPalette {
   id: string;
   name: string;
-  colors: string[];
+  colors: string[]; // 1 color, 2 colors, or 3 colors
+  type?: '1-color' | '2-color' | '3-color';
   description?: string;
   previewImage?: string;
 }

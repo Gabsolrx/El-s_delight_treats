@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Send, CheckCircle2, Calendar, Palette, Layers, DollarSign, ShieldCheck, Building, User, Hash, ArrowRight, AlertCircle, Truck, Store, Check } from 'lucide-react';
+import { Send, CheckCircle2, Calendar, Layers, DollarSign, ShieldCheck, Building, User, Hash, ArrowRight, AlertCircle, Truck, Store, Check, Plus, Minus, X, Sparkles } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { CustomCakeFormData, DeliveryMethodOption, StoredOrder } from '../types';
 import { generateCustomCakeWhatsAppUrl, formatNaira } from '../utils/format';
 import { useApp } from '../context/AppContext';
 import { CopyAccountButton } from './CopyAccountButton';
-import { DEFAULT_DELIVERY_METHODS, DEFAULT_CUSTOM_FLAVORS, DEFAULT_COLOR_PALETTES } from '../data/defaultSiteContent';
+import { DEFAULT_DELIVERY_METHODS, DEFAULT_CUSTOM_FLAVORS, DEFAULT_COLOR_PALETTES, POPULAR_CAKE_SWATCH_COLORS } from '../data/defaultSiteContent';
 
 export const CustomCakeForm: React.FC = () => {
   const { showToast, addCustomInquiry, businessInfo, saveOrder, setCurrentOrder, siteContent } = useApp();
@@ -13,6 +13,11 @@ export const CustomCakeForm: React.FC = () => {
   const [hasMadePayment, setHasMadePayment] = useState(false);
   const [depositAmount, setDepositAmount] = useState<number>(20000);
   const [customDepositInput, setCustomDepositInput] = useState('');
+  const [paletteColorCount, setPaletteColorCount] = useState<'all' | '1' | '2' | '3'>('all');
+  const [customColorMode, setCustomColorMode] = useState<1 | 2 | 3>(2);
+  const [customColor1, setCustomColor1] = useState('#F472B6');
+  const [customColor2, setCustomColor2] = useState('#EAB308');
+  const [customColor3, setCustomColor3] = useState('#064E3B');
 
   const customConfig = siteContent?.customPage;
   const availableFlavors =
@@ -291,113 +296,550 @@ export const CustomCakeForm: React.FC = () => {
           </div>
 
           {/* 4. Visual Color Palette Picker & Custom Color Input */}
-          <div className="space-y-3 pt-3 border-t border-rose-100/70 dark:border-stone-800">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+          <div className="space-y-4 pt-3 border-t border-rose-100/70 dark:border-stone-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <label className="block text-xs font-bold text-stone-900 dark:text-stone-100">
                   4. Celebration Colour Palette & Theme *
                 </label>
                 <p className="text-[11px] text-stone-500">
-                  Select a curated palette below or type your dream color combination if you don't see it in the list.
+                  Select your desired 1-color, 2-colors, or 3-colors palette from the dropdown, pick a visual card, or customize your own colors below.
                 </p>
               </div>
 
               {formData.colourTheme && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 text-xs font-bold border border-pink-200 dark:border-pink-900 self-start sm:self-auto shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
-                  <span>Selected: {formData.colourTheme}</span>
-                </span>
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 text-xs font-bold border border-pink-200 dark:border-pink-900 shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
+                    <span className="max-w-[200px] sm:max-w-xs truncate">Selected: {formData.colourTheme}</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setFormData((prev) => ({ ...prev, colourTheme: '' }))}
+                    className="p-1 rounded-full text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800"
+                    title="Clear selection"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               )}
             </div>
 
-            {/* Visual Palettes Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-72 overflow-y-auto p-1 bg-stone-50/50 dark:bg-stone-900/40 rounded-2xl border border-stone-200/80 dark:border-stone-800">
-              {availablePalettes.map((palette) => {
-                const isSelected = formData.colourTheme.trim().toLowerCase() === palette.name.trim().toLowerCase();
-                return (
-                  <button
-                    key={palette.id}
-                    type="button"
-                    onClick={() => {
-                      setFormData((prev) => ({ ...prev, colourTheme: palette.name }));
-                    }}
-                    className={`flex items-center gap-3 p-2.5 rounded-xl border text-left transition-all ${
-                      isSelected
-                        ? 'border-pink-500 bg-pink-50 dark:bg-pink-950/60 ring-2 ring-pink-500/25 shadow-xs'
-                        : 'border-stone-200 dark:border-stone-800 bg-white dark:bg-[#1E1E24] hover:border-pink-300 dark:hover:border-stone-700'
-                    }`}
-                  >
-                    {/* Visual Color Swatch Preview Disk/Image */}
-                    <div className="relative shrink-0 w-10 h-10 rounded-xl bg-stone-100 dark:bg-stone-800 p-0.5 flex items-center justify-center border border-stone-200/80 dark:border-stone-700 shadow-2xs">
-                      <div className="grid grid-cols-2 gap-0.5 w-full h-full rounded-lg overflow-hidden">
-                        {palette.colors.slice(0, 4).map((c, idx) => (
-                          <div
-                            key={idx}
-                            style={{ backgroundColor: c }}
-                            className="w-full h-full border border-black/5"
-                            title={c}
-                          />
-                        ))}
-                      </div>
-                    </div>
+            {/* A. DROPDOWN SELECTOR: Choose from Many Color Palettes */}
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-pink-50/70 via-purple-50/40 to-stone-50/60 dark:from-stone-900 dark:to-stone-800 border border-pink-100 dark:border-stone-700/80 space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-stone-800 dark:text-stone-200">
+                  Select Color Palette from Dropdown ({availablePalettes.length} palettes available):
+                </label>
+                <span className="text-[10px] font-semibold text-pink-600 dark:text-pink-400">
+                  1, 2, or 3 Colors
+                </span>
+              </div>
 
-                    {/* Palette Name & Info beside it */}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className={`text-xs font-bold truncate ${isSelected ? 'text-pink-900 dark:text-pink-200' : 'text-stone-900 dark:text-stone-100'}`}>
-                          {palette.name}
-                        </span>
-                        {isSelected && (
-                          <Check className="w-4 h-4 text-pink-600 shrink-0" />
-                        )}
-                      </div>
-                      {palette.description && (
-                        <p className="text-[10px] text-stone-500 dark:text-stone-400 truncate mt-0.5">
-                          {palette.description}
-                        </p>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
+              <select
+                value={
+                  availablePalettes.some((p) => p.name.trim().toLowerCase() === formData.colourTheme.trim().toLowerCase())
+                    ? availablePalettes.find((p) => p.name.trim().toLowerCase() === formData.colourTheme.trim().toLowerCase())?.id || ''
+                    : ''
+                }
+                onChange={(e) => {
+                  const pal = availablePalettes.find((p) => p.id === e.target.value);
+                  if (pal) {
+                    setFormData((prev) => ({ ...prev, colourTheme: pal.name }));
+                    // Also sync the custom color slots with this palette's colors for preview/editing
+                    if (pal.colors.length >= 1) setCustomColor1(pal.colors[0]);
+                    if (pal.colors.length >= 2) setCustomColor2(pal.colors[1]);
+                    if (pal.colors.length >= 3) setCustomColor3(pal.colors[2]);
+                    setCustomColorMode((pal.colors.length === 1 ? 1 : pal.colors.length === 3 ? 3 : 2) as 1 | 2 | 3);
+                  }
+                }}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-pink-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500 shadow-2xs cursor-pointer"
+              >
+                <option value="">-- Click to choose from many color palettes (1, 2, or 3 Colors) --</option>
+                
+                <optgroup label="🌟 1 Color Palettes (Single-Tone Elegance)">
+                  {availablePalettes
+                    .filter((p) => p.colors.length === 1)
+                    .map((pal) => (
+                      <option key={pal.id} value={pal.id}>
+                        {pal.name} — (1 Color: {pal.colors.join(', ')}) {pal.description ? `• ${pal.description}` : ''}
+                      </option>
+                    ))}
+                </optgroup>
+
+                <optgroup label="✨ 2 Colors Palettes (Dual-Tone Harmony)">
+                  {availablePalettes
+                    .filter((p) => p.colors.length === 2)
+                    .map((pal) => (
+                      <option key={pal.id} value={pal.id}>
+                        {pal.name} — (2 Colors: {pal.colors.join(', ')}) {pal.description ? `• ${pal.description}` : ''}
+                      </option>
+                    ))}
+                </optgroup>
+
+                <optgroup label="🎨 3 Colors Palettes (Tri-Tone Artisan Trio)">
+                  {availablePalettes
+                    .filter((p) => p.colors.length === 3)
+                    .map((pal) => (
+                      <option key={pal.id} value={pal.id}>
+                        {pal.name} — (3 Colors: {pal.colors.join(', ')}) {pal.description ? `• ${pal.description}` : ''}
+                      </option>
+                    ))}
+                </optgroup>
+              </select>
             </div>
 
-            {/* Custom Color Input for users who don't see their color in the palette */}
-            <div className="p-3.5 rounded-2xl bg-white dark:bg-[#1E1E24] border border-stone-200 dark:border-stone-800 space-y-2 shadow-2xs">
-              <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300">
-                Can't see your color in the palette above? Type your custom color here:
-              </label>
-              <div className="flex items-center gap-2">
+            {/* B. Color Palette Type Filter Ribbon (All, 1 Color, 2 Colors, 3 Colors) */}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-stone-100 dark:bg-stone-800/80 border border-stone-200/60 dark:border-stone-700/60">
+                <button
+                  type="button"
+                  onClick={() => setPaletteColorCount('all')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    paletteColorCount === 'all'
+                      ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-white shadow-xs'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                  }`}
+                >
+                  All Palettes ({availablePalettes.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaletteColorCount('1')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                    paletteColorCount === '1'
+                      ? 'bg-white dark:bg-stone-700 text-pink-600 dark:text-pink-400 shadow-xs'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                  }`}
+                >
+                  <span className="w-2.5 h-2.5 rounded-full bg-pink-500 shrink-0" />
+                  <span>1 Color ({availablePalettes.filter((p) => p.colors.length === 1).length})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaletteColorCount('2')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                    paletteColorCount === '2'
+                      ? 'bg-white dark:bg-stone-700 text-pink-600 dark:text-pink-400 shadow-xs'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                  }`}
+                >
+                  <div className="flex w-3.5 h-2.5 rounded-xs overflow-hidden border border-black/10 shrink-0">
+                    <span className="w-1/2 h-full bg-pink-400" />
+                    <span className="w-1/2 h-full bg-amber-400" />
+                  </div>
+                  <span>2 Colors ({availablePalettes.filter((p) => p.colors.length === 2).length})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaletteColorCount('3')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                    paletteColorCount === '3'
+                      ? 'bg-white dark:bg-stone-700 text-pink-600 dark:text-pink-400 shadow-xs'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                  }`}
+                >
+                  <div className="flex w-4 h-2.5 rounded-xs overflow-hidden border border-black/10 shrink-0">
+                    <span className="w-1/3 h-full bg-pink-400" />
+                    <span className="w-1/3 h-full bg-amber-400" />
+                    <span className="w-1/3 h-full bg-emerald-400" />
+                  </div>
+                  <span>3 Colors ({availablePalettes.filter((p) => p.colors.length === 3).length})</span>
+                </button>
+              </div>
+
+              <span className="text-[11px] text-stone-500 dark:text-stone-400">
+                Click any card to select
+              </span>
+            </div>
+
+            {/* C. Visual Palettes Grid (Filtered by 1, 2, or 3 Colors) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-72 overflow-y-auto p-1.5 bg-stone-50/50 dark:bg-stone-900/40 rounded-2xl border border-stone-200/80 dark:border-stone-800">
+              {availablePalettes
+                .filter((p) => {
+                  if (paletteColorCount === '1') return p.colors.length === 1;
+                  if (paletteColorCount === '2') return p.colors.length === 2;
+                  if (paletteColorCount === '3') return p.colors.length === 3;
+                  return true;
+                })
+                .map((palette) => {
+                  const isSelected = formData.colourTheme.trim().toLowerCase() === palette.name.trim().toLowerCase();
+                  const colorCount = palette.colors.length;
+                  return (
+                    <button
+                      key={palette.id}
+                      type="button"
+                      onClick={() => {
+                        setFormData((prev) => ({ ...prev, colourTheme: palette.name }));
+                        if (palette.colors.length >= 1) setCustomColor1(palette.colors[0]);
+                        if (palette.colors.length >= 2) setCustomColor2(palette.colors[1]);
+                        if (palette.colors.length >= 3) setCustomColor3(palette.colors[2]);
+                        setCustomColorMode((palette.colors.length === 1 ? 1 : palette.colors.length === 3 ? 3 : 2) as 1 | 2 | 3);
+                      }}
+                      className={`flex items-center gap-3 p-2.5 rounded-xl border text-left transition-all ${
+                        isSelected
+                          ? 'border-pink-500 bg-pink-50 dark:bg-pink-950/60 ring-2 ring-pink-500/25 shadow-xs'
+                          : 'border-stone-200 dark:border-stone-800 bg-white dark:bg-[#1E1E24] hover:border-pink-300 dark:hover:border-stone-700'
+                      }`}
+                    >
+                      {/* Visual Color Swatch Preview Disk/Image (1 Color, 2 Colors, or 3 Colors) */}
+                      <div className="relative shrink-0 w-11 h-11 rounded-xl bg-stone-100 dark:bg-stone-800 p-0.5 flex items-center justify-center border border-stone-200/80 dark:border-stone-700 shadow-2xs overflow-hidden">
+                        {colorCount === 1 ? (
+                          <div
+                            style={{ backgroundColor: palette.colors[0] }}
+                            className="w-full h-full rounded-lg border border-black/10 shadow-inner"
+                            title={palette.colors[0]}
+                          />
+                        ) : colorCount === 2 ? (
+                          <div className="flex w-full h-full rounded-lg overflow-hidden border border-black/10">
+                            <div
+                              style={{ backgroundColor: palette.colors[0] }}
+                              className="w-1/2 h-full"
+                              title={palette.colors[0]}
+                            />
+                            <div
+                              style={{ backgroundColor: palette.colors[1] }}
+                              className="w-1/2 h-full"
+                              title={palette.colors[1]}
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex w-full h-full rounded-lg overflow-hidden border border-black/10">
+                            <div
+                              style={{ backgroundColor: palette.colors[0] }}
+                              className="w-1/3 h-full"
+                              title={palette.colors[0]}
+                            />
+                            <div
+                              style={{ backgroundColor: palette.colors[1] }}
+                              className="w-1/3 h-full"
+                              title={palette.colors[1]}
+                            />
+                            <div
+                              style={{ backgroundColor: palette.colors[2] }}
+                              className="w-1/3 h-full"
+                              title={palette.colors[2]}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Palette Name, Tag & Info beside it */}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-1">
+                          <span className={`text-xs font-bold truncate ${isSelected ? 'text-pink-900 dark:text-pink-200' : 'text-stone-900 dark:text-stone-100'}`}>
+                            {palette.name}
+                          </span>
+                          {isSelected && (
+                            <Check className="w-4 h-4 text-pink-600 shrink-0" />
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400">
+                            {colorCount === 1 ? '1 Color' : colorCount === 2 ? '2 Colors' : '3 Colors'}
+                          </span>
+                          {palette.description && (
+                            <p className="text-[10px] text-stone-500 dark:text-stone-400 truncate">
+                              {palette.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+            </div>
+
+            {/* D. CUSTOM PALETTE BUILDER: Select colors from dropdown & add colors */}
+            <div className="p-4 rounded-2xl bg-white dark:bg-[#1E1E24] border border-stone-200 dark:border-stone-800 space-y-4 shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-100 dark:border-stone-800">
+                <div>
+                  <h5 className="text-xs font-bold text-stone-900 dark:text-stone-100">
+                    Customize or Build Your Palette ({customColorMode} {customColorMode === 1 ? 'Color' : 'Colors'})
+                  </h5>
+                  <p className="text-[11px] text-stone-500">
+                    Select each frosting color from the dropdown list of artisan tones or pick custom shades.
+                  </p>
+                </div>
+
+                {/* Color Count Selector & Add/Remove Color Buttons */}
+                <div className="flex items-center gap-1.5 self-start sm:self-auto">
+                  <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-900 p-0.5 rounded-xl border border-stone-200 dark:border-stone-800">
+                    {([1, 2, 3] as const).map((count) => (
+                      <button
+                        key={count}
+                        type="button"
+                        onClick={() => setCustomColorMode(count)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                          customColorMode === count
+                            ? 'bg-pink-600 text-white shadow-2xs'
+                            : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                        }`}
+                      >
+                        {count} {count === 1 ? 'Color' : 'Colors'}
+                      </button>
+                    ))}
+                  </div>
+
+                  {customColorMode < 3 && (
+                    <button
+                      type="button"
+                      onClick={() => setCustomColorMode((prev) => Math.min(3, prev + 1) as 1 | 2 | 3)}
+                      className="px-2.5 py-1 rounded-xl bg-pink-50 dark:bg-pink-950/60 hover:bg-pink-100 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-900 text-xs font-bold flex items-center gap-1 transition-colors"
+                      title="Add another color slot to palette"
+                    >
+                      <Plus className="w-3 h-3" />
+                      <span>Add Color</span>
+                    </button>
+                  )}
+
+                  {customColorMode > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setCustomColorMode((prev) => Math.max(1, prev - 1) as 1 | 2 | 3)}
+                      className="px-2.5 py-1 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 text-stone-600 dark:text-stone-400 text-xs font-bold flex items-center gap-1 transition-colors"
+                      title="Remove a color slot"
+                    >
+                      <Minus className="w-3 h-3" />
+                      <span>Remove</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Slot Color Selectors with Dropdowns of Many Frosting Colors */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {/* Slot 1: Color 1 */}
+                <div className="p-3 rounded-xl bg-stone-50/80 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-700/80 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-stone-800 dark:text-stone-200">
+                      Color 1 (Primary Base)
+                    </span>
+                    <span className="text-[10px] font-mono uppercase font-semibold text-stone-500">
+                      {customColor1}
+                    </span>
+                  </div>
+
+                  {/* Dropdown for Color 1 */}
+                  <select
+                    value={
+                      POPULAR_CAKE_SWATCH_COLORS.find(
+                        (c) => c.hex.toLowerCase() === customColor1.toLowerCase()
+                      )?.hex || ''
+                    }
+                    onChange={(e) => {
+                      if (e.target.value) setCustomColor1(e.target.value);
+                    }}
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs font-medium focus:ring-2 focus:ring-pink-500"
+                  >
+                    <option value="">-- Select from Cake Colors Dropdown --</option>
+                    {POPULAR_CAKE_SWATCH_COLORS.map((swatch) => (
+                      <option key={`slot1-${swatch.name}`} value={swatch.hex}>
+                        {swatch.name} ({swatch.hex})
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Color Picker & Custom Hex */}
+                  <div className="flex items-center gap-2 pt-0.5">
+                    <input
+                      type="color"
+                      value={customColor1}
+                      onChange={(e) => setCustomColor1(e.target.value)}
+                      className="w-7 h-7 rounded-lg cursor-pointer border border-stone-300 dark:border-stone-600 shrink-0"
+                      title="Pick exact hex color"
+                    />
+                    <span className="text-[10px] text-stone-500">
+                      Or use color picker
+                    </span>
+                  </div>
+                </div>
+
+                {/* Slot 2: Color 2 (Shown if 2 or 3 colors) */}
+                {customColorMode >= 2 && (
+                  <div className="p-3 rounded-xl bg-stone-50/80 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-700/80 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-stone-800 dark:text-stone-200">
+                        Color 2 (Secondary)
+                      </span>
+                      <span className="text-[10px] font-mono uppercase font-semibold text-stone-500">
+                        {customColor2}
+                      </span>
+                    </div>
+
+                    {/* Dropdown for Color 2 */}
+                    <select
+                      value={
+                        POPULAR_CAKE_SWATCH_COLORS.find(
+                          (c) => c.hex.toLowerCase() === customColor2.toLowerCase()
+                        )?.hex || ''
+                      }
+                      onChange={(e) => {
+                        if (e.target.value) setCustomColor2(e.target.value);
+                      }}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs font-medium focus:ring-2 focus:ring-pink-500"
+                    >
+                      <option value="">-- Select from Cake Colors Dropdown --</option>
+                      {POPULAR_CAKE_SWATCH_COLORS.map((swatch) => (
+                        <option key={`slot2-${swatch.name}`} value={swatch.hex}>
+                          {swatch.name} ({swatch.hex})
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Color Picker & Custom Hex */}
+                    <div className="flex items-center gap-2 pt-0.5">
+                      <input
+                        type="color"
+                        value={customColor2}
+                        onChange={(e) => setCustomColor2(e.target.value)}
+                        className="w-7 h-7 rounded-lg cursor-pointer border border-stone-300 dark:border-stone-600 shrink-0"
+                        title="Pick exact hex color"
+                      />
+                      <span className="text-[10px] text-stone-500">
+                        Or use color picker
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Slot 3: Color 3 (Shown if 3 colors) */}
+                {customColorMode >= 3 && (
+                  <div className="p-3 rounded-xl bg-stone-50/80 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-700/80 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-stone-800 dark:text-stone-200">
+                        Color 3 (Accent)
+                      </span>
+                      <span className="text-[10px] font-mono uppercase font-semibold text-stone-500">
+                        {customColor3}
+                      </span>
+                    </div>
+
+                    {/* Dropdown for Color 3 */}
+                    <select
+                      value={
+                        POPULAR_CAKE_SWATCH_COLORS.find(
+                          (c) => c.hex.toLowerCase() === customColor3.toLowerCase()
+                        )?.hex || ''
+                      }
+                      onChange={(e) => {
+                        if (e.target.value) setCustomColor3(e.target.value);
+                      }}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs font-medium focus:ring-2 focus:ring-pink-500"
+                    >
+                      <option value="">-- Select from Cake Colors Dropdown --</option>
+                      {POPULAR_CAKE_SWATCH_COLORS.map((swatch) => (
+                        <option key={`slot3-${swatch.name}`} value={swatch.hex}>
+                          {swatch.name} ({swatch.hex})
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Color Picker & Custom Hex */}
+                    <div className="flex items-center gap-2 pt-0.5">
+                      <input
+                        type="color"
+                        value={customColor3}
+                        onChange={(e) => setCustomColor3(e.target.value)}
+                        className="w-7 h-7 rounded-lg cursor-pointer border border-stone-300 dark:border-stone-600 shrink-0"
+                        title="Pick exact hex color"
+                      />
+                      <span className="text-[10px] text-stone-500">
+                        Or use color picker
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Quick Frosting Swatch Dots for instant tap */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-semibold text-stone-500 dark:text-stone-400">
+                  Quick tap to set Color 1 ({POPULAR_CAKE_SWATCH_COLORS.length} artisan frosting tones):
+                </span>
+                <div className="flex flex-wrap gap-1.5 p-2 rounded-xl bg-stone-50 dark:bg-stone-900/40 border border-stone-200/60 dark:border-stone-700/60 max-h-20 overflow-y-auto">
+                  {POPULAR_CAKE_SWATCH_COLORS.map((swatch) => (
+                    <button
+                      key={`quick-${swatch.name}`}
+                      type="button"
+                      onClick={() => setCustomColor1(swatch.hex)}
+                      style={{ backgroundColor: swatch.hex }}
+                      className="w-5 h-5 rounded-md border border-black/15 dark:border-white/20 shadow-2xs hover:scale-110 transition-transform shrink-0"
+                      title={`${swatch.name} (${swatch.hex})`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Live Preview Bar & Apply Button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-stone-100 dark:border-stone-800">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-8 rounded-lg overflow-hidden flex border border-black/15 dark:border-white/20 shadow-2xs shrink-0">
+                    <div style={{ backgroundColor: customColor1 }} className="flex-1 h-full" title={customColor1} />
+                    {customColorMode >= 2 && (
+                      <div style={{ backgroundColor: customColor2 }} className="flex-1 h-full" title={customColor2} />
+                    )}
+                    {customColorMode >= 3 && (
+                      <div style={{ backgroundColor: customColor3 }} className="flex-1 h-full" title={customColor3} />
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-stone-800 dark:text-stone-200">
+                      {customColorMode}-Color Custom Palette
+                    </p>
+                    <p className="text-[10px] text-stone-500 font-mono">
+                      {customColor1}
+                      {customColorMode >= 2 ? ` • ${customColor2}` : ''}
+                      {customColorMode >= 3 ? ` • ${customColor3}` : ''}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const findName = (hex: string) =>
+                      POPULAR_CAKE_SWATCH_COLORS.find((c) => c.hex.toLowerCase() === hex.toLowerCase())?.name;
+                    const c1Name = findName(customColor1);
+                    const c2Name = findName(customColor2);
+                    const c3Name = findName(customColor3);
+
+                    let label = '';
+                    if (customColorMode === 1) {
+                      label = c1Name ? `${c1Name} (${customColor1})` : `Custom 1-Color (${customColor1})`;
+                    } else if (customColorMode === 2) {
+                      const n1 = c1Name || customColor1;
+                      const n2 = c2Name || customColor2;
+                      label = `${n1} & ${n2}`;
+                    } else {
+                      const n1 = c1Name || customColor1;
+                      const n2 = c2Name || customColor2;
+                      const n3 = c3Name || customColor3;
+                      label = `${n1}, ${n2} & ${n3}`;
+                    }
+                    setFormData((prev) => ({ ...prev, colourTheme: label }));
+                  }}
+                  className="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs shadow-xs transition-all shrink-0"
+                >
+                  Apply {customColorMode}-Color Custom Palette
+                </button>
+              </div>
+
+              {/* Freeform Description Input */}
+              <div className="pt-1">
+                <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                  Or specify custom finish / tone details (e.g. Ombre fade, gold leaf, marble effect):
+                </label>
                 <input
                   type="text"
                   name="colourTheme"
                   value={formData.colourTheme}
                   onChange={handleChange}
-                  placeholder="e.g. Sage green, dusty rose, burnt orange & gold leaf"
-                  className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  placeholder="e.g. Sage green & warm ivory with delicate edible 24K gold foil flakes"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-xs focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
-                <label
-                  className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer text-xs font-semibold text-stone-700 dark:text-stone-300 transition-colors shrink-0 shadow-2xs"
-                  title="Choose exact custom color shade"
-                >
-                  <Palette className="w-4 h-4 text-pink-500" />
-                  <span className="hidden sm:inline">Color Tool</span>
-                  <input
-                    type="color"
-                    onChange={(e) => {
-                      const hex = e.target.value;
-                      setFormData((prev) => ({
-                        ...prev,
-                        colourTheme: prev.colourTheme ? `${prev.colourTheme}, ${hex}` : hex,
-                      }));
-                    }}
-                    className="w-0 h-0 opacity-0 absolute pointer-events-none"
-                  />
-                </label>
               </div>
-              <p className="text-[11px] text-stone-500 dark:text-stone-400">
-                Type any custom tone, bridesmaid dress theme, or shade name — our bakers and cake artists will precisely blend matching fondant, ganache, and edible florals.
-              </p>
             </div>
           </div>
 

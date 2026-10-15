@@ -103,6 +103,7 @@ interface AppContextType {
   deleteCustomFlavor: (flavor: string) => void;
   resetCustomFlavors: () => void;
   addCustomColorPalette: (palette: CustomColorPalette) => void;
+  updateCustomColorPalette: (paletteId: string, updates: Partial<CustomColorPalette>) => void;
   deleteCustomColorPalette: (paletteId: string) => void;
   resetCustomColorPalettes: () => void;
   updateCustomPageConfig: (updates: Partial<CustomPageConfig>) => void;
@@ -1581,6 +1582,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('Palette Added! 🎨', `"${newPalette.name}" was added to the custom color palettes.`, 'success');
   };
 
+  const updateCustomColorPalette = (paletteId: string, updates: Partial<CustomColorPalette>) => {
+    setSiteContent((prev) => {
+      const current = prev.customPage?.colorPalettes || DEFAULT_COLOR_PALETTES;
+      const updatedPalettes = current.map((p) =>
+        p.id === paletteId ? { ...p, ...updates } : p
+      );
+      const updated = {
+        ...prev,
+        customPage: {
+          ...(prev.customPage || DEFAULT_CUSTOM_PAGE_CONFIG),
+          colorPalettes: updatedPalettes,
+        },
+      };
+      if (supabaseService.isAvailable()) {
+        supabaseService.saveSiteContent(updated).catch(console.warn);
+      }
+      return updated;
+    });
+    showToast('Palette Updated! 🎨', 'Color palette changes have been saved.', 'success');
+  };
+
   const deleteCustomColorPalette = (paletteId: string) => {
     setSiteContent((prev) => {
       const current = prev.customPage?.colorPalettes || DEFAULT_COLOR_PALETTES;
@@ -2608,6 +2630,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deleteCustomFlavor,
         resetCustomFlavors,
         addCustomColorPalette,
+        updateCustomColorPalette,
         deleteCustomColorPalette,
         resetCustomColorPalettes,
         updateCustomPageConfig,

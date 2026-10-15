@@ -400,77 +400,178 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       'Different flavour per tier',
     ],
     colorPalettes: [
+      // 1 COLOR PALETTES (Single Tone Elegance)
       {
-        id: 'pal-pink-gold',
+        id: 'pal-1-white',
+        name: 'Pure Pristine White',
+        colors: ['#FFFFFF'],
+        type: '1-color',
+        description: 'Timeless monochrome wedding, holy communion, crisp purity',
+      },
+      {
+        id: 'pal-1-gold',
+        name: 'Royal 24K Gold',
+        colors: ['#EAB308'],
+        type: '1-color',
+        description: 'Opulent regal celebration, gold leaf, jubilee milestone',
+      },
+      {
+        id: 'pal-1-pink',
+        name: 'Sweet Blush Pink',
+        colors: ['#F472B6'],
+        type: '1-color',
+        description: 'Soft romantic monochrome, baby girl celebration, sweet romance',
+      },
+      {
+        id: 'pal-1-burgundy',
+        name: 'Velvet Burgundy',
+        colors: ['#881337'],
+        type: '1-color',
+        description: 'Deep moody wine monochrome, sultry elegance, dramatic anniversary',
+      },
+      {
+        id: 'pal-1-black',
+        name: 'Midnight Onyx Black',
+        colors: ['#18181B'],
+        type: '1-color',
+        description: 'Ultra-modern black velvet, gothic luxury, masculine chic',
+      },
+      {
+        id: 'pal-1-sage',
+        name: 'Sage Botanical',
+        colors: ['#84A98C'],
+        type: '1-color',
+        description: 'Clean organic botanical, rustic olive, gentle earthy green',
+      },
+
+      // 2 COLORS PALETTES (Dual Tone Harmony)
+      {
+        id: 'pal-2-pink-gold',
         name: 'Blush Pink & Royal Gold',
-        colors: ['#F472B6', '#FB7185', '#EAB308', '#FEF08A'],
-        description: 'Romantic, glamorous, floral celebration',
+        colors: ['#F472B6', '#EAB308'],
+        type: '2-color',
+        description: 'Romantic floral celebration with glistening gold accents',
       },
       {
-        id: 'pal-white-silver',
+        id: 'pal-2-white-silver',
         name: 'Classic White & Pearl Silver',
-        colors: ['#FFFFFF', '#F3F4F6', '#CBD5E1', '#94A3B8'],
-        description: 'Timeless wedding, holy communion, crisp elegance',
+        colors: ['#FFFFFF', '#CBD5E1'],
+        type: '2-color',
+        description: 'Timeless crisp white with delicate silver sheen',
       },
       {
-        id: 'pal-emerald-gold',
-        name: 'Emerald Green & Luxury Gold',
-        colors: ['#065F46', '#10B981', '#34D399', '#F59E0B'],
-        description: 'Opulent traditional wedding, milestone jubilee',
-      },
-      {
-        id: 'pal-navy-silver',
-        name: 'Midnight Navy & Silver Sparkle',
-        colors: ['#0F172A', '#1E293B', '#38BDF8', '#E2E8F0'],
+        id: 'pal-2-navy-gold',
+        name: 'Midnight Navy & 24K Gold',
+        colors: ['#0F172A', '#EAB308'],
+        type: '2-color',
         description: 'Sleek gentleman birthday, corporate gala, modern luxury',
       },
       {
-        id: 'pal-lavender-lilac',
+        id: 'pal-2-emerald-gold',
+        name: 'Emerald Green & Luxury Gold',
+        colors: ['#064E3B', '#EAB308'],
+        type: '2-color',
+        description: 'Opulent traditional wedding, rich African royalty, jubilee',
+      },
+      {
+        id: 'pal-2-burgundy-rose',
+        name: 'Deep Burgundy & Dusty Rose',
+        colors: ['#881337', '#FB7185'],
+        type: '2-color',
+        description: 'Moody romance, autumn & winter wedding, heartfelt anniversary',
+      },
+      {
+        id: 'pal-2-sage-ivory',
+        name: 'Sage Green & Warm Ivory',
+        colors: ['#84A98C', '#FDFBF7'],
+        type: '2-color',
+        description: 'Botanical rustic chic, outdoor garden party, earthy serenity',
+      },
+      {
+        id: 'pal-2-lavender-lilac',
         name: 'Lavender Dream & Soft Lilac',
-        colors: ['#7C3AED', '#A78BFA', '#DDD6FE', '#FAF5FF'],
-        description: 'Whimsical garden theme, sweet sixteen, floral fairy',
+        colors: ['#7C3AED', '#DDD6FE'],
+        type: '2-color',
+        description: 'Whimsical garden theme, sweet sixteen, floral blooms',
       },
       {
-        id: 'pal-burgundy-rose',
-        name: 'Royal Burgundy & Rose Gold',
-        colors: ['#881337', '#BE123C', '#FB7185', '#FDE047'],
-        description: 'Deep romantic anniversary, rich evening celebration',
+        id: 'pal-2-terracotta-peach',
+        name: 'Terracotta & Warm Peach',
+        colors: ['#C2410C', '#FDBA74'],
+        type: '2-color',
+        description: 'Boho chic desert sunset, earthy warmth, sunset party',
       },
       {
-        id: 'pal-pastel-rainbow',
-        name: 'Pastel Rainbow Festival',
-        colors: ['#FCA5A5', '#FDE047', '#86EFAC', '#93C5FD', '#C4B5FD'],
-        description: 'Kids birthday, fun candy land, cheerful carnival',
-      },
-      {
-        id: 'pal-terracotta-sage',
-        name: 'Rustic Terracotta & Earth Sage',
-        colors: ['#C2410C', '#EA580C', '#65A30D', '#FEF3C7'],
-        description: 'Boho chic, earthy botanical, minimalist aesthetic',
-      },
-      {
-        id: 'pal-chocolate-caramel',
-        name: 'Rich Chocolate & Caramel Gold',
-        colors: ['#3E2723', '#78350F', '#D97706', '#FDE68A'],
-        description: 'Decadent foodie theme, warm tones, gold leaf accents',
-      },
-      {
-        id: 'pal-baby-blue',
+        id: 'pal-2-baby-blue-white',
         name: 'Baby Blue & Cloud White',
-        colors: ['#60A5FA', '#93C5FD', '#DBEAFE', '#FFFFFF'],
-        description: 'Baby boy shower, sky theme, first birthday',
+        colors: ['#60A5FA', '#FFFFFF'],
+        type: '2-color',
+        description: 'Baby shower, pastel sky theme, clean innocent charm',
+      },
+
+      // 3 COLORS PALETTES (Tri-Tone Artisan Trio)
+      {
+        id: 'pal-3-pink-coral-gold',
+        name: 'Blush Pink, Coral & Royal Gold',
+        colors: ['#F472B6', '#FB7185', '#EAB308'],
+        type: '3-color',
+        description: 'Glamorous garden soirée, multi-dimensional romance',
       },
       {
-        id: 'pal-sunshine-ivory',
-        name: 'Sunshine Yellow & Ivory White',
-        colors: ['#EAB308', '#FACC15', '#FEF08A', '#FFFFF0'],
-        description: 'Vibrant summer vibes, citrus cheer, daisy floral',
+        id: 'pal-3-emerald-mint-gold',
+        name: 'Emerald, Mint & Champagne Gold',
+        colors: ['#064E3B', '#34D399', '#EAB308'],
+        type: '3-color',
+        description: 'Lush botanical splendor, rich emerald depth with gold shimmer',
       },
       {
-        id: 'pal-black-gold',
-        name: 'All-Black Velvet & 24K Gold',
-        colors: ['#18181B', '#27272A', '#CA8A04', '#FEF08A'],
-        description: 'Dramatic black-tie, VIP milestone celebration',
+        id: 'pal-3-navy-sky-silver',
+        name: 'Midnight Navy, Sky Blue & Silver',
+        colors: ['#0F172A', '#38BDF8', '#E2E8F0'],
+        type: '3-color',
+        description: 'Starlit midnight sky, galaxy glamour, executive luxury',
+      },
+      {
+        id: 'pal-3-terracotta-coral-ivory',
+        name: 'Terracotta, Coral & Warm Ivory',
+        colors: ['#C2410C', '#FB923C', '#FDFBF7'],
+        type: '3-color',
+        description: 'Warm sunset boho palette, dried floral aesthetic',
+      },
+      {
+        id: 'pal-3-burgundy-rose-cream',
+        name: 'Burgundy, Rose Gold & Cream',
+        colors: ['#881337', '#FB7185', '#FDFBF7'],
+        type: '3-color',
+        description: 'Vintage velvet grandeur, sophisticated evening soirée',
+      },
+      {
+        id: 'pal-3-purple-lilac-white',
+        name: 'Royal Purple, Lilac & Pearl White',
+        colors: ['#581C87', '#C084FC', '#FFFFFF'],
+        type: '3-color',
+        description: 'Regal amethyst fantasy, opulent royal celebration',
+      },
+      {
+        id: 'pal-3-chocolate-caramel-cream',
+        name: 'Chocolate Mocha, Caramel & Cream',
+        colors: ['#3E2723', '#D97706', '#FDFBF7'],
+        type: '3-color',
+        description: 'Decadent foodie tones, salted caramel drizzles',
+      },
+      {
+        id: 'pal-3-tiffany-mint-white',
+        name: 'Tiffany Aqua, Mint & Pure White',
+        colors: ['#0D9488', '#2DD4BF', '#FFFFFF'],
+        type: '3-color',
+        description: 'Ocean breeze sparkle, fresh Caribbean luxury',
+      },
+      {
+        id: 'pal-3-pastel-rainbow',
+        name: 'Pastel Rainbow Trio (Pink, Lemon, Mint)',
+        colors: ['#F472B6', '#FDE047', '#86EFAC'],
+        type: '3-color',
+        description: 'Sweet cheerful celebration, joyful confectionery carnival',
       },
     ],
   },
@@ -479,3 +580,56 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
 export const DEFAULT_CUSTOM_FLAVORS: string[] = DEFAULT_SITE_CONTENT.customPage!.flavors;
 export const DEFAULT_COLOR_PALETTES: CustomColorPalette[] = DEFAULT_SITE_CONTENT.customPage!.colorPalettes!;
 export const DEFAULT_CUSTOM_PAGE_CONFIG: CustomPageConfig = DEFAULT_SITE_CONTENT.customPage!;
+
+export interface CakeSwatchTone {
+  name: string;
+  hex: string;
+  category: string;
+}
+
+export const POPULAR_CAKE_SWATCH_COLORS: CakeSwatchTone[] = [
+  // Metallics & Luxuries
+  { name: 'Royal 24K Gold', hex: '#EAB308', category: 'Metallics & Luxury' },
+  { name: 'Rose Gold Shimmer', hex: '#FB7185', category: 'Metallics & Luxury' },
+  { name: 'Champagne Gold', hex: '#E7D7C1', category: 'Metallics & Luxury' },
+  { name: 'Silver Slate / Pearl', hex: '#94A3B8', category: 'Metallics & Luxury' },
+
+  // Whites & Neutrals
+  { name: 'Pure Pristine White', hex: '#FFFFFF', category: 'Whites & Neutrals' },
+  { name: 'Warm Ivory Cream', hex: '#FDFBF7', category: 'Whites & Neutrals' },
+  { name: 'Alabaster Biscuit', hex: '#F5F5F0', category: 'Whites & Neutrals' },
+  { name: 'Midnight Onyx Black', hex: '#18181B', category: 'Whites & Neutrals' },
+
+  // Pinks & Reds
+  { name: 'Sweet Blush Pink', hex: '#F472B6', category: 'Pinks & Reds' },
+  { name: 'Dusty Rose Petal', hex: '#FDA4AF', category: 'Pinks & Reds' },
+  { name: 'Hot Vibrant Pink', hex: '#EC4899', category: 'Pinks & Reds' },
+  { name: 'Velvet Burgundy Wine', hex: '#881337', category: 'Pinks & Reds' },
+  { name: 'Ruby Crimson Red', hex: '#DC2626', category: 'Pinks & Reds' },
+
+  // Earth, Sunset & Peach
+  { name: 'Terracotta Rust', hex: '#C2410C', category: 'Warm Sunsets' },
+  { name: 'Sunset Coral', hex: '#FB923C', category: 'Warm Sunsets' },
+  { name: 'Warm Apricot Peach', hex: '#FDBA74', category: 'Warm Sunsets' },
+
+  // Greens & Teals
+  { name: 'Sage Botanical Green', hex: '#84A98C', category: 'Greens & Teals' },
+  { name: 'Forest Emerald Green', hex: '#064E3B', category: 'Greens & Teals' },
+  { name: 'Fresh Mint Green', hex: '#34D399', category: 'Greens & Teals' },
+  { name: 'Tiffany Turquoise Teal', hex: '#0D9488', category: 'Greens & Teals' },
+
+  // Blues
+  { name: 'Pastel Sky Blue', hex: '#38BDF8', category: 'Blues' },
+  { name: 'Baby Boy Blue', hex: '#60A5FA', category: 'Blues' },
+  { name: 'Midnight Royal Navy', hex: '#0F172A', category: 'Blues' },
+
+  // Purples & Lilacs
+  { name: 'Soft Lilac Blossom', hex: '#C084FC', category: 'Purples & Lilacs' },
+  { name: 'Lavender Dream', hex: '#DDD6FE', category: 'Purples & Lilacs' },
+  { name: 'Royal Violet Purple', hex: '#7C3AED', category: 'Purples & Lilacs' },
+  { name: 'Deep Royal Plum', hex: '#581C87', category: 'Purples & Lilacs' },
+
+  // Gourmet Sweets & Choc
+  { name: 'Chocolate Mocha Brown', hex: '#3E2723', category: 'Gourmet Chocolates' },
+  { name: 'Salted Caramel Amber', hex: '#D97706', category: 'Gourmet Chocolates' },
+];
