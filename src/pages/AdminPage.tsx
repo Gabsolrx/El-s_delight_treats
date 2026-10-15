@@ -185,6 +185,127 @@ const PRESET_CAKE_IMAGES = [
   { label: 'Vanilla Floral', url: 'https://images.unsplash.com/photo-1518047601542-4505c440a469?auto=format&fit=crop&w=800&q=80' },
 ];
 
+// Curated image color palettes for the bespoke custom cake page & admin swatch builder
+const CURATED_IMAGE_PALETTES = [
+  {
+    name: 'Blush Pink & Royal Gold',
+    desc: 'Romantic, glamorous, floral celebration',
+    colors: ['#F472B6', '#FB7185', '#EAB308', '#FEF08A'],
+  },
+  {
+    name: 'Sage Green & Warm Ivory',
+    desc: 'Botanical, rustic outdoor wedding, organic chic',
+    colors: ['#84A98C', '#CAD2C5', '#FDFBF7', '#D4A373'],
+  },
+  {
+    name: 'Midnight Navy & Champagne Gold',
+    desc: 'Sleek gentleman birthday, corporate gala, modern luxury',
+    colors: ['#0F172A', '#1E293B', '#D4AF37', '#FDE047'],
+  },
+  {
+    name: 'Classic White & Pearl Silver',
+    desc: 'Timeless wedding, holy communion, crisp elegance',
+    colors: ['#FFFFFF', '#F1F5F9', '#CBD5E1', '#94A3B8'],
+  },
+  {
+    name: 'Emerald Green & Luxury Gold',
+    desc: 'Opulent traditional wedding, milestone jubilee',
+    colors: ['#064E3B', '#10B981', '#F59E0B', '#FEF08A'],
+  },
+  {
+    name: 'Terracotta, Peach & Coral',
+    desc: 'Warm sunset tones, boho chic, desert warmth',
+    colors: ['#C2410C', '#FB923C', '#FDBA74', '#FFF7ED'],
+  },
+  {
+    name: 'Deep Burgundy & Dusty Rose',
+    desc: 'Moody romance, autumn & winter anniversary',
+    colors: ['#881337', '#BE123C', '#FDA4AF', '#FFE4E6'],
+  },
+  {
+    name: 'Royal Purple & Lilac Dream',
+    desc: 'Majestic royalty, quinceañera, delicate blooms',
+    colors: ['#581C87', '#9333EA', '#C084FC', '#FAF5FF'],
+  },
+  {
+    name: 'Tiffany Aqua & Pearl White',
+    desc: 'Fresh turquoise sparkle, beachside glam',
+    colors: ['#0D9488', '#2DD4BF', '#99F6E4', '#FFFFFF'],
+  },
+  {
+    name: 'Chocolate Mocha & Salted Caramel',
+    desc: 'Rich gourmet dessert tones, warm chocolate lover',
+    colors: ['#3E2723', '#795548', '#D7CCC8', '#E65100'],
+  },
+  {
+    name: 'Pastel Rainbow Celebration',
+    desc: 'Vibrant kids birthday, sweet carnival theme',
+    colors: ['#F472B6', '#FBBF24', '#34D399', '#60A5FA'],
+  },
+  {
+    name: 'Champagne, Nude & Ivory',
+    desc: 'Sophisticated neutrals, bridal shower, effortless luxury',
+    colors: ['#E7D7C1', '#D4AF37', '#F3E8E2', '#FFFFFF'],
+  },
+  {
+    name: 'Sunset Coral & Sunshine Canary',
+    desc: 'Summer garden party, lively tropical vibrancy',
+    colors: ['#F43F5E', '#FB7185', '#FBBF24', '#FEF3C7'],
+  },
+  {
+    name: 'Forest Pine & Antique Brass',
+    desc: 'Woodland charm, deep emerald elegance',
+    colors: ['#14532D', '#22C55E', '#B45309', '#FDE68A'],
+  },
+  {
+    name: 'Berry Velvet & Sweet Plum',
+    desc: 'Rich jewel tones, berry celebration, sultry chic',
+    colors: ['#4C1D95', '#A21CAF', '#E879F9', '#FDF4FF'],
+  },
+  {
+    name: 'Charcoal Noir & Liquid Gold',
+    desc: 'Ultra-modern dramatic luxury, Gatsby soirée',
+    colors: ['#18181B', '#27272A', '#EAB308', '#FEF08A'],
+  },
+  {
+    name: 'Lemon Zest & Fresh Mint',
+    desc: 'Crisp citrus burst, springtime garden gathering',
+    colors: ['#FACC15', '#FEF08A', '#4ADE80', '#F0FDF4'],
+  },
+  {
+    name: 'Lavender Fields & Soft Violet',
+    desc: 'Calming floral fantasy, pastel afternoon tea',
+    colors: ['#7C3AED', '#A78BFA', '#DDD6FE', '#FAF5FF'],
+  },
+];
+
+const POPULAR_SWATCH_TONES = [
+  { name: 'Royal Gold', hex: '#EAB308' },
+  { name: 'Rose Gold', hex: '#FB7185' },
+  { name: 'Champagne', hex: '#E7D7C1' },
+  { name: 'Warm Ivory', hex: '#FDFBF7' },
+  { name: 'Pure White', hex: '#FFFFFF' },
+  { name: 'Blush Pink', hex: '#F472B6' },
+  { name: 'Hot Pink', hex: '#EC4899' },
+  { name: 'Ruby Red', hex: '#DC2626' },
+  { name: 'Burgundy', hex: '#881337' },
+  { name: 'Terracotta', hex: '#C2410C' },
+  { name: 'Peach', hex: '#FDBA74' },
+  { name: 'Sage Green', hex: '#84A98C' },
+  { name: 'Forest Emerald', hex: '#064E3B' },
+  { name: 'Mint Green', hex: '#34D399' },
+  { name: 'Tiffany Teal', hex: '#0D9488' },
+  { name: 'Sky Blue', hex: '#38BDF8' },
+  { name: 'Midnight Navy', hex: '#0F172A' },
+  { name: 'Lavender', hex: '#C084FC' },
+  { name: 'Royal Purple', hex: '#7C3AED' },
+  { name: 'Deep Plum', hex: '#581C87' },
+  { name: 'Chocolate', hex: '#78350F' },
+  { name: 'Caramel', hex: '#D97706' },
+  { name: 'Silver Slate', hex: '#94A3B8' },
+  { name: 'Onyx Black', hex: '#18181B' },
+];
+
 export const AdminPage: React.FC = () => {
   const {
     products,
@@ -393,6 +514,8 @@ export const AdminPage: React.FC = () => {
   const [newPaletteColor1, setNewPaletteColor1] = useState('#F472B6');
   const [newPaletteColor2, setNewPaletteColor2] = useState('#EAB308');
   const [newPaletteColor3, setNewPaletteColor3] = useState('#FFFFFF');
+  const [newPaletteColor4, setNewPaletteColor4] = useState('#FB7185');
+  const [activePaletteSlot, setActivePaletteSlot] = useState<1 | 2 | 3 | 4>(1);
   const [newPaletteDesc, setNewPaletteDesc] = useState('');
   const [customPageBadge, setCustomPageBadge] = useState(
     siteContent.customPage?.badge || 'Bespoke Cake Consultations'
@@ -2650,22 +2773,20 @@ export const AdminPage: React.FC = () => {
             {/* Sub-tab Navigation Ribbon */}
             <div className="flex flex-wrap gap-2 border-b border-rose-100 dark:border-stone-800 pb-3">
               {[
-                { id: 'hero', label: 'Hero Banner', icon: Cake },
+                { id: 'hero', label: 'Hero Banner' },
                 {
                   id: 'customPage',
                   label: `Custom Cake Page & Flavors (${(siteContent.customPage?.flavors || []).length})`,
-                  icon: Palette,
                 },
                 { id: 'budget', label: 'Budget & Celebration Tiers' },
-                { id: 'occasions', label: `Occasions (${(occasionsForm.items || []).length})`, icon: Calendar },
-                { id: 'moments', label: `Sweet Moments (${(sweetMomentsForm.items || []).length})`, icon: Instagram },
+                { id: 'occasions', label: `Occasions (${(occasionsForm.items || []).length})` },
+                { id: 'moments', label: `Sweet Moments (${(sweetMomentsForm.items || []).length})` },
                 { id: 'announcements', label: `Announcements (${siteContent.announcements.length})` },
                 { id: 'about', label: 'About Us & Story' },
                 { id: 'promises', label: 'Brand Promises' },
-                { id: 'faqs', label: `FAQs (${(siteContent.faqs || []).length})`, icon: HelpCircle },
-                { id: 'corporate', label: 'Corporate Solutions', icon: Briefcase },
+                { id: 'faqs', label: `FAQs (${(siteContent.faqs || []).length})` },
+                { id: 'corporate', label: 'Corporate Solutions' },
               ].map((sub) => {
-                const SubIcon = sub.icon;
                 const isCurrent = contentSubTab === sub.id;
                 return (
                   <button
@@ -2678,7 +2799,6 @@ export const AdminPage: React.FC = () => {
                         : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-rose-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700'
                     }`}
                   >
-                    {SubIcon && <SubIcon className="w-3.5 h-3.5" />}
                     <span>{sub.label}</span>
                   </button>
                 );
@@ -3421,9 +3541,8 @@ export const AdminPage: React.FC = () => {
                 {/* Header banner */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-rose-100 dark:border-stone-800 pb-4 gap-3">
                   <div>
-                    <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-                      <Palette className="w-5 h-5 text-pink-600" />
-                      <span>Custom Cake Page & Flavors Configuration</span>
+                    <h4 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100">
+                      Custom Cake Page & Flavors Configuration
                     </h4>
                     <p className="text-xs text-stone-500 mt-0.5">
                       Manage preference flavors for the bespoke cake dropdown, color palette options, and custom consultation copy.
@@ -3445,9 +3564,8 @@ export const AdminPage: React.FC = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <h5 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-                          <Cake className="w-4 h-4 text-pink-600" />
-                          <span>Custom Cake Preference Flavors</span>
+                        <h5 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100">
+                          Custom Cake Preference Flavors
                         </h5>
                         <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-pink-100 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-900">
                           {(siteContent.customPage?.flavors || []).length} Flavors Active
@@ -3566,9 +3684,8 @@ export const AdminPage: React.FC = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <h5 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-                          <Palette className="w-4 h-4 text-purple-600" />
-                          <span>Custom Cake Visual Color Palettes</span>
+                        <h5 className="font-serif text-base font-bold text-stone-900 dark:text-stone-100">
+                          Custom Cake Visual Color Palettes
                         </h5>
                         <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-900">
                           {(siteContent.customPage?.colorPalettes || []).length} Palettes Available
@@ -3593,85 +3710,229 @@ export const AdminPage: React.FC = () => {
                     </button>
                   </div>
 
-                  {/* Add New Palette Form */}
-                  <div className="p-4 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 space-y-3">
-                    <p className="text-xs font-bold text-stone-900 dark:text-stone-100">
-                      Add New Color Palette
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  {/* Add New Palette Form & Curated Image Palette Picker */}
+                  <div className="p-5 rounded-2xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 space-y-5 shadow-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-stone-200/80 dark:border-stone-700/80 gap-2">
                       <div>
-                        <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
-                          Palette Name
-                        </label>
-                        <input
-                          type="text"
-                          value={newPaletteName}
-                          onChange={(e) => setNewPaletteName(e.target.value)}
-                          placeholder="e.g. Royal Mauve & Gold"
-                          className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs"
-                        />
+                        <p className="text-xs font-bold text-stone-900 dark:text-stone-100">
+                          Add New Color Palette
+                        </p>
+                        <p className="text-[11px] text-stone-500">
+                          Select from the image color palettes below, pick individual cake swatches, or mix your custom HEX tones.
+                        </p>
                       </div>
-                      <div>
-                        <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
-                          Tone Note / Description
-                        </label>
-                        <input
-                          type="text"
-                          value={newPaletteDesc}
-                          onChange={(e) => setNewPaletteDesc(e.target.value)}
-                          placeholder="e.g. Regal wedding theme"
-                          className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs"
-                        />
+
+                      {/* Live Preview Pill */}
+                      <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 shrink-0">
+                        <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Preview:</span>
+                        <div className="flex items-center gap-1">
+                          {[newPaletteColor1, newPaletteColor2, newPaletteColor3, newPaletteColor4].map((c, i) => (
+                            <span
+                              key={i}
+                              style={{ backgroundColor: c }}
+                              className="w-4 h-4 rounded-full border border-black/10 dark:border-white/10 shadow-2xs"
+                              title={`Color ${i + 1}: ${c}`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[11px] font-bold text-stone-800 dark:text-stone-200 truncate max-w-[120px]">
+                          {newPaletteName || 'Untitled'}
+                        </span>
                       </div>
-                      <div>
-                        <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
-                          Swatch Colors
+                    </div>
+
+                    {/* SECTION A: Select from Curated Image Color Palettes */}
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <label className="block text-[11px] font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider">
+                          Select from Curated Image Color Palettes (Click to auto-fill)
                         </label>
-                        <div className="flex items-center gap-2 pt-0.5">
+                        <span className="text-[10px] text-purple-600 dark:text-purple-400 font-semibold">
+                          {CURATED_IMAGE_PALETTES.length} Curated Combinations
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 max-h-56 overflow-y-auto p-1.5 rounded-xl bg-stone-50/70 dark:bg-stone-900/50 border border-stone-200/80 dark:border-stone-700/80">
+                        {CURATED_IMAGE_PALETTES.map((preset) => {
+                          const isMatch =
+                            newPaletteName === preset.name &&
+                            newPaletteColor1 === preset.colors[0] &&
+                            newPaletteColor2 === preset.colors[1];
+                          return (
+                            <button
+                              key={preset.name}
+                              type="button"
+                              onClick={() => {
+                                setNewPaletteName(preset.name);
+                                setNewPaletteDesc(preset.desc);
+                                setNewPaletteColor1(preset.colors[0] || '#FFFFFF');
+                                setNewPaletteColor2(preset.colors[1] || '#FFFFFF');
+                                setNewPaletteColor3(preset.colors[2] || '#FFFFFF');
+                                setNewPaletteColor4(preset.colors[3] || preset.colors[0] || '#FFFFFF');
+                              }}
+                              className={`p-2 rounded-xl text-left transition-all border group relative ${
+                                isMatch
+                                  ? 'bg-purple-50 dark:bg-purple-950/60 border-purple-400 ring-2 ring-purple-400/30 shadow-xs'
+                                  : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-purple-300 dark:hover:border-stone-600 hover:shadow-2xs'
+                              }`}
+                            >
+                              {/* Multi-tone image color swatch bar */}
+                              <div className="h-6 w-full rounded-lg overflow-hidden flex border border-black/10 dark:border-white/10 mb-1.5 shadow-2xs">
+                                {preset.colors.map((c, idx) => (
+                                  <div
+                                    key={idx}
+                                    style={{ backgroundColor: c }}
+                                    className="flex-1 h-full"
+                                    title={c}
+                                  />
+                                ))}
+                              </div>
+                              <p className="text-[11px] font-bold text-stone-900 dark:text-stone-100 truncate leading-tight">
+                                {preset.name}
+                              </p>
+                              <p className="text-[9px] text-stone-500 dark:text-stone-400 truncate mt-0.5">
+                                {preset.desc}
+                              </p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* SECTION B: Individual Swatch Color Pickers & Popular Tones */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-1">
+                      {/* Name & Tone Inputs */}
+                      <div className="lg:col-span-4 space-y-3">
+                        <div>
+                          <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                            Palette Name *
+                          </label>
                           <input
-                            type="color"
-                            value={newPaletteColor1}
-                            onChange={(e) => setNewPaletteColor1(e.target.value)}
-                            className="w-8 h-8 rounded-lg cursor-pointer border border-stone-200 dark:border-stone-700"
-                            title="Primary Color"
+                            type="text"
+                            value={newPaletteName}
+                            onChange={(e) => setNewPaletteName(e.target.value)}
+                            placeholder="e.g. Royal Mauve & 24k Gold"
+                            className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
                           />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400 mb-1">
+                            Tone Note / Customer Tag
+                          </label>
                           <input
-                            type="color"
-                            value={newPaletteColor2}
-                            onChange={(e) => setNewPaletteColor2(e.target.value)}
-                            className="w-8 h-8 rounded-lg cursor-pointer border border-stone-200 dark:border-stone-700"
-                            title="Secondary Color"
-                          />
-                          <input
-                            type="color"
-                            value={newPaletteColor3}
-                            onChange={(e) => setNewPaletteColor3(e.target.value)}
-                            className="w-8 h-8 rounded-lg cursor-pointer border border-stone-200 dark:border-stone-700"
-                            title="Accent Color"
+                            type="text"
+                            value={newPaletteDesc}
+                            onChange={(e) => setNewPaletteDesc(e.target.value)}
+                            placeholder="e.g. Regal wedding theme, warm romance"
+                            className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
                           />
                         </div>
                       </div>
-                      <div className="flex items-end">
-                        <button
-                          type="button"
-                          disabled={!newPaletteName.trim()}
-                          onClick={() => {
-                            if (!newPaletteName.trim()) return;
-                            const newPal: CustomColorPalette = {
-                              id: 'pal-' + Date.now().toString(36),
-                              name: newPaletteName.trim(),
-                              colors: [newPaletteColor1, newPaletteColor2, newPaletteColor3],
-                              description: newPaletteDesc.trim() || undefined,
-                            };
-                            addCustomColorPalette(newPal);
-                            setNewPaletteName('');
-                            setNewPaletteDesc('');
-                          }}
-                          className="w-full px-3 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                          <span>Add Palette</span>
-                        </button>
+
+                      {/* Swatch Color Slot Controls */}
+                      <div className="lg:col-span-8 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <label className="block text-[11px] font-semibold text-stone-600 dark:text-stone-400">
+                            Swatch Colors (4-Tone Palette Slots)
+                          </label>
+                          <span className="text-[10px] text-stone-400">
+                            Active Slot: Color {activePaletteSlot}
+                          </span>
+                        </div>
+
+                        {/* 4 Swatch Slots */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          {[
+                            { slot: 1, label: 'Primary Base', color: newPaletteColor1, setter: setNewPaletteColor1 },
+                            { slot: 2, label: 'Secondary', color: newPaletteColor2, setter: setNewPaletteColor2 },
+                            { slot: 3, label: 'Accent 1', color: newPaletteColor3, setter: setNewPaletteColor3 },
+                            { slot: 4, label: 'Accent 2 / Gold', color: newPaletteColor4, setter: setNewPaletteColor4 },
+                          ].map((item) => {
+                            const isSlotActive = activePaletteSlot === item.slot;
+                            return (
+                              <div
+                                key={item.slot}
+                                onClick={() => setActivePaletteSlot(item.slot as any)}
+                                className={`p-2 rounded-xl border cursor-pointer transition-all flex items-center gap-2 ${
+                                  isSlotActive
+                                    ? 'bg-purple-50 dark:bg-purple-950/40 border-purple-500 ring-2 ring-purple-400/20'
+                                    : 'bg-stone-50 dark:bg-stone-900/60 border-stone-200 dark:border-stone-700 hover:border-purple-300'
+                                }`}
+                              >
+                                <input
+                                  type="color"
+                                  value={item.color}
+                                  onChange={(e) => {
+                                    item.setter(e.target.value);
+                                    setActivePaletteSlot(item.slot as any);
+                                  }}
+                                  className="w-7 h-7 rounded-lg cursor-pointer border border-stone-300 dark:border-stone-600 shrink-0"
+                                  title={`Change ${item.label}`}
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[10px] font-bold text-stone-800 dark:text-stone-200 truncate">
+                                    {item.label}
+                                  </p>
+                                  <p className="text-[9px] font-mono text-stone-500 truncate uppercase">
+                                    {item.color}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Quick Luxury Cake Frosting Swatches */}
+                        <div>
+                          <p className="text-[10px] font-semibold text-stone-500 dark:text-stone-400 mb-1.5">
+                            Click to apply shade into Slot {activePaletteSlot}:
+                          </p>
+                          <div className="flex flex-wrap gap-1.5 p-2 rounded-xl bg-stone-50 dark:bg-stone-900/50 border border-stone-200/80 dark:border-stone-700/80 max-h-24 overflow-y-auto">
+                            {POPULAR_SWATCH_TONES.map((swatch) => (
+                              <button
+                                key={swatch.name}
+                                type="button"
+                                onClick={() => {
+                                  if (activePaletteSlot === 1) setNewPaletteColor1(swatch.hex);
+                                  else if (activePaletteSlot === 2) setNewPaletteColor2(swatch.hex);
+                                  else if (activePaletteSlot === 3) setNewPaletteColor3(swatch.hex);
+                                  else if (activePaletteSlot === 4) setNewPaletteColor4(swatch.hex);
+                                }}
+                                style={{ backgroundColor: swatch.hex }}
+                                className="w-5 h-5 rounded-md border border-black/15 dark:border-white/20 shadow-2xs hover:scale-110 transition-transform shrink-0"
+                                title={`${swatch.name} (${swatch.hex})`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="pt-2 flex justify-end">
+                          <button
+                            type="button"
+                            disabled={!newPaletteName.trim()}
+                            onClick={() => {
+                              if (!newPaletteName.trim()) return;
+                              const colors = [newPaletteColor1, newPaletteColor2, newPaletteColor3];
+                              if (newPaletteColor4) {
+                                colors.push(newPaletteColor4);
+                              }
+                              const newPal: CustomColorPalette = {
+                                id: 'pal-' + Date.now().toString(36),
+                                name: newPaletteName.trim(),
+                                colors,
+                                description: newPaletteDesc.trim() || undefined,
+                              };
+                              addCustomColorPalette(newPal);
+                              setNewPaletteName('');
+                              setNewPaletteDesc('');
+                            }}
+                            className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs shrink-0"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Add Palette to Custom Page</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
